@@ -1,0 +1,80 @@
+name: Build Apk
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  release:
+    types: [created]
+
+jobs:
+  build:
+    runs-on: [ubuntu-latest]
+    permissions:
+      id-token: write
+    env:
+      node-version: 18
+      java-version: 11
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Install lib dependencies
+        run: npm ci --ignore-scripts
+
+      - uses: actions/setup-java@v3
+        with:
+          distribution: 'temurin'
+          java-version: ${{ env.java-version }}
+          cache: 'gradle'
+
+      - name: Validate Gradle wrapper
+        uses: gradle/wrapper-validation-action@v1
+
+      - name: Setup Gradle
+        uses: gradle/gradle-build-action@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run unit tests
+        run: npm run test -- --reporters=default --reporters=jest-junit
+
+      - name: Test Report
+        uses: dorny/test-reporter@e9fa2f582c0ebbe2e263fd18fad744d52e0b0203
+        id: test-report
+        if: ${{ always() }}
+        with:
+          name: 'UT Report'
+          path: junit.xml
+          reporter: jest-junit
+          max-annotations: 0
+
+      - name: Decode Keystore
+        id: decode_keystore
+        uses: timheuer/base64-to-file@v1
+        with:
+          fileName: 'keystore/keystore.jks'
+          encodedString: ${{ secrets.KEYSTORE }}
+
+      - name: Update package version
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '"version": "([0-9.]*)"'
+          replacement: '"version": "${{ github.ref_name }}"'
+          include: 'package.json'
+
+      - name: Build Apk
+        working-directory: android/
+        run: ./gradlew assemblerelease
+        env:
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+
+      - name: Upload Apk
+        uses: actions/upload-artifact@v3
+        with:
+          name: apk
+          path: android/app/build/outputs/apk/**/app*.apk
