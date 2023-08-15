@@ -11,8 +11,7 @@ on:
 jobs:
   build:
     runs-on: [ubuntu-latest]
-    permissions:
-      id-token: write
+    permissions: write-all
     env:
       node-version: 18
       java-version: 11
@@ -38,18 +37,21 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Check lint
+        run: npm run lint
+
       - name: Run unit tests
         run: npm run test -- --reporters=default --reporters=jest-junit
 
       - name: Test Report
-        uses: dorny/test-reporter@e9fa2f582c0ebbe2e263fd18fad744d52e0b0203
-        id: test-report
-        if: ${{ always() }}
+        uses: dorny/test-reporter@v1
+        if: always()
         with:
-          name: 'UT Report'
-          path: junit.xml
+          name: 'Units tests Report'
+          path: '**/junit.xml'
           reporter: jest-junit
           max-annotations: 0
+          fail-on-error: true
 
       - name: Decode Keystore
         id: decode_keystore
