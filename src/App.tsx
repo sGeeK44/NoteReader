@@ -12,7 +12,6 @@ import {buildDependencies} from './config/common';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {useAsync} from 'react-async-hook';
-import {SafeAreaView, Text} from 'react-native';
 
 export type RootStackParamList = {
   MainScreen: undefined;
