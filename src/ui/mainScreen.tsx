@@ -1,9 +1,24 @@
-import React from 'react';
-import {SafeAreaView, View} from 'react-native';
+import React, {useState} from 'react';
+import {Button, SafeAreaView, Text, TextInput, View} from 'react-native';
 import {Formatter, Stave, StaveNote, Voice} from 'vexflow';
 import {RNVexFlowSVGContext} from 'react-native-vexflow-canvas';
+import Sound from 'react-native-sound';
 
 export const MainScreen = () => {
+  const [tempo, setTempo] = useState<string>('60');
+  let intervalId: NodeJS.Timeout;
+  Sound.setCategory('Playback');
+  var ding = new Sound('baguettes.mp3', Sound.MAIN_BUNDLE);
+
+  function startPlay() {
+    intervalId = setInterval(() => {
+      ding.play();
+    }, (parseInt(tempo) / 60) * 1000);
+  }
+
+  function stopPlay() {
+    clearInterval(intervalId);
+  }
   const context = new RNVexFlowSVGContext(0, 0);
   const treble = new Stave(0, 0, 340);
 
@@ -39,6 +54,20 @@ export const MainScreen = () => {
   return (
     <SafeAreaView>
       <View>{context.render()}</View>
+      <TextInput
+        style={{color: 'black'}}
+        onChangeText={setTempo}
+        value={tempo}></TextInput>
+      <Button
+        title="Start Play"
+        onPress={() => {
+          startPlay();
+        }}></Button>
+      <Button
+        title="Stop Play"
+        onPress={() => {
+          stopPlay();
+        }}></Button>
     </SafeAreaView>
   );
 };
