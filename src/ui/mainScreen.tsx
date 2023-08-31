@@ -1,13 +1,21 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useMemo, useState} from 'react';
 import {Button, SafeAreaView, Text, TextInput, View} from 'react-native';
 import {Formatter, Stave, StaveNote, Voice} from 'vexflow';
 import {RNVexFlowSVGContext} from 'react-native-vexflow-canvas';
 import Sound from 'react-native-sound';
 import SpeechRecognizer from '../infrastructure/SpeechRecognizer';
 
+const voiceRecognition = new SpeechRecognizer();
+voiceRecognition.loadModel('model-fr-fr');
+
 export const MainScreen = () => {
   const [tempo, setTempo] = useState<string>('60');
   const [speech, setSpeech] = useState<string>('');
+  useMemo(() => {
+    voiceRecognition.onResult(e => {
+      setSpeech('#' + e);
+    });
+  }, [voiceRecognition]);
   let intervalId: NodeJS.Timeout;
   Sound.setCategory('Playback');
   var ding = new Sound('baguettes.mp3', Sound.MAIN_BUNDLE);
@@ -20,17 +28,7 @@ export const MainScreen = () => {
   function stopPlay() {
     clearInterval(intervalId);
   }
-  const voiceRecognition = new SpeechRecognizer();
-  useEffect(() => {
-    voiceRecognition.loadModel('model-fr-fr');
-    voiceRecognition.onResult(e => {
-      console.log(e);
-      setSpeech(speech + '#' + e);
-    });
-    voiceRecognition.onError(e => {
-      console.log('EEEEE', e);
-    });
-  });
+
   const context = draw();
 
   return (
@@ -62,7 +60,7 @@ export const MainScreen = () => {
           console.log('stop listening');
           voiceRecognition.stop();
         }}></Button>
-      <Text style={{color: 'black'}}>{speech}</Text>
+      <Text style={{color: 'black', fontSize: 25}}>{speech}</Text>
     </SafeAreaView>
   );
 };
