@@ -1,4 +1,4 @@
-package com.notereader;
+package com.musictheoryteacher;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;

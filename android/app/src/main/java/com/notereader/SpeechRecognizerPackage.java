@@ -1,4 +1,5 @@
-package com.notereader;
+package com.musictheoryteacher;
+
 import com.facebook.react.ReactPackage;
 import com.facebook.react.bridge.NativeModule;
 import com.facebook.react.bridge.ReactApplicationContext;
@@ -10,19 +11,19 @@ import java.util.List;
 
 public class SpeechRecognizerPackage implements ReactPackage {
 
-   @Override
-   public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
-       return Collections.emptyList();
-   }
+    @Override
+    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+        return Collections.emptyList();
+    }
 
-   @Override
-   public List<NativeModule> createNativeModules(
-           ReactApplicationContext reactContext) {
-       List<NativeModule> modules = new ArrayList<>();
+    @Override
+    public List<NativeModule> createNativeModules(
+            ReactApplicationContext reactContext) {
+        List<NativeModule> modules = new ArrayList<>();
 
-       modules.add(new SpeechRecognizerModule(reactContext));
+        modules.add(new SpeechRecognizerModule(reactContext));
 
-       return modules;
-   }
+        return modules;
+    }
 
 }

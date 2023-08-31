@@ -73,9 +73,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.notereader"
+    namespace "com.musictheoryteacher"
     defaultConfig {
-        applicationId "com.notereader"
+        applicationId "com.musictheoryteacher"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1
