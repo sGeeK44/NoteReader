@@ -13,6 +13,8 @@
   "dependencies": {
     "@react-native-community/cli-doctor": "^11.3.7",
     "@react-navigation/native-stack": "^6.9.13",
+    "@testing-library/jest-native": "^5.4.3",
+    "@testing-library/react-native": "^12.2.2",
     "inversify-react": "^1.1.0",
     "react": "18.2.0",
     "react-async-hook": "^4.0.0",
@@ -24,6 +26,9 @@
     "react-native-sound": "^0.11.2",
     "react-native-svg": "^13.11.0",
     "react-native-vexflow-canvas": "^1.0.9",
+    "reflect-metadata": "^0.1.13",
+    "ts-jest": "^29.1.1",
+    "ts-node": "^10.9.1",
     "vexflow": "^4.2.3"
   },
   "devDependencies": {
