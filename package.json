@@ -11,10 +11,12 @@
     "tsc": "tsc"
   },
   "dependencies": {
+    "@babel/plugin-proposal-decorators": "^7.22.15",
     "@react-native-community/cli-doctor": "^11.3.7",
     "@react-navigation/native-stack": "^6.9.13",
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^12.2.2",
+    "babel-plugin-module-resolver": "^5.0.0",
     "inversify-react": "^1.1.0",
     "react": "18.2.0",
     "react-async-hook": "^4.0.0",

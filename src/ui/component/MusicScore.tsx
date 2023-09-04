@@ -1,5 +1,5 @@
 import React, { ReactNode, useState } from 'react';
-import { View, StyleSheet, StyleProp, ViewStyle, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { RNVexFlowSVGContext } from 'react-native-vexflow-canvas';
 
 export const MusicScore = () => {

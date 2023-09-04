@@ -1,21 +1,18 @@
-import React, { useMemo, useState } from 'react';
+import React, { useState } from 'react';
 import { Button, SafeAreaView, Text, TextInput, View } from 'react-native';
-import SpeechRecognizer from '../../infrastructure/SpeechRecognizer';
 import { MusicScore } from '../component/MusicScore';
-import Metronome from '../../infrastructure/Metronome';
-
-const metronome = new Metronome();
-const voiceRecognition = new SpeechRecognizer();
-voiceRecognition.loadModel('model-fr-fr');
+import Metronome from '../../infrastructure/AndroidMetronome';
+import { SpeechRecognizer } from '../../domain/services/SpeechRecognizer';
+import { useInjection } from 'inversify-react';
+import { Symbols } from '../../config/symbols';
 
 export const MainScreen = () => {
   const [tempo, setTempo] = useState<string>('60');
   const [speech, setSpeech] = useState<string>('');
-  useMemo(() => {
-    voiceRecognition.onResult(e => {
-      setSpeech('#' + e);
-    });
-  }, [voiceRecognition]);
+  const speechRecognition = useInjection<SpeechRecognizer>(Symbols.SpeechRecognizer);
+  speechRecognition.init('fr-fr');
+  speechRecognition.subscribe(value => setSpeech('#' + value));
+  const metronome = new Metronome();
 
   return (
     <SafeAreaView style={{
@@ -48,12 +45,12 @@ export const MainScreen = () => {
       <Button
         title="Lecture"
         onPress={() => {
-          voiceRecognition.start('["do", "ré", "mi", "fa", "sol", "la", "si"]');
+          speechRecognition.start('["do", "ré", "mi", "fa", "sol", "la", "si"]');
         }}></Button>
       <Button
         title="Stop Lecture"
         onPress={() => {
-          voiceRecognition.stop();
+          speechRecognition.stop();
         }}></Button>
       <Text style={{ color: 'black', fontSize: 25 }}>{speech}</Text>
     </SafeAreaView>
