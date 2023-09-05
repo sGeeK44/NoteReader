@@ -21,7 +21,7 @@ module.exports = {
       files: ['__test__/**'],
       plugins: ['jest'],
       extends: ['plugin:jest/recommended'],
-      rules: { 'jest/prefer-expect-assertions': 'off' },
+      rules: {'jest/prefer-expect-assertions': 'off'},
     },
     {
       files: ['metro.config.js'],

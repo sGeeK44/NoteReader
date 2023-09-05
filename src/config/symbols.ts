@@ -1,3 +1,3 @@
 export const Symbols = {
-    SpeechRecognizer: Symbol.for('SpeechRecognizer'),
+  SpeechRecognizer: Symbol.for('SpeechRecognizer'),
 };
