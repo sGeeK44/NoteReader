@@ -1,18 +1,19 @@
-import Sound from 'react-native-sound';
+import {Symbols} from 'app/config/symbols';
+import {inject} from 'inversify';
+import {SoundPlayer} from './SoundPlayer';
 
 export default class Metronome {
   intervalId: NodeJS.Timeout | undefined;
-  tick = new Sound('baguettes.mp3', Sound.MAIN_BUNDLE);
   tempo: number;
 
-  constructor() {
+  constructor(@inject(Symbols.SoundPlayer) private soundPlayer: SoundPlayer) {
     this.tempo = 60;
-    Sound.setCategory('Playback');
+    soundPlayer.init('baguettes.mp3');
   }
 
   startPlay(): void {
     this.intervalId = setInterval(() => {
-      this.tick.play();
+      this.soundPlayer.play();
     }, (this.tempo / 60) * 1000);
   }
 
