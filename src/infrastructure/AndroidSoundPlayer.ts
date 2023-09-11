@@ -1,9 +1,9 @@
-import {SoundPlayer} from 'app/domain/services/SoundPlayer';
-import {injectable} from 'inversify';
+import { SoundPlayer } from 'app/domain/services/SoundPlayer';
+import { injectable } from 'inversify';
 import Sound from 'react-native-sound';
 
 @injectable()
-export default class AndroidSoundPlayer implements SoundPlayer {
+export class AndroidSoundPlayer implements SoundPlayer {
   sound: Sound | undefined;
 
   constructor() {

@@ -1,9 +1,13 @@
+import { Symbols } from 'app/config/symbols';
+import { inject } from 'inversify';
 import { MusicScore } from 'app/ui/component/MusicScore';
 import { Signature } from '../value-object/Signature';
+import { RandomNoteGenerator } from './RandomNoteGenerator';
 
 export type Pitch = '4';
-export type NoteHead = 'a' | 'b' | 'c' | 'd' | 'e' | 'f' | 'g';
-export type NoteDuration = '1' | '2' | '4' | '8' | '16' | '32';
+export const NoteHeadValues = ["a", "b", "c", "d", "f", "e", "g"] as const;
+export type NoteHead = (typeof NoteHeadValues)[number];
+export type NoteDuration = 1 | 2 | 4 | 8 | 16 | 32;
 export type Clef = 'treble' | 'bass';
 export type Beat = 1 | 2 | 3 | 4 | 6 | 9 | 12;
 
@@ -19,31 +23,44 @@ export interface MusicScore {
   notes: Notes[];
 }
 
+export interface Settings {
+  clef?: Clef,
+  measure?: number,
+  timeSignature?: {
+    beat?: Beat,
+    duration?: NoteDuration
+  },
+}
+
 export class MusicScoreBuilder {
-  build(): MusicScore {
+
+  constructor(private randomNoteGenerator: RandomNoteGenerator) {
+  }
+
+  build(settings?: Settings): MusicScore {
+    const trustedSettings = {
+      clef: settings?.clef ?? 'treble',
+      measure: settings?.measure ?? 1,
+      timeSignature: {
+        beat: settings?.timeSignature?.beat ?? 4,
+        duration: settings?.timeSignature?.duration ?? 4
+      },
+    }
+
     return {
       clef: 'treble',
       timeSignature: {
-        beat: 3,
-        duration: '4'
+        beat: trustedSettings.timeSignature.beat,
+        duration: trustedSettings.timeSignature.duration
       },
-      notes: [
-        {
+      notes: [...Array(trustedSettings.measure * 4)].map(() => {
+        return {
           pitch: '4',
-          notehead: 'c',
-          duration: '4',
-        },
-        {
-          pitch: '4',
-          notehead: 'd',
-          duration: '4',
-        },
-        {
-          pitch: '4',
-          notehead: 'e',
-          duration: '4',
-        },
-      ],
+          notehead: this.randomNoteGenerator.next(),
+          duration: 4,
+        }
+      }
+      )
     };
   }
 }

@@ -5,6 +5,6 @@ export type Signature = {
     duration: NoteDuration;
 };
 
-export function toString(signature: Signature) {
-    return `${signature}/${signature.duration}`;
+export function toString(signature: Signature): string {
+    return `${signature.beat}/${signature.duration}`;
 }
