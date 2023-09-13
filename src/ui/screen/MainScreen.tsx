@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   SafeAreaView,
@@ -7,12 +7,14 @@ import {
   TextInput,
   View,
 } from 'react-native';
-import {MusicScore} from '../component/MusicScore';
+import { MusicScoreView } from '../component/MusicScoreView';
 import Metronome from '../../domain/services/Metronome';
-import {SpeechRecognizer} from '../../domain/services/SpeechRecognizer';
-import {useInjection} from 'inversify-react';
-import {Symbols} from '../../config/symbols';
-import {SoundPlayer} from 'app/domain/services/SoundPlayer';
+import { SpeechRecognizer } from '../../domain/services/SpeechRecognizer';
+import { useInjection } from 'inversify-react';
+import { Symbols } from '../../config/symbols';
+import { SoundPlayer } from 'app/domain/services/SoundPlayer';
+import { RandomNoteGenerator } from 'app/domain/services/RandomNoteGenerator';
+import { MusicScoreBuilder } from 'app/domain/services/MusicScoreBuilder';
 
 export const MainScreen = () => {
   const [tempo, setTempo] = useState<string>('60');
@@ -25,6 +27,12 @@ export const MainScreen = () => {
   const soundPlayer = useInjection<SoundPlayer>(Symbols.SoundPlayer);
   const metronome = new Metronome(soundPlayer);
 
+  const randomNoteGenerator = useInjection<RandomNoteGenerator>(
+    Symbols.RandomNoteGenerator,
+  );
+  const musicScoreBuilder = new MusicScoreBuilder(randomNoteGenerator);
+  const score = musicScoreBuilder.build({ measure: 76 });
+
   const styles = StyleSheet.create({
     content: {
       flex: 1,
@@ -34,12 +42,12 @@ export const MainScreen = () => {
       flex: 1,
       paddingHorizontal: 10,
     },
-    text: {color: 'black', fontSize: 25},
+    text: { color: 'black', fontSize: 25 },
   });
   return (
     <SafeAreaView style={styles.content}>
       <View style={styles.score}>
-        <MusicScore />
+        <MusicScoreView score={score} />
       </View>
       <TextInput
         style={styles.text}

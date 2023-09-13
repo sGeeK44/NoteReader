@@ -19,6 +19,8 @@ import { Symbols } from 'app/config/symbols';
 import { FakeSpeechRecognizer } from './fakes/FakeSpeechRecognizer';
 import { SoundPlayer } from 'app/domain/services/SoundPlayer';
 import { FakeSoundPlayer } from './fakes/FakeSoundPlayer';
+import { RandomNoteGenerator } from 'app/domain/services/RandomNoteGenerator';
+import { FakeRandomNoteGenerator } from './fakes/FakeRandomNoteGenerator';
 
 it('renders correctly', () => {
   const container = new Container();
@@ -28,6 +30,9 @@ it('renders correctly', () => {
   container
     .bind<SoundPlayer>(Symbols.SoundPlayer)
     .toConstantValue(new FakeSoundPlayer());
+  container
+    .bind<RandomNoteGenerator>(Symbols.RandomNoteGenerator)
+    .toConstantValue(new FakeRandomNoteGenerator());
   renderer.create(
     <Provider container={container}>
       <MainScreen />

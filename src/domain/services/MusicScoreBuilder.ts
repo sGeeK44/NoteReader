@@ -1,6 +1,6 @@
 import { Symbols } from 'app/config/symbols';
 import { inject } from 'inversify';
-import { MusicScore } from 'app/ui/component/MusicScore';
+import { MusicScoreView } from 'app/ui/component/MusicScoreView';
 import { Signature } from '../value-object/Signature';
 import { RandomNoteGenerator } from './RandomNoteGenerator';
 
