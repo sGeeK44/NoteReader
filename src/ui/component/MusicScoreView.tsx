@@ -21,9 +21,11 @@ export const MusicScoreView = ({ score }: MusicScoreProps) => {
         style={styles.content}
         onLayout={event => {
           const { width } = event.nativeEvent.layout;
+          console.log(score)
+          const measurePerLine = 5;
           const converter = new VexflowConverter();
-          const context = new RnSvgContext(width, (score.notes.length / score.timeSignature.beat / 5) * 100);
-          converter.toVexflow(context, score, { width: width - 2, stavePerLine: 5 });
+          const context = new RnSvgContext(width, (score.measures.length / measurePerLine) * 100);
+          converter.toVexflow(context, score, { width: width - 2, measurePerLine: measurePerLine });
           try {
             setSvg(context.render());
           } catch (error) {

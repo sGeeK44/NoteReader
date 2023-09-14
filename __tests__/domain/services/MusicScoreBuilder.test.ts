@@ -14,28 +14,32 @@ describe('MusicScoreBuilder', () => {
         beat: 4,
         duration: 4,
       },
-      notes: [
+      measures: [
         {
-          pitch: '4',
-          notehead: 'a',
-          duration: 4,
-        },
-        {
-          pitch: '4',
-          notehead: 'b',
-          duration: 4,
-        },
-        {
-          pitch: '4',
-          notehead: 'c',
-          duration: 4,
-        },
-        {
-          pitch: '4',
-          notehead: 'd',
-          duration: 4,
-        },
-      ],
+          notes: [
+            {
+              pitch: '4',
+              notehead: 'a',
+              duration: 4,
+            },
+            {
+              pitch: '4',
+              notehead: 'b',
+              duration: 4,
+            },
+            {
+              pitch: '4',
+              notehead: 'c',
+              duration: 4,
+            },
+            {
+              pitch: '4',
+              notehead: 'd',
+              duration: 4,
+            }
+          ],
+        }
+      ]
     });
   });
 });

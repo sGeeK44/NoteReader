@@ -1,15 +1,38 @@
-import { Symbols } from 'app/config/symbols';
-import { inject } from 'inversify';
-import { MusicScoreView } from 'app/ui/component/MusicScoreView';
 import { Signature } from '../value-object/Signature';
 import { RandomNoteGenerator } from './RandomNoteGenerator';
 
 export type Pitch = '4';
-export const NoteHeadValues = ["a", "b", "c", "d", "f", "e", "g"] as const;
-export type NoteHead = (typeof NoteHeadValues)[number];
+export const AlphabetNoteHead = ["a", "b", "c", "d", "f", "e", "g"];
+export const SyllabicNoteHead = ["do", "ré", "mi", "fa", "sol", "la", "si"];
+export const AlphaSyllaMap = new Map<string, string>([
+  ["a", "la"],
+  ["b", "si"],
+  ["c", "do"],
+  ["d", "ré"],
+  ["e", "mi"],
+  ["f", "fa"],
+  ["g", "sol"]
+]);
+export const SyllaAlphaMap = new Map<string, string>([
+  ["do", "c"],
+  ["ré", "d"],
+  ["mi", "e"],
+  ["fa", "f"],
+  ["sol", "g"],
+  ["la", "a"],
+  ["si", "b"]
+]);
+export type NoteHead = (typeof AlphabetNoteHead)[number];
 export type NoteDuration = 1 | 2 | 4 | 8 | 16 | 32;
 export type Clef = 'treble' | 'bass';
 export type Beat = 1 | 2 | 3 | 4 | 6 | 9 | 12;
+
+export interface ScoreNote {
+  value: NoteHead;
+  measure: number;
+  scoreSignature: Signature;
+  measurePosition: number;
+}
 
 export interface Notes {
   pitch: Pitch;
@@ -20,6 +43,10 @@ export interface Notes {
 export interface MusicScore {
   clef: Clef;
   timeSignature: Signature;
+  measures: Measure[];
+}
+
+export interface Measure {
   notes: Notes[];
 }
 
@@ -40,7 +67,7 @@ export class MusicScoreBuilder {
   build(settings?: Settings): MusicScore {
     const trustedSettings = {
       clef: settings?.clef ?? 'treble',
-      measure: settings?.measure ?? 1,
+      measures: settings?.measure ?? 1,
       timeSignature: {
         beat: settings?.timeSignature?.beat ?? 4,
         duration: settings?.timeSignature?.duration ?? 4
@@ -53,14 +80,17 @@ export class MusicScoreBuilder {
         beat: trustedSettings.timeSignature.beat,
         duration: trustedSettings.timeSignature.duration
       },
-      notes: [...Array(trustedSettings.measure * 4)].map(() => {
+      measures: [...Array(trustedSettings.measures)].map(() => {
         return {
-          pitch: '4',
-          notehead: this.randomNoteGenerator.next(),
-          duration: 4,
+          notes: [...Array(4)].map(() => {
+            return {
+              pitch: '4',
+              notehead: this.randomNoteGenerator.next(),
+              duration: 4,
+            }
+          })
         }
-      }
-      )
+      })
     };
   }
 }

@@ -8,7 +8,8 @@
     "lint": "eslint . --fix",
     "start": "react-native start",
     "test": "jest",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "tsc-watch": "tsc --watch"
   },
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.22.15",

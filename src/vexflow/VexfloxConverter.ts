@@ -1,21 +1,19 @@
-import { MusicScore, Notes } from 'app/domain/services/MusicScoreBuilder';
+import { Measure, MusicScore, Notes } from 'app/domain/services/MusicScoreBuilder';
 import { toString } from 'app/domain/value-object/Signature';
 import { Flow, Formatter, RenderContext, Stave, StaveNote, Voice } from 'vexflow';
 
 export class VexflowConverter {
   private formatter: Formatter = new Formatter();
 
-  toVexflow(context: RenderContext, score: MusicScore, settings: { width: number, stavePerLine: number }): void {
-    const staveWidth = (settings.width) / settings.stavePerLine;
-    const staveNotes = this.split(score.notes, score.timeSignature.beat);
+  toVexflow(context: RenderContext, score: MusicScore, settings: { width: number, measurePerLine: number }): void {
+    const staveWidth = (settings.width) / settings.measurePerLine;
+    const staveLines = this.split(score.measures, settings.measurePerLine);
     let y = 0;
-    const lineStave = this.split2(staveNotes, settings.stavePerLine);
-
     let stave: Stave | undefined;
-    lineStave.forEach(measure => {
+    staveLines.forEach(line => {
       let x = 0;
-      measure.forEach(line => {
-        stave = this.drawStave(context, score, line, x, y, staveWidth)
+      line.forEach(measure => {
+        stave = this.drawStave(context, score, measure.notes, x, y, staveWidth)
         x += stave.getWidth();
       })
       if (stave !== undefined) {
@@ -60,16 +58,7 @@ export class VexflowConverter {
     return stave;
   }
 
-  split(notes: Notes[], chunkSize: number): Notes[][] {
-    const result = [];
-    for (let i = 0; i < notes.length; i += chunkSize) {
-      const chunk = notes.slice(i, i + chunkSize);
-      result.push(chunk);
-    }
-    return result;
-  }
-
-  split2(notes: Notes[][], chunkSize: number): Notes[][][] {
+  split(notes: Measure[], chunkSize: number): Measure[][] {
     const result = [];
     for (let i = 0; i < notes.length; i += chunkSize) {
       const chunk = notes.slice(i, i + chunkSize);
