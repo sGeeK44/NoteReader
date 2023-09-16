@@ -56,12 +56,12 @@ public class SpeechRecognizerModule extends ReactContextBaseJavaModule {
   @ReactMethod
   private void start(String grammar) throws IOException {
     if (grammar != null) {
-      recognizer = new Recognizer(model, 16000.0f, grammar);
+      recognizer = new Recognizer(model, 32000.0f, grammar);
     } else {
-      recognizer = new Recognizer(model, 16000.0f);
+      recognizer = new Recognizer(model, 32000.0f);
     }
 
-    speechService = new SpeechService(recognizer, 16000.0f);
+    speechService = new SpeechService(recognizer, 32000.0f);
     speechService.startListening(new SpeechListner(context));
   }
 
