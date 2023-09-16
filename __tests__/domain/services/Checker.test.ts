@@ -5,6 +5,31 @@ import { Tempo } from 'app/domain/services/Tempo';
 import { MusicScore } from 'app/domain/services/MusicScoreBuilder';
 
 describe('Validate speech against music score and time', () => {
+    it('First note can be spell at any time !', () => {
+        const timeProvider = new FakeTimeProvider();
+        const checker = new Checker(timeProvider, {
+            clef: 'treble',
+            timeSignature: {
+                beat: 4,
+                duration: 4
+            },
+            measures: [
+                {
+                    notes: [
+                        { notehead: "a", duration: 4, pitch: '4' },
+                        { notehead: "a", duration: 4, pitch: '4' },
+                    ]
+                }
+            ]
+        }, new Tempo(60))
+
+        checker.start();
+
+        timeProvider.setNow(3000);
+        const result = checker.next("a");
+
+        expect(result).toStrictEqual("GOOD");
+    });
     it('Spell to early !', () => {
         const timeProvider = new FakeTimeProvider();
         const checker = new Checker(timeProvider, {
@@ -17,12 +42,14 @@ describe('Validate speech against music score and time', () => {
                 {
                     notes: [
                         { notehead: "a", duration: 4, pitch: '4' },
+                        { notehead: "a", duration: 4, pitch: '4' },
                     ]
                 }
             ]
         }, new Tempo(60))
 
         checker.start();
+        checker.next("a");
 
         timeProvider.setNow(500);
         const result = checker.next("a");
@@ -42,12 +69,14 @@ describe('Validate speech against music score and time', () => {
                 {
                     notes: [
                         { notehead: "a", duration: 4, pitch: '4' },
+                        { notehead: "a", duration: 4, pitch: '4' },
                     ]
                 }
             ]
         }, new Tempo(60))
 
         checker.start();
+        checker.next("a");
 
         timeProvider.setNow(1500);
         const result = checker.next("a");
@@ -86,28 +115,27 @@ describe('Validate speech against music score and time', () => {
 
         checker.start();
 
-        timeProvider.setNow(1000);
         expect(checker.next("a")).toStrictEqual("GOOD")
 
-        timeProvider.setNow(2000);
+        timeProvider.setNow(1000);
         expect(checker.next("b")).toStrictEqual("GOOD")
 
-        timeProvider.setNow(3000);
+        timeProvider.setNow(2000);
         expect(checker.next("c")).toStrictEqual("GOOD")
 
-        timeProvider.setNow(4000);
+        timeProvider.setNow(3000);
         expect(checker.next("d")).toStrictEqual("GOOD")
 
-        timeProvider.setNow(5000);
+        timeProvider.setNow(4000);
         expect(checker.next("e")).toStrictEqual("GOOD")
 
-        timeProvider.setNow(6000);
+        timeProvider.setNow(5000);
         expect(checker.next("f")).toStrictEqual("GOOD")
 
-        timeProvider.setNow(7000);
+        timeProvider.setNow(6000);
         expect(checker.next("g")).toStrictEqual("GOOD")
 
-        timeProvider.setNow(8000);
+        timeProvider.setNow(7000);
         expect(checker.next("a")).toStrictEqual("WIN")
     });
 

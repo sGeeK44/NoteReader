@@ -57,24 +57,24 @@ export const TrainScreen = ({ route }: Props) => {
       <Button
         title="Start"
         onPress={() => {
-          console.log(tempo);
           metronome.play(tempo);
-          const timeChecker = new TimeChecker(timeProvider);
-          timeChecker.start();
+          let isFirst = true;
           speechRecognition?.subscribe(value => {
+            if (isFirst) {
+              checker?.start();
+              isFirst = false;
+            }
             const result = checker?.next(value)
             console.log(result);
           });
           speechRecognition?.start(
             '["do", "ré", "mi", "fa", "sol", "la", "si"]',
           );
-          checker?.start();
         }}
       />
       <Button
         title="Stop"
         onPress={() => {
-          console.log(Date.now())
           metronome.stop();
           speechRecognition?.stop();
         }}

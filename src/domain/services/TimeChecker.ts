@@ -4,7 +4,7 @@ import { TimeProvider } from "./TimeProvider";
 
 export class TimeChecker {
     private startAt: number = 0;
-    private accuracy: number = 500;
+    private accuracy: number = 400;
 
     constructor(@inject(Symbols.TimeProvider) private timeProvider: TimeProvider) { }
 
