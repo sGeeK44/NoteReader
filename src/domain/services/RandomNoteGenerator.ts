@@ -1,6 +1,5 @@
-import { NoteHead } from "./MusicScoreBuilder";
-
+import {NoteHead} from './MusicScoreBuilder';
 
 export interface RandomNoteGenerator {
-    next(): NoteHead
+  next(): NoteHead;
 }

@@ -9,9 +9,9 @@ import {
   PermissionsAndroid,
   Platform,
 } from 'react-native';
-import { injectable } from 'inversify';
+import {injectable} from 'inversify';
 
-const { SpeechRecognizer } = NativeModules;
+const {SpeechRecognizer} = NativeModules;
 const eventEmitter = new NativeEventEmitter(SpeechRecognizer);
 
 export type SpeechRecongnizerEvent = {

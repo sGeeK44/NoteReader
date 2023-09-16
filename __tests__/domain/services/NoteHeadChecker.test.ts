@@ -1,44 +1,44 @@
-import { describe, it, expect } from '@jest/globals';
-import { NoteHeadChecker } from 'app/domain/services/NoteHeadChecker';
+import {describe, it, expect} from '@jest/globals';
+import {NoteHeadChecker} from 'app/domain/services/NoteHeadChecker';
 
 describe('NoteHeadChecker', () => {
-    it('Unknown note', () => {
-        const noteChecker = new NoteHeadChecker()
+  it('Unknown note', () => {
+    const noteChecker = new NoteHeadChecker();
 
-        const result = noteChecker.isRigthNote("x", "a");
+    const result = noteChecker.isRigthNote('x', 'a');
 
-        expect(result).toBeFalsy()
-    });
+    expect(result).toBeFalsy();
+  });
 
-    it('Good note in alphabet notation', () => {
-        const noteChecker = new NoteHeadChecker()
+  it('Good note in alphabet notation', () => {
+    const noteChecker = new NoteHeadChecker();
 
-        const result = noteChecker.isRigthNote("a", "a");
+    const result = noteChecker.isRigthNote('a', 'a');
 
-        expect(result).toBeTruthy()
-    });
+    expect(result).toBeTruthy();
+  });
 
-    it('Bad note in alphabet notation', () => {
-        const noteChecker = new NoteHeadChecker()
+  it('Bad note in alphabet notation', () => {
+    const noteChecker = new NoteHeadChecker();
 
-        const result = noteChecker.isRigthNote("b", "a");
+    const result = noteChecker.isRigthNote('b', 'a');
 
-        expect(result).toBeFalsy()
-    });
+    expect(result).toBeFalsy();
+  });
 
-    it('Good note in syllabic notation', () => {
-        const noteChecker = new NoteHeadChecker()
+  it('Good note in syllabic notation', () => {
+    const noteChecker = new NoteHeadChecker();
 
-        const result = noteChecker.isRigthNote("la", "a");
+    const result = noteChecker.isRigthNote('la', 'a');
 
-        expect(result).toBeTruthy()
-    });
+    expect(result).toBeTruthy();
+  });
 
-    it('Bad note in syllabic notation', () => {
-        const noteChecker = new NoteHeadChecker()
+  it('Bad note in syllabic notation', () => {
+    const noteChecker = new NoteHeadChecker();
 
-        const result = noteChecker.isRigthNote("do", "a");
+    const result = noteChecker.isRigthNote('do', 'a');
 
-        expect(result).toBeFalsy()
-    });
+    expect(result).toBeFalsy();
+  });
 });

@@ -1,26 +1,26 @@
-import { Signature } from '../value-object/Signature';
-import { RandomNoteGenerator } from './RandomNoteGenerator';
+import {Signature} from '../value-object/Signature';
+import {RandomNoteGenerator} from './RandomNoteGenerator';
 
 export type Pitch = '4';
-export const AlphabetNoteHead = ["a", "b", "c", "d", "f", "e", "g"];
-export const SyllabicNoteHead = ["do", "ré", "mi", "fa", "sol", "la", "si"];
+export const AlphabetNoteHead = ['a', 'b', 'c', 'd', 'f', 'e', 'g'];
+export const SyllabicNoteHead = ['do', 'ré', 'mi', 'fa', 'sol', 'la', 'si'];
 export const AlphaSyllaMap = new Map<string, string>([
-  ["a", "la"],
-  ["b", "si"],
-  ["c", "do"],
-  ["d", "ré"],
-  ["e", "mi"],
-  ["f", "fa"],
-  ["g", "sol"]
+  ['a', 'la'],
+  ['b', 'si'],
+  ['c', 'do'],
+  ['d', 'ré'],
+  ['e', 'mi'],
+  ['f', 'fa'],
+  ['g', 'sol'],
 ]);
 export const SyllaAlphaMap = new Map<string, string>([
-  ["do", "c"],
-  ["ré", "d"],
-  ["mi", "e"],
-  ["fa", "f"],
-  ["sol", "g"],
-  ["la", "a"],
-  ["si", "b"]
+  ['do', 'c'],
+  ['ré', 'd'],
+  ['mi', 'e'],
+  ['fa', 'f'],
+  ['sol', 'g'],
+  ['la', 'a'],
+  ['si', 'b'],
 ]);
 export type NoteHead = (typeof AlphabetNoteHead)[number];
 export type NoteDuration = 1 | 2 | 4 | 8 | 16 | 32;
@@ -44,18 +44,16 @@ export interface Measure {
 }
 
 export interface Settings {
-  clef?: Clef,
-  measure?: number,
+  clef?: Clef;
+  measure?: number;
   timeSignature?: {
-    beat?: Beat,
-    duration?: NoteDuration
-  },
+    beat?: Beat;
+    duration?: NoteDuration;
+  };
 }
 
 export class MusicScoreBuilder {
-
-  constructor(private randomNoteGenerator: RandomNoteGenerator) {
-  }
+  constructor(private randomNoteGenerator: RandomNoteGenerator) {}
 
   build(settings?: Settings): MusicScore {
     const trustedSettings = {
@@ -63,15 +61,15 @@ export class MusicScoreBuilder {
       measures: settings?.measure ?? 1,
       timeSignature: {
         beat: settings?.timeSignature?.beat ?? 4,
-        duration: settings?.timeSignature?.duration ?? 4
+        duration: settings?.timeSignature?.duration ?? 4,
       },
-    }
+    };
 
     return {
       clef: 'treble',
       timeSignature: {
         beat: trustedSettings.timeSignature.beat,
-        duration: trustedSettings.timeSignature.duration
+        duration: trustedSettings.timeSignature.duration,
       },
       measures: [...Array(trustedSettings.measures)].map(() => {
         return {
@@ -80,10 +78,10 @@ export class MusicScoreBuilder {
               pitch: '4',
               notehead: this.randomNoteGenerator.next(),
               duration: 4,
-            }
-          })
-        }
-      })
+            };
+          }),
+        };
+      }),
     };
   }
 }

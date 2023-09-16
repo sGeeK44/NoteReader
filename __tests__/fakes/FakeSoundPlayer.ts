@@ -1,4 +1,4 @@
-import { Metronome } from '../../src/domain/services/Metronome';
+import {Metronome} from '../../src/domain/services/Metronome';
 
 export class FakeSoundPlayer implements Metronome {
   init(_name: string): void {

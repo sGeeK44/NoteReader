@@ -1,8 +1,8 @@
-import { Metronome as MetronomeService } from 'app/domain/services/Metronome';
-import { injectable } from 'inversify';
-import { NativeModules } from 'react-native';
+import {Metronome as MetronomeService} from 'app/domain/services/Metronome';
+import {injectable} from 'inversify';
+import {NativeModules} from 'react-native';
 
-const { Metronome } = NativeModules;
+const {Metronome} = NativeModules;
 
 @injectable()
 export class AndroidMetronome implements MetronomeService {

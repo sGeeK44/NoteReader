@@ -1,10 +1,12 @@
-import { describe, it, expect } from '@jest/globals';
-import { MusicScoreBuilder } from '../../../src/domain/services/MusicScoreBuilder';
-import { FakeRandomNoteGenerator } from '../../fakes/FakeRandomNoteGenerator';
+import {describe, it, expect} from '@jest/globals';
+import {MusicScoreBuilder} from '../../../src/domain/services/MusicScoreBuilder';
+import {FakeRandomNoteGenerator} from '../../fakes/FakeRandomNoteGenerator';
 
 describe('MusicScoreBuilder', () => {
   it('default value', () => {
-    const musicScoreBuilder = new MusicScoreBuilder(new FakeRandomNoteGenerator());
+    const musicScoreBuilder = new MusicScoreBuilder(
+      new FakeRandomNoteGenerator(),
+    );
 
     const score = musicScoreBuilder.build();
 
@@ -36,10 +38,10 @@ describe('MusicScoreBuilder', () => {
               pitch: '4',
               notehead: 'd',
               duration: 4,
-            }
+            },
           ],
-        }
-      ]
+        },
+      ],
     });
   });
 });
