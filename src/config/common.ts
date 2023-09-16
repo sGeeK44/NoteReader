@@ -2,12 +2,12 @@ import { SpeechRecognizer } from '../domain/services/SpeechRecognizer';
 import { Container } from 'inversify';
 import { Symbols } from './symbols';
 import { AndroidSpeechRecongnizer } from '../infrastructure/AndroidSpeechRecognizer';
-import { SoundPlayer } from 'app/domain/services/SoundPlayer';
-import { AndroidSoundPlayer } from 'app/infrastructure/AndroidSoundPlayer';
 import { AndroidRandomNoteGenerator } from 'app/infrastructure/AndroidRandomNoteGenerator';
 import { RandomNoteGenerator } from 'app/domain/services/RandomNoteGenerator';
 import { AndroidTimeProvider } from 'app/infrastructure/AndroidTimeProvider';
 import { TimeProvider } from 'app/domain/services/TimeProvider';
+import { Metronome } from 'app/domain/services/Metronome';
+import { AndroidMetronome } from 'app/infrastructure/AndroidMetronome';
 
 export async function buildDependencies(): Promise<Container> {
   const container = new Container();
@@ -16,8 +16,8 @@ export async function buildDependencies(): Promise<Container> {
     .to(AndroidRandomNoteGenerator)
     .inSingletonScope();
   container
-    .bind<SoundPlayer>(Symbols.SoundPlayer)
-    .to(AndroidSoundPlayer)
+    .bind<Metronome>(Symbols.Metronome)
+    .to(AndroidMetronome)
     .inSingletonScope();
   container
     .bind<SpeechRecognizer>(Symbols.SpeechRecognizer)

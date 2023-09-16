@@ -1,233 +1,226 @@
-import { describe, it, expect, beforeEach } from '@jest/globals';
+import { describe, it, expect } from '@jest/globals';
 import { Checker } from 'app/domain/services/Checker';
 import { FakeTimeProvider } from '../../fakes/FakeTimeProvider';
 import { Tempo } from 'app/domain/services/Tempo';
-import { Beat, NoteDuration, ScoreNote } from 'app/domain/services/MusicScoreBuilder';
+import { MusicScore } from 'app/domain/services/MusicScoreBuilder';
 
-describe('Spell right', () => {
-    const scoreNote: ScoreNote = {
-        value: "a",
-        measure: 1,
-        measurePosition: 1,
-        scoreSignature: {
-            beat: 4,
-            duration: 4
-        }
-    }
-
-    it('at right time :)', () => {
+describe('Validate speech against music score and time', () => {
+    it('Spell to early !', () => {
         const timeProvider = new FakeTimeProvider();
-        const checker = new Checker(timeProvider, new Tempo(60));
-
-        checker.start();
-
-        timeProvider.setNow(1000);
-        const result = checker.check("a", scoreNote);
-
-        expect(result).toBeTruthy()
-    });
-
-    it('to early !', () => {
-        const timeProvider = new FakeTimeProvider();
-        const checker = new Checker(timeProvider, new Tempo(60))
+        const checker = new Checker(timeProvider, {
+            clef: 'treble',
+            timeSignature: {
+                beat: 4,
+                duration: 4
+            },
+            measures: [
+                {
+                    notes: [
+                        { notehead: "a", duration: 4, pitch: '4' },
+                    ]
+                }
+            ]
+        }, new Tempo(60))
 
         checker.start();
 
         timeProvider.setNow(500);
-        const result = checker.check("a", scoreNote);
+        const result = checker.next("a");
 
-        expect(result).toBeFalsy()
+        expect(result).toStrictEqual("BAD");
     });
 
-    it('to late !', () => {
+    it('Spell to late !', () => {
         const timeProvider = new FakeTimeProvider();
-        const checker = new Checker(timeProvider, new Tempo(60))
+        const checker = new Checker(timeProvider, {
+            clef: 'treble',
+            timeSignature: {
+                beat: 4,
+                duration: 4
+            },
+            measures: [
+                {
+                    notes: [
+                        { notehead: "a", duration: 4, pitch: '4' },
+                    ]
+                }
+            ]
+        }, new Tempo(60))
 
         checker.start();
 
         timeProvider.setNow(1500);
-        const result = checker.check("a", scoreNote);
+        const result = checker.next("a");
 
-        expect(result).toBeFalsy()
+        expect(result).toStrictEqual("BAD");
     });
-});
 
-describe('Spell right and Change note position', () => {
-    const scoreNote = {
-        value: "a",
-        measure: 1,
-        scoreSignature: {
-            beat: 4 as Beat,
-            duration: 4 as NoteDuration
-        }
-    }
-
-    it('first position', () => {
+    it('Spell all right :)', () => {
         const timeProvider = new FakeTimeProvider();
-        const checker = new Checker(timeProvider, new Tempo(60));
+        const score: MusicScore = {
+            clef: 'treble',
+            timeSignature: {
+                beat: 4,
+                duration: 4
+            },
+            measures: [
+                {
+                    notes: [
+                        { notehead: "a", duration: 4, pitch: '4' },
+                        { notehead: "b", duration: 4, pitch: '4' },
+                        { notehead: "c", duration: 4, pitch: '4' },
+                        { notehead: "d", duration: 4, pitch: '4' },
+                    ]
+                },
+                {
+                    notes: [
+                        { notehead: "e", duration: 4, pitch: '4' },
+                        { notehead: "f", duration: 4, pitch: '4' },
+                        { notehead: "g", duration: 4, pitch: '4' },
+                        { notehead: "a", duration: 4, pitch: '4' },
+                    ]
+                }
+            ]
+        }
+        const checker = new Checker(timeProvider, score, new Tempo(60));
 
         checker.start();
 
         timeProvider.setNow(1000);
-        const result = checker.check("a", { measurePosition: 1, ...scoreNote });
-
-        expect(result).toBeTruthy()
-    });
-
-    it('second position', () => {
-        const timeProvider = new FakeTimeProvider();
-        const checker = new Checker(timeProvider, new Tempo(60))
-
-        checker.start();
+        expect(checker.next("a")).toStrictEqual("GOOD")
 
         timeProvider.setNow(2000);
-        const result = checker.check("a", { measurePosition: 2, ...scoreNote });
-
-        expect(result).toBeTruthy()
-    });
-
-    it('last position', () => {
-        const timeProvider = new FakeTimeProvider();
-        const checker = new Checker(timeProvider, new Tempo(60))
-
-        checker.start();
-
-        timeProvider.setNow(4000);
-        const result = checker.check("a", { measurePosition: 4, ...scoreNote });
-
-        expect(result).toBeTruthy()
-    });
-});
-
-describe('Spell right and Change measure position', () => {
-    const scoreNote = {
-        value: "a",
-        measurePosition: 1,
-        scoreSignature: {
-            beat: 4 as Beat,
-            duration: 4 as NoteDuration
-        }
-    }
-
-    it('first meaure', () => {
-        const timeProvider = new FakeTimeProvider();
-        const checker = new Checker(timeProvider, new Tempo(60));
-
-        checker.start();
-
-        timeProvider.setNow(1000);
-        const result = checker.check("a", { measure: 1, ...scoreNote });
-
-        expect(result).toBeTruthy()
-    });
-
-    it('second meaure', () => {
-        const timeProvider = new FakeTimeProvider();
-        const checker = new Checker(timeProvider, new Tempo(60))
-
-        checker.start();
-
-        timeProvider.setNow(5000);
-        const result = checker.check("a", { measure: 2, ...scoreNote });
-
-        expect(result).toBeTruthy()
-    });
-
-    it('Ten meaure', () => {
-        const timeProvider = new FakeTimeProvider();
-        const checker = new Checker(timeProvider, new Tempo(60))
-
-        checker.start();
-
-        timeProvider.setNow(37000);
-        const result = checker.check("a", { measure: 10, ...scoreNote });
-
-        expect(result).toBeTruthy()
-    });
-});
-
-describe('Spell right and Change beat', () => {
-    const scoreNote = {
-        value: "a",
-        measure: 2,
-        measurePosition: 1,
-        scoreSignature: {
-            duration: 4 as NoteDuration
-        }
-    }
-
-    it('One beat per meaure', () => {
-        const timeProvider = new FakeTimeProvider();
-        const checker = new Checker(timeProvider, new Tempo(60));
-
-        checker.start();
-
-        timeProvider.setNow(2000);
-        const result = checker.check("a", {
-            ...scoreNote,
-            scoreSignature: {
-                beat: 1, ...scoreNote.scoreSignature
-            }
-        });
-
-        expect(result).toBeTruthy()
-    });
-
-    it('Two beat per meaure', () => {
-        const timeProvider = new FakeTimeProvider();
-        const checker = new Checker(timeProvider, new Tempo(60))
-
-        checker.start();
+        expect(checker.next("b")).toStrictEqual("GOOD")
 
         timeProvider.setNow(3000);
-        const result = checker.check("a", {
-            ...scoreNote,
-            scoreSignature: {
-                beat: 2, ...scoreNote.scoreSignature
-            }
-        });
-
-        expect(result).toBeTruthy()
-    });
-
-    it('Three beat per meaure', () => {
-        const timeProvider = new FakeTimeProvider();
-        const checker = new Checker(timeProvider, new Tempo(60))
-
-        checker.start();
+        expect(checker.next("c")).toStrictEqual("GOOD")
 
         timeProvider.setNow(4000);
-        const result = checker.check("a", {
-            ...scoreNote,
-            scoreSignature: {
-                beat: 3, ...scoreNote.scoreSignature
-            }
-        });
+        expect(checker.next("d")).toStrictEqual("GOOD")
 
-        expect(result).toBeTruthy()
+        timeProvider.setNow(5000);
+        expect(checker.next("e")).toStrictEqual("GOOD")
+
+        timeProvider.setNow(6000);
+        expect(checker.next("f")).toStrictEqual("GOOD")
+
+        timeProvider.setNow(7000);
+        expect(checker.next("g")).toStrictEqual("GOOD")
+
+        timeProvider.setNow(8000);
+        expect(checker.next("a")).toStrictEqual("WIN")
     });
-});
 
-describe('Spell bad note', () => {
-    const scoreNote: ScoreNote = {
-        value: "a",
-        measure: 1,
-        measurePosition: 1,
-        scoreSignature: {
-            beat: 4,
-            duration: 4
-        }
-    }
-
-    it('at right time :(', () => {
+    it('Spell with syllabic note at right time', () => {
         const timeProvider = new FakeTimeProvider();
-        const checker = new Checker(timeProvider, new Tempo(60));
+        const score: MusicScore = {
+            clef: 'treble',
+            timeSignature: {
+                beat: 4,
+                duration: 4
+            },
+            measures: [
+                {
+                    notes: [
+                        {
+                            notehead: "c",
+                            duration: 4,
+                            pitch: '4'
+                        }
+                    ]
+                }
+            ]
+        }
+        const checker = new Checker(timeProvider, score, new Tempo(60));
 
         checker.start();
 
         timeProvider.setNow(1000);
-        const result = checker.check("d", scoreNote);
+        const result = checker.next("do");
 
-        expect(result).toBeFalsy()
+        expect(result).toStrictEqual("GOOD");
+    });
+
+    it('Spell bad note at right time :(', () => {
+        const timeProvider = new FakeTimeProvider();
+        const score: MusicScore = {
+            clef: 'treble',
+            timeSignature: {
+                beat: 4,
+                duration: 4
+            },
+            measures: [
+                {
+                    notes: [
+                        {
+                            notehead: "a",
+                            duration: 4,
+                            pitch: '4'
+                        }
+                    ]
+                }
+            ]
+        }
+        const checker = new Checker(timeProvider, score, new Tempo(60));
+
+        checker.start();
+
+        timeProvider.setNow(1000);
+        const result = checker.next("d");
+
+        expect(result).toStrictEqual("BAD");
+    });
+
+    it('Has mistake restart at begining :(', () => {
+        const timeProvider = new FakeTimeProvider();
+        const checker = new Checker(timeProvider, {
+            clef: 'treble',
+            timeSignature: {
+                beat: 4,
+                duration: 4
+            },
+            measures: [
+                {
+                    notes: [
+                        { notehead: "a", duration: 4, pitch: '4' },
+                        { notehead: "b", duration: 4, pitch: '4' },
+                        { notehead: "c", duration: 4, pitch: '4' },
+                        { notehead: "d", duration: 4, pitch: '4' },
+                    ]
+                }
+            ]
+        }, new Tempo(60))
+
+        checker.start();
+
+        timeProvider.setNow(1000);
+        expect(checker.next("a")).toStrictEqual("GOOD")
+
+        timeProvider.setNow(2000);
+        expect(checker.next("b")).toStrictEqual("GOOD")
+
+        timeProvider.setNow(3000);
+        expect(checker.next("a")).toStrictEqual("BAD")
+
+        timeProvider.setNow(1000);
+        expect(checker.next("a")).toStrictEqual("GOOD")
+
+        timeProvider.setNow(2000);
+        expect(checker.next("b")).toStrictEqual("GOOD")
+
+        timeProvider.setNow(2500);
+        expect(checker.next("c")).toStrictEqual("BAD")
+
+        timeProvider.setNow(1000);
+        expect(checker.next("a")).toStrictEqual("GOOD")
+
+        timeProvider.setNow(2000);
+        expect(checker.next("b")).toStrictEqual("GOOD")
+
+        timeProvider.setNow(3000);
+        expect(checker.next("c")).toStrictEqual("GOOD")
+
+        timeProvider.setNow(4000);
+        expect(checker.next("d")).toStrictEqual("WIN")
     });
 });

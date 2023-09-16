@@ -13,6 +13,7 @@ export class VexflowConverter {
     staveLines.forEach(line => {
       let x = 0;
       line.forEach(measure => {
+
         stave = this.drawStave(context, score, measure.notes, x, y, staveWidth)
         x += stave.getWidth();
       })
@@ -49,6 +50,7 @@ export class VexflowConverter {
   drawStave(context: RenderContext, score: MusicScore, notes: Notes[], x: number, y: number, staveWidth: number): Stave {
     const stave = new Stave(x, y, staveWidth);
     stave.setContext(context);
+
     if (x === 0 && y === 0) {
       stave.setClef(score.clef);
       stave.setTimeSignature(toString(score.timeSignature))

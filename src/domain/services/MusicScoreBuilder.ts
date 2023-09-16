@@ -27,13 +27,6 @@ export type NoteDuration = 1 | 2 | 4 | 8 | 16 | 32;
 export type Clef = 'treble' | 'bass';
 export type Beat = 1 | 2 | 3 | 4 | 6 | 9 | 12;
 
-export interface ScoreNote {
-  value: NoteHead;
-  measure: number;
-  scoreSignature: Signature;
-  measurePosition: number;
-}
-
 export interface Notes {
   pitch: Pitch;
   notehead: NoteHead;

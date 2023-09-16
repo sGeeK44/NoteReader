@@ -1,10 +1,13 @@
-import {SoundPlayer} from '../../src/domain/services/SoundPlayer';
+import { Metronome } from '../../src/domain/services/Metronome';
 
-export class FakeSoundPlayer implements SoundPlayer {
+export class FakeSoundPlayer implements Metronome {
   init(_name: string): void {
     // do nothing.
   }
-  play(): void {
+  play(tempo: number): void {
     // do nothing.
+  }
+  stop(): void {
+    // do nothing
   }
 }
