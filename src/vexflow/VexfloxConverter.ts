@@ -6,6 +6,8 @@ export class VexflowConverter {
   private formatter: Formatter = new Formatter();
 
   toVexflow(context: RenderContext, score: MusicScore, settings: { width: number, measurePerLine: number }): void {
+
+    console.log("To vexflow", settings);
     const staveWidth = (settings.width) / settings.measurePerLine;
     const staveLines = this.split(score.measures, settings.measurePerLine);
     let y = 0;

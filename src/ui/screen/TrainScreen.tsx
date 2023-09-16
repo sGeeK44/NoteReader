@@ -16,14 +16,14 @@ import { useInjection } from 'inversify-react';
 import { RandomNoteGenerator } from 'app/domain/services/RandomNoteGenerator';
 import { Metronome } from 'app/domain/services/Metronome';
 import { RootStackParamList } from 'app/App';
-import { RouteProp, NavigationProp } from "@react-navigation/native"
+import { RouteProp } from "@react-navigation/native"
+import { TimeChecker } from 'app/domain/services/TimeChecker';
 
 interface Props {
   route: RouteProp<RootStackParamList, 'TrainScreen'>;
 }
 
 export const TrainScreen = ({ route }: Props) => {
-  console.log("Init TrainScreen");
   const speechRecognition = useInjection<SpeechRecognizer>(Symbols.SpeechRecognizer);
   const timeProvider = useInjection<TimeProvider>(Symbols.TimeProvider);
   const metronome = useInjection<Metronome>(Symbols.Metronome);
@@ -31,7 +31,7 @@ export const TrainScreen = ({ route }: Props) => {
   const randomNoteGenerator = useInjection<RandomNoteGenerator>(Symbols.RandomNoteGenerator);
 
   const musicScoreBuilder = new MusicScoreBuilder(randomNoteGenerator);
-  const score = musicScoreBuilder.build({ measure: 3 });
+  const score = musicScoreBuilder.build({ measure: 10 });
   speechRecognition.init('fr-fr');
 
   const { tempo } = route.params;
@@ -59,16 +59,16 @@ export const TrainScreen = ({ route }: Props) => {
         onPress={() => {
           console.log(tempo);
           metronome.play(tempo);
-          // const timeChecker = new TimeChecker(timeProvider);
-          // timeChecker.start();
-          // speechRecognition?.subscribe(value => {
-          //   const result = checker?.next(value)
-          //   console.log(result);
-          // });
-          // speechRecognition?.start(
-          //   '["do", "ré", "mi", "fa", "sol", "la", "si"]',
-          // );
-          // checker?.start();
+          const timeChecker = new TimeChecker(timeProvider);
+          timeChecker.start();
+          speechRecognition?.subscribe(value => {
+            const result = checker?.next(value)
+            console.log(result);
+          });
+          speechRecognition?.start(
+            '["do", "ré", "mi", "fa", "sol", "la", "si"]',
+          );
+          checker?.start();
         }}
       />
       <Button
@@ -76,7 +76,7 @@ export const TrainScreen = ({ route }: Props) => {
         onPress={() => {
           console.log(Date.now())
           metronome.stop();
-          //speechRecognition?.stop();
+          speechRecognition?.stop();
         }}
       />
     </SafeAreaView>
