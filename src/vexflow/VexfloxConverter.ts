@@ -4,44 +4,64 @@ import {
   Notes,
 } from 'app/domain/services/MusicScoreBuilder';
 import { toString } from 'app/domain/value-object/Signature';
-import { Flow, Formatter, RenderContext, Stave, StaveNote, Voice } from 'vexflow';
+import { Flow, Formatter, RenderContext, Stave, StaveNote, Tickable, Voice } from 'vexflow';
 
 export class VexflowConverter {
   private formatter: Formatter = new Formatter();
 
   toVexflow(
-    context: RenderContext,
     score: MusicScore,
     settings: { width: number; measurePerLine: number },
-  ): void {
-    console.log('To vexflow', settings);
+  ): Voice[] {
     const staveWidth = settings.width / settings.measurePerLine;
     const staveLines = this.split(score.measures, settings.measurePerLine);
     let y = 0;
-    let stave: Stave | undefined;
+    const result: Voice[] = [];
     staveLines.forEach(line => {
       let x = 0;
-      line.forEach(measure => {
-        stave = this.drawStave(context, score, measure.notes, x, y, staveWidth);
+      let voice: Voice;
+      line.forEach((measure, i) => {
+        voice = this.createStave(score, measure.notes, x, y, staveWidth);
+        const stave = voice.getStave();
+        if (stave === undefined) {
+          throw new Error();
+        }
         x += stave.getWidth();
+        result.push(voice);
+        if (i === line.length - 1) {
+          y += stave.getHeight();
+        }
       });
-      if (stave !== undefined) {
-        y += stave.getHeight();
-      }
     });
+    return result;
   }
 
-  drawNote(
-    context: RenderContext,
-    stave: Stave,
+  drawGoodNote(score: MusicScore, measure: Measure,): void {
+    this.createStave(score, measure.notes, 0, 0, 200);
+  }
+
+  createStave(
     score: MusicScore,
     notes: Notes[],
-  ) {
-    if (notes.length === 0) {
-      return;
-    }
+    x: number,
+    y: number,
+    staveWidth: number,
+  ): Voice {
+    const stave = new Stave(x, y, staveWidth);
 
-    const notesToDraw = notes.map(note => this.createNote(score, note, "black"));
+    if (x === 0 && y === 0) {
+      stave.setClef(score.clef);
+      stave.setTimeSignature(toString(score.timeSignature));
+    }
+    return this.createNotes(stave, score, notes);
+  }
+
+  createNotes(
+    stave: Stave,
+    score: MusicScore,
+    notes: Notes[]
+  ): Voice {
+    const notesToDraw = notes.map(note => this.createNote(score, note));
 
     const voice = new Voice({
       num_beats: score.timeSignature.beat,
@@ -50,27 +70,21 @@ export class VexflowConverter {
     });
     voice.addTickables([...notesToDraw]);
     this.formatter.formatToStave([voice], stave, { auto_beam: true });
-    voice.draw(context, stave);
+    voice.setStave(stave);
+    return voice;
   }
 
-  drawStave(
-    context: RenderContext,
-    score: MusicScore,
-    notes: Notes[],
-    x: number,
-    y: number,
-    staveWidth: number,
-  ): Stave {
-    const stave = new Stave(x, y, staveWidth);
-    stave.setContext(context);
+  createNote(score: MusicScore, note: Notes): StaveNote {
+    const result = new StaveNote({
+      clef: score.clef,
+      keys: [`${note.notehead}/${note.pitch}`],
+      duration: note.duration.toString(),
+    });
+    return result;
+  }
 
-    if (x === 0 && y === 0) {
-      stave.setClef(score.clef);
-      stave.setTimeSignature(toString(score.timeSignature));
-    }
-    stave.draw();
-    this.drawNote(context, stave, score, notes);
-    return stave;
+  setColorNote(note: Tickable, color: string) {
+    note.setStyle({ fillStyle: color, strokeStyle: color });
   }
 
   split(notes: Measure[], chunkSize: number): Measure[][] {
@@ -79,16 +93,6 @@ export class VexflowConverter {
       const chunk = notes.slice(i, i + chunkSize);
       result.push(chunk);
     }
-    return result;
-  }
-
-  createNote(score: MusicScore, note: Notes, color: string): StaveNote {
-    const result = new StaveNote({
-      clef: score.clef,
-      keys: [`${note.notehead}/${note.pitch}`],
-      duration: note.duration.toString(),
-    });
-    result.setStyle({ fillStyle: color, strokeStyle: color });
     return result;
   }
 }

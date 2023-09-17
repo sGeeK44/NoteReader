@@ -1,13 +1,13 @@
-import React, {useState} from 'react';
-import {Button, SafeAreaView, StyleSheet, TextInput} from 'react-native';
-import {NavigationProp} from '@react-navigation/native';
-import {RootStackParamList} from 'app/App';
+import React, { useState } from 'react';
+import { Button, SafeAreaView, StyleSheet, TextInput } from 'react-native';
+import { NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from 'app/App';
 
 export interface Props {
   navigation: NavigationProp<RootStackParamList>;
 }
 
-export const MainScreen = ({navigation}: Props) => {
+export const MainScreen = ({ navigation }: Props) => {
   const [tempo, setTempo] = useState<string>('60');
 
   const styles = StyleSheet.create({
@@ -19,7 +19,7 @@ export const MainScreen = ({navigation}: Props) => {
       flex: 1,
       paddingHorizontal: 10,
     },
-    text: {color: 'black', fontSize: 25},
+    text: { color: 'black', fontSize: 25 },
   });
   return (
     <SafeAreaView style={styles.content}>
@@ -31,7 +31,7 @@ export const MainScreen = ({navigation}: Props) => {
       <Button
         title="Start"
         onPress={() => {
-          navigation.navigate('TrainScreen', {tempo: parseInt(tempo, 10)});
+          navigation.navigate('TrainScreen', { tempo: parseInt(tempo, 10) });
         }}
       />
     </SafeAreaView>
