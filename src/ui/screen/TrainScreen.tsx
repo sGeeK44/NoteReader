@@ -47,12 +47,11 @@ export const TrainScreen = ({ route }: Props) => {
     },
     text: { color: 'black', fontSize: 25 },
   });
-  const context = new RnSvgContext(1000, 1000);
 
   return (
     <SafeAreaView style={styles.content}>
       <View style={styles.score}>
-        <MusicScoreView score={score} checker={checker} context={context} />
+        <MusicScoreView score={score} checker={checker} />
       </View>
       <Button
         title="Start"

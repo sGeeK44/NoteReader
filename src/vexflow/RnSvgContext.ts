@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactElement, ReactNode } from 'react';
 import { Attributes, SVGContext } from 'vexflow';
 import Svg, { Text, Path, Rect, G } from 'react-native-svg';
 
@@ -188,7 +188,7 @@ export class RnSvgContext extends SVGContext {
     this.getSvg().children = [];
   }
 
-  render(): ReactNode {
+  render(): ReactElement {
     return this.getSvg().toReactElement();
   }
 
@@ -210,6 +210,6 @@ export class RnSvgContext extends SVGContext {
 
 interface RnSvgElement extends SVGSVGElement {
   children: SVGElement[];
-  toReactElement(): ReactNode;
+  toReactElement(): ReactElement;
   applyProps(attributes: Attributes): void;
 }
