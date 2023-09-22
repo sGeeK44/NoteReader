@@ -66,6 +66,10 @@ export const TrainScreen = ({ route }: Props) => {
                 isFirst = false;
               }
               const result = checker?.next(value);
+              if (result === 'WIN') {
+                metronome.stop();
+                speechRecognition?.stop();
+              }
             });
             speechRecognition?.start(
               '["do", "ré", "mi", "fa", "sol", "la", "si"]',
