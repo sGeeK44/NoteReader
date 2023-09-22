@@ -39,12 +39,14 @@ export const MusicScoreView = ({ score, checker }: MusicScoreProps) => {
     forceUpdate();
   });
 
-  checker.onBadNote((measure: number, note: number) => {
+  checker.onBadNote((measure: number, note: number, result: "TO_EARLY" | "TO_LATE" | "BAD_NOTE") => {
     resultContext?.clear();
     for (let i = 1; i <= measure; i++) {
       vexflowScore?.resetNote(resultContext, i);
     }
-    vexflowScore?.drawBadNote(resultContext, measure, note);
+
+    const color = getColor(result);
+    vexflowScore?.drawNote(resultContext, measure, note, color);
     forceUpdate();
   });
 
@@ -55,7 +57,6 @@ export const MusicScoreView = ({ score, checker }: MusicScoreProps) => {
           const layout = event.nativeEvent.layout;
           const rawContext = new RnSvgContext(layout.width, 1000);
           const resultContext = new RnSvgContext(layout.width, 1000);
-          console.log(resultContext.render());
           const vexflowScore = converter.toVexflow(score, {
             width: layout.width - 2,
             measurePerLine: isLandscape ? 5 : 2,
@@ -72,3 +73,17 @@ export const MusicScoreView = ({ score, checker }: MusicScoreProps) => {
     </ScrollView >
   );
 };
+
+function getColor(result: "TO_EARLY" | "TO_LATE" | "BAD_NOTE") {
+  switch (result) {
+    case "TO_EARLY":
+      return "lightblue";
+    case "TO_LATE":
+      return "yellow";
+    case "BAD_NOTE":
+      return "red";
+    default:
+      return 'black';
+  }
+}
+

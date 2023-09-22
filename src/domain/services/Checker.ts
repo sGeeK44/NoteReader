@@ -12,7 +12,7 @@ export class Checker {
     currentMeasure = 1;
     currentNote = 1;
     onGoodCallback: (measure: number, note: number) => void = () => { };
-    onBadCallback: (measure: number, note: number) => void = () => { };
+    onBadCallback: (measure: number, note: number, result: "TO_EARLY" | "TO_LATE" | "BAD_NOTE") => void = () => { };
 
     constructor(
         timeProvider: TimeProvider,
@@ -50,8 +50,11 @@ export class Checker {
         const isOnTime = this.timeChecker.isOnTime(
             (nbBeatBefore + expected.measurePosition - 1) * this.tempo.toBpMs(),
         );
-        if (!isOnTime || !isRigthNote) {
-            return this.onBadResult();
+        if (!isRigthNote) {
+            return this.onBadResult("BAD_NOTE")
+        }
+        if (isOnTime !== "ON_TIME") {
+            return this.onBadResult(isOnTime);
         }
 
         if (
@@ -68,7 +71,7 @@ export class Checker {
         this.onGoodCallback = onGoodCallback;
     }
 
-    onBadNote(onBadCallback: (measure: number, note: number) => void) {
+    onBadNote(onBadCallback: (measure: number, note: number, result: "TO_EARLY" | "TO_LATE" | "BAD_NOTE") => void) {
         this.onBadCallback = onBadCallback;
     }
 
@@ -78,8 +81,8 @@ export class Checker {
         return 'WIN';
     }
 
-    private onBadResult(): 'BAD' {
-        this.onBadCallback(this.currentMeasure, this.currentNote);
+    private onBadResult(result: "TO_EARLY" | "TO_LATE" | "BAD_NOTE"): 'BAD' {
+        this.onBadCallback(this.currentMeasure, this.currentNote, result);
         this.currentMeasure = 1;
         this.currentNote = 1;
         this.timeChecker.reset();

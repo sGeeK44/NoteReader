@@ -12,7 +12,6 @@ import { RandomNoteGenerator } from 'app/domain/services/RandomNoteGenerator';
 import { Metronome } from 'app/domain/services/Metronome';
 import { RootStackParamList } from 'app/App';
 import { RouteProp } from '@react-navigation/native';
-import { RnSvgContext } from 'app/vexflow/RnSvgContext';
 
 interface Props {
   route: RouteProp<RootStackParamList, 'TrainScreen'>;
@@ -64,7 +63,6 @@ export const TrainScreen = ({ route }: Props) => {
               isFirst = false;
             }
             const result = checker?.next(value);
-            console.log(result);
           });
           speechRecognition?.start(
             '["do", "ré", "mi", "fa", "sol", "la", "si"]',
