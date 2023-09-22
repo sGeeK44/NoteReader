@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, SafeAreaView, StyleSheet, View } from 'react-native';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { MusicScoreView } from '../component/MusicScoreView';
 import { SpeechRecognizer } from '../../domain/services/SpeechRecognizer';
 import { MusicScoreBuilder } from 'app/domain/services/MusicScoreBuilder';
@@ -12,12 +12,14 @@ import { RandomNoteGenerator } from 'app/domain/services/RandomNoteGenerator';
 import { Metronome } from 'app/domain/services/Metronome';
 import { RootStackParamList } from 'app/App';
 import { RouteProp } from '@react-navigation/native';
+import { Button } from 'react-native-paper';
 
 interface Props {
   route: RouteProp<RootStackParamList, 'TrainScreen'>;
 }
 
 export const TrainScreen = ({ route }: Props) => {
+  const { tempo, nbMeasure, clef } = route.params;
   const speechRecognition = useInjection<SpeechRecognizer>(
     Symbols.SpeechRecognizer,
   );
@@ -29,10 +31,9 @@ export const TrainScreen = ({ route }: Props) => {
   );
 
   const musicScoreBuilder = new MusicScoreBuilder(randomNoteGenerator);
-  const score = musicScoreBuilder.build({ measure: 5 });
+  const score = musicScoreBuilder.build({ measure: nbMeasure, clef: clef });
   speechRecognition.init('fr-fr');
 
-  const { tempo } = route.params;
   const checker = new Checker(timeProvider, score, new Tempo(tempo));
 
   const styles = StyleSheet.create({
@@ -52,30 +53,35 @@ export const TrainScreen = ({ route }: Props) => {
       <View style={styles.score}>
         <MusicScoreView score={score} checker={checker} />
       </View>
-      <Button
-        title="Start"
-        onPress={() => {
-          metronome.play(tempo);
-          let isFirst = true;
-          speechRecognition?.subscribe(value => {
-            if (isFirst) {
-              checker?.start();
-              isFirst = false;
-            }
-            const result = checker?.next(value);
-          });
-          speechRecognition?.start(
-            '["do", "ré", "mi", "fa", "sol", "la", "si"]',
-          );
-        }}
-      />
-      <Button
-        title="Stop"
-        onPress={() => {
-          metronome.stop();
-          speechRecognition?.stop();
-        }}
-      />
+      <View style={{ flexDirection: 'row', padding: 20, justifyContent: 'space-around' }}>
+        <Button
+          icon="play"
+          mode='contained'
+          onPress={() => {
+            metronome.play(tempo);
+            let isFirst = true;
+            speechRecognition?.subscribe(value => {
+              if (isFirst) {
+                checker?.start();
+                isFirst = false;
+              }
+              const result = checker?.next(value);
+            });
+            speechRecognition?.start(
+              '["do", "ré", "mi", "fa", "sol", "la", "si"]',
+            );
+          }}
+        >Start</Button>
+        <Button
+          icon="stop"
+          mode='contained'
+          onPress={() => {
+            metronome.stop();
+            speechRecognition?.stop();
+          }}
+        >Stop</Button>
+
+      </View>
     </SafeAreaView>
   );
 };

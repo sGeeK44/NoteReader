@@ -1,7 +1,7 @@
-import {Signature} from '../value-object/Signature';
-import {RandomNoteGenerator} from './RandomNoteGenerator';
+import { Signature } from '../value-object/Signature';
+import { RandomNoteGenerator } from './RandomNoteGenerator';
 
-export type Pitch = '4';
+export type Pitch = '1' | '2' | '3' | '4' | '5' | '6';
 export const AlphabetNoteHead = ['a', 'b', 'c', 'd', 'f', 'e', 'g'];
 export const SyllabicNoteHead = ['do', 'ré', 'mi', 'fa', 'sol', 'la', 'si'];
 export const AlphaSyllaMap = new Map<string, string>([
@@ -53,7 +53,7 @@ export interface Settings {
 }
 
 export class MusicScoreBuilder {
-  constructor(private randomNoteGenerator: RandomNoteGenerator) {}
+  constructor(private randomNoteGenerator: RandomNoteGenerator) { }
 
   build(settings?: Settings): MusicScore {
     const trustedSettings = {
@@ -66,7 +66,7 @@ export class MusicScoreBuilder {
     };
 
     return {
-      clef: 'treble',
+      clef: trustedSettings.clef,
       timeSignature: {
         beat: trustedSettings.timeSignature.beat,
         duration: trustedSettings.timeSignature.duration,
@@ -75,7 +75,7 @@ export class MusicScoreBuilder {
         return {
           notes: [...Array(4)].map(() => {
             return {
-              pitch: '4',
+              pitch: trustedSettings.clef == 'treble' ? '4' : '2',
               notehead: this.randomNoteGenerator.next(),
               duration: 4,
             };
