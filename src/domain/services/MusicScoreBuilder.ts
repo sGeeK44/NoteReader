@@ -2,8 +2,8 @@ import { Signature } from '../value-object/Signature';
 import { RandomNoteGenerator } from './RandomNoteGenerator';
 
 export type Pitch = '1' | '2' | '3' | '4' | '5' | '6';
-export const AlphabetNoteHead = ['a', 'b', 'c', 'd', 'f', 'e', 'g'];
-export const SyllabicNoteHead = ['do', 'ré', 'mi', 'fa', 'sol', 'la', 'si'];
+export const AlphabetNotation = ['a', 'b', 'c', 'd', 'f', 'e', 'g'];
+export const SyllabicNotation = ['do', 'ré', 'mi', 'fa', 'sol', 'la', 'si'];
 export const AlphaSyllaMap = new Map<string, string>([
   ['a', 'la'],
   ['b', 'si'],
@@ -22,7 +22,7 @@ export const SyllaAlphaMap = new Map<string, string>([
   ['la', 'a'],
   ['si', 'b'],
 ]);
-export type NoteHead = (typeof AlphabetNoteHead)[number];
+export type NoteHead = (typeof AlphabetNotation)[number];
 export type NoteDuration = 1 | 2 | 4 | 8 | 16 | 32;
 export type Clef = 'treble' | 'bass';
 export type Beat = 1 | 2 | 3 | 4 | 6 | 9 | 12;

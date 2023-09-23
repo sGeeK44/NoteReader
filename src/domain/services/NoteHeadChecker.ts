@@ -1,7 +1,7 @@
 import {
   NoteHead,
-  AlphabetNoteHead,
-  SyllabicNoteHead,
+  AlphabetNotation,
+  SyllabicNotation,
   SyllaAlphaMap,
 } from './MusicScoreBuilder';
 
@@ -11,13 +11,13 @@ export class NoteHeadChecker {
       return receive === expected;
     }
 
-    const index = SyllabicNoteHead.indexOf(receive);
-    const alphabetNote = SyllaAlphaMap.get(SyllabicNoteHead[index]);
+    const index = SyllabicNotation.indexOf(receive);
+    const alphabetNote = SyllaAlphaMap.get(SyllabicNotation[index]);
 
     return alphabetNote === expected;
   }
 
   isAlphabet(value: string): boolean {
-    return AlphabetNoteHead.indexOf(value) > -1;
+    return AlphabetNotation.indexOf(value) > -1;
   }
 }
