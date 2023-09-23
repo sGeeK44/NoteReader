@@ -1,6 +1,6 @@
-import { Signature } from '../value-object/Signature';
-import { AlphabetNotation } from './Notation';
-import { RandomNoteGenerator } from './RandomNoteGenerator';
+import {Signature} from '../value-object/Signature';
+import {AlphabetNotation} from './Notation';
+import {RandomNoteGenerator} from './RandomNoteGenerator';
 
 export type Pitch = '1' | '2' | '3' | '4' | '5' | '6';
 export type NoteHead = (typeof AlphabetNotation)[number];
@@ -34,7 +34,7 @@ export interface Settings {
 }
 
 export class MusicScoreBuilder {
-  constructor(private randomNoteGenerator: RandomNoteGenerator) { }
+  constructor(private randomNoteGenerator: RandomNoteGenerator) {}
 
   build(settings?: Settings): MusicScore {
     const trustedSettings = {

@@ -1,14 +1,14 @@
-import { inject } from 'inversify';
-import { Symbols } from 'app/config/symbols';
-import { TimeProvider } from './TimeProvider';
+import {inject} from 'inversify';
+import {Symbols} from 'app/config/symbols';
+import {TimeProvider} from './TimeProvider';
 
 export class TimeChecker {
   private startAt = 0;
-  private accuracy = 400;
 
   constructor(
     @inject(Symbols.TimeProvider) private timeProvider: TimeProvider,
-  ) { }
+    private accuracy: number,
+  ) {}
 
   start() {
     this.startAt = this.timeProvider.now();
@@ -22,14 +22,14 @@ export class TimeChecker {
     return this.timeProvider.now() - this.startAt;
   }
 
-  isOnTime(expectedTime: number): "ON_TIME" | "TO_EARLY" | "TO_LATE" {
+  isOnTime(expectedTime: number): 'ON_TIME' | 'TO_EARLY' | 'TO_LATE' {
     const elapse = this.elapse();
     if (elapse < expectedTime - this.accuracy) {
-      return "TO_EARLY";
+      return 'TO_EARLY';
     }
     if (elapse > expectedTime + this.accuracy) {
-      return "TO_LATE";
+      return 'TO_LATE';
     }
-    return "ON_TIME";
+    return 'ON_TIME';
   }
 }

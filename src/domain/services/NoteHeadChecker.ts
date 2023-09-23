@@ -1,9 +1,7 @@
-import {
-  NoteHead,
-} from './MusicScoreBuilder';
-import { SyllaAlphaMap } from './Notation';
-import { SyllabicNotation } from './Notation';
-import { AlphabetNotation } from './Notation';
+import {NoteHead} from './MusicScoreBuilder';
+import {SyllaAlphaMap} from './Notation';
+import {SyllabicNotation} from './Notation';
+import {AlphabetNotation} from './Notation';
 
 export class NoteHeadChecker {
   isRigthNote(receive: string, expected: NoteHead) {

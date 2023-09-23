@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
-import { Dimensions, View, StyleSheet, ScrollView, Text } from 'react-native';
-import { MusicScore } from 'app/domain/services/MusicScoreBuilder';
-import { VexflowConverter, VexflowScore } from 'app/vexflow/VexfloxConverter';
-import { RnSvgContext } from 'app/vexflow/RnSvgContext';
-import { Checker } from 'app/domain/services/Checker';
+import React, {useEffect, useState} from 'react';
+import {Dimensions, View, StyleSheet, ScrollView, Text} from 'react-native';
+import {MusicScore} from 'app/domain/services/MusicScoreBuilder';
+import {VexflowConverter, VexflowScore} from 'app/vexflow/VexfloxConverter';
+import {RnSvgContext} from 'app/vexflow/RnSvgContext';
+import {Checker} from 'app/domain/services/Checker';
 
 export interface MusicScoreProps {
   score: MusicScore;
   checker: Checker;
 }
 
-export const MusicScoreView = ({ score, checker }: MusicScoreProps) => {
+export const MusicScoreView = ({score, checker}: MusicScoreProps) => {
   const [, updateState] = React.useState<{}>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
   const [isLandscape, setIsLandscape] = useState<boolean>();
@@ -23,36 +23,41 @@ export const MusicScoreView = ({ score, checker }: MusicScoreProps) => {
     },
   });
 
-
   const converter = new VexflowConverter();
   useEffect(() => {
     const dim = Dimensions.get('window');
     setIsLandscape(dim.width >= dim.height);
-    Dimensions.addEventListener('change', ({ screen }) => {
+    Dimensions.addEventListener('change', ({screen}) => {
       setIsLandscape(screen.width >= screen.height);
     });
   }, []);
-
 
   checker.onGoodNote((measure: number, note: number) => {
     vexflowScore?.drawGoodNote(resultContext, measure, note);
     forceUpdate();
   });
 
-  checker.onBadNote((measure: number, note: number, result: "TO_EARLY" | "TO_LATE" | "BAD_NOTE") => {
-    resultContext?.clear();
-    for (let i = 1; i <= measure; i++) {
-      vexflowScore?.resetNote(resultContext, i);
-    }
+  checker.onBadNote(
+    (
+      measure: number,
+      note: number,
+      result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE',
+    ) => {
+      resultContext?.clear();
+      for (let i = 1; i <= measure; i++) {
+        vexflowScore?.resetNote(resultContext, i);
+      }
 
-    const color = getColor(result);
-    vexflowScore?.drawNote(resultContext, measure, note, color);
-    forceUpdate();
-  });
+      const color = getColor(result);
+      vexflowScore?.drawNote(resultContext, measure, note, color);
+      forceUpdate();
+    },
+  );
 
   return (
     <ScrollView>
-      <View style={styles.content}
+      <View
+        style={styles.content}
         onLayout={event => {
           const layout = event.nativeEvent.layout;
           const rawContext = new RnSvgContext(layout.width, 1000);
@@ -68,22 +73,21 @@ export const MusicScoreView = ({ score, checker }: MusicScoreProps) => {
           setResultContext(resultContext);
         }}>
         <View>{rawContext?.render()}</View>
-        <View style={{ position: 'absolute' }}>{resultContext?.render()}</View>
+        <View style={{position: 'absolute'}}>{resultContext?.render()}</View>
       </View>
-    </ScrollView >
+    </ScrollView>
   );
 };
 
-function getColor(result: "TO_EARLY" | "TO_LATE" | "BAD_NOTE") {
+function getColor(result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE') {
   switch (result) {
-    case "TO_EARLY":
-      return "lightblue";
-    case "TO_LATE":
-      return "yellow";
-    case "BAD_NOTE":
-      return "red";
+    case 'TO_EARLY':
+      return 'lightblue';
+    case 'TO_LATE':
+      return 'yellow';
+    case 'BAD_NOTE':
+      return 'red';
     default:
       return 'black';
   }
 }
-

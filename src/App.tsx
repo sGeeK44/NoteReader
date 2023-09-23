@@ -6,15 +6,15 @@
  */
 
 import React from 'react';
-import { Provider, useInjection } from 'inversify-react';
-import { MainScreen } from './ui/screen/MainScreen';
-import { buildDependencies } from './config/common';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { useAsync } from 'react-async-hook';
-import { TrainScreen } from './ui/screen/TrainScreen';
-import { Clef } from './domain/services/MusicScoreBuilder';
-import { Notation } from './domain/services/Notation';
+import {Provider, useInjection} from 'inversify-react';
+import {MainScreen} from './ui/screen/MainScreen';
+import {buildDependencies} from './config/common';
+import {NavigationContainer} from '@react-navigation/native';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {useAsync} from 'react-async-hook';
+import {TrainScreen} from './ui/screen/TrainScreen';
+import {Clef} from './domain/services/MusicScoreBuilder';
+import {Notation} from './domain/services/Notation';
 
 export type RootStackParamList = {
   MainScreen: undefined;
@@ -23,6 +23,7 @@ export type RootStackParamList = {
     nbMeasure: number;
     clef: Clef;
     notation: Notation;
+    accuracy: number;
   };
 };
 

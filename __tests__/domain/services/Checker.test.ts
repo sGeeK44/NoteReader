@@ -1,8 +1,8 @@
-import { describe, it, expect } from '@jest/globals';
-import { Checker } from 'app/domain/services/Checker';
-import { FakeTimeProvider } from '../../fakes/FakeTimeProvider';
-import { Tempo } from 'app/domain/services/Tempo';
-import { MusicScore } from 'app/domain/services/MusicScoreBuilder';
+import {describe, it, expect} from '@jest/globals';
+import {Checker} from 'app/domain/services/Checker';
+import {FakeTimeProvider} from '../../fakes/FakeTimeProvider';
+import {Tempo} from 'app/domain/services/Tempo';
+import {MusicScore} from 'app/domain/services/MusicScoreBuilder';
 
 describe('Validate speech against music score and time', () => {
   it('First note can be spell at any time !', () => {
@@ -18,13 +18,14 @@ describe('Validate speech against music score and time', () => {
         measures: [
           {
             notes: [
-              { notehead: 'a', duration: 4, pitch: '4' },
-              { notehead: 'a', duration: 4, pitch: '4' },
+              {notehead: 'a', duration: 4, pitch: '4'},
+              {notehead: 'a', duration: 4, pitch: '4'},
             ],
           },
         ],
       },
       new Tempo(60),
+      400,
     );
 
     checker.start();
@@ -47,13 +48,14 @@ describe('Validate speech against music score and time', () => {
         measures: [
           {
             notes: [
-              { notehead: 'a', duration: 4, pitch: '4' },
-              { notehead: 'a', duration: 4, pitch: '4' },
+              {notehead: 'a', duration: 4, pitch: '4'},
+              {notehead: 'a', duration: 4, pitch: '4'},
             ],
           },
         ],
       },
       new Tempo(60),
+      400,
     );
 
     checker.start();
@@ -78,13 +80,14 @@ describe('Validate speech against music score and time', () => {
         measures: [
           {
             notes: [
-              { notehead: 'a', duration: 4, pitch: '4' },
-              { notehead: 'a', duration: 4, pitch: '4' },
+              {notehead: 'a', duration: 4, pitch: '4'},
+              {notehead: 'a', duration: 4, pitch: '4'},
             ],
           },
         ],
       },
       new Tempo(60),
+      400,
     );
 
     checker.start();
@@ -107,23 +110,23 @@ describe('Validate speech against music score and time', () => {
       measures: [
         {
           notes: [
-            { notehead: 'a', duration: 4, pitch: '4' },
-            { notehead: 'b', duration: 4, pitch: '4' },
-            { notehead: 'c', duration: 4, pitch: '4' },
-            { notehead: 'd', duration: 4, pitch: '4' },
+            {notehead: 'a', duration: 4, pitch: '4'},
+            {notehead: 'b', duration: 4, pitch: '4'},
+            {notehead: 'c', duration: 4, pitch: '4'},
+            {notehead: 'd', duration: 4, pitch: '4'},
           ],
         },
         {
           notes: [
-            { notehead: 'e', duration: 4, pitch: '4' },
-            { notehead: 'f', duration: 4, pitch: '4' },
-            { notehead: 'g', duration: 4, pitch: '4' },
-            { notehead: 'a', duration: 4, pitch: '4' },
+            {notehead: 'e', duration: 4, pitch: '4'},
+            {notehead: 'f', duration: 4, pitch: '4'},
+            {notehead: 'g', duration: 4, pitch: '4'},
+            {notehead: 'a', duration: 4, pitch: '4'},
           ],
         },
       ],
     };
-    const checker = new Checker(timeProvider, score, new Tempo(60));
+    const checker = new Checker(timeProvider, score, new Tempo(60), 400);
 
     checker.start();
 
@@ -171,7 +174,7 @@ describe('Validate speech against music score and time', () => {
         },
       ],
     };
-    const checker = new Checker(timeProvider, score, new Tempo(60));
+    const checker = new Checker(timeProvider, score, new Tempo(60), 400);
 
     checker.start();
 
@@ -201,7 +204,7 @@ describe('Validate speech against music score and time', () => {
         },
       ],
     };
-    const checker = new Checker(timeProvider, score, new Tempo(60));
+    const checker = new Checker(timeProvider, score, new Tempo(60), 400);
 
     checker.start();
 
@@ -224,15 +227,16 @@ describe('Validate speech against music score and time', () => {
         measures: [
           {
             notes: [
-              { notehead: 'a', duration: 4, pitch: '4' },
-              { notehead: 'b', duration: 4, pitch: '4' },
-              { notehead: 'c', duration: 4, pitch: '4' },
-              { notehead: 'd', duration: 4, pitch: '4' },
+              {notehead: 'a', duration: 4, pitch: '4'},
+              {notehead: 'b', duration: 4, pitch: '4'},
+              {notehead: 'c', duration: 4, pitch: '4'},
+              {notehead: 'd', duration: 4, pitch: '4'},
             ],
           },
         ],
       },
       new Tempo(60),
+      400,
     );
 
     checker.start();
@@ -283,24 +287,31 @@ describe('Listen result.', () => {
         measures: [
           {
             notes: [
-              { notehead: 'a', duration: 4, pitch: '4' },
-              { notehead: 'b', duration: 4, pitch: '4' },
+              {notehead: 'a', duration: 4, pitch: '4'},
+              {notehead: 'b', duration: 4, pitch: '4'},
             ],
           },
         ],
       },
       new Tempo(60),
+      400,
     );
 
     checker.start();
 
     expect(checker.next('a')).toStrictEqual('GOOD');
     timeProvider.setNow(500);
-    checker.onBadNote((measure: number, note: number, result: "TO_EARLY" | "TO_LATE" | "BAD_NOTE") => {
-      expect(result).toStrictEqual("BAD_NOTE");
-    });
+    checker.onBadNote(
+      (
+        measure: number,
+        note: number,
+        result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE',
+      ) => {
+        expect(result).toStrictEqual('BAD_NOTE');
+      },
+    );
     checker.next('a');
-  })
+  });
   it('When spell bad note to late', () => {
     const timeProvider = new FakeTimeProvider();
     const checker = new Checker(
@@ -314,22 +325,29 @@ describe('Listen result.', () => {
         measures: [
           {
             notes: [
-              { notehead: 'a', duration: 4, pitch: '4' },
-              { notehead: 'b', duration: 4, pitch: '4' },
+              {notehead: 'a', duration: 4, pitch: '4'},
+              {notehead: 'b', duration: 4, pitch: '4'},
             ],
           },
         ],
       },
       new Tempo(60),
+      400,
     );
 
     checker.start();
 
     expect(checker.next('a')).toStrictEqual('GOOD');
     timeProvider.setNow(1500);
-    checker.onBadNote((measure: number, note: number, result: "TO_EARLY" | "TO_LATE" | "BAD_NOTE") => {
-      expect(result).toStrictEqual("BAD_NOTE");
-    });
+    checker.onBadNote(
+      (
+        measure: number,
+        note: number,
+        result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE',
+      ) => {
+        expect(result).toStrictEqual('BAD_NOTE');
+      },
+    );
     checker.next('a');
-  })
+  });
 });

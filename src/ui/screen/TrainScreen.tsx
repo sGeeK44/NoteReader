@@ -1,26 +1,26 @@
 import React from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
-import { MusicScoreView } from '../component/MusicScoreView';
-import { SpeechRecognizer } from '../../domain/services/SpeechRecognizer';
-import { MusicScoreBuilder } from 'app/domain/services/MusicScoreBuilder';
-import { Checker } from 'app/domain/services/Checker';
-import { Symbols } from 'app/config/symbols';
-import { Tempo } from 'app/domain/services/Tempo';
-import { TimeProvider } from 'app/domain/services/TimeProvider';
-import { useInjection } from 'inversify-react';
-import { RandomNoteGenerator } from 'app/domain/services/RandomNoteGenerator';
-import { Metronome } from 'app/domain/services/Metronome';
-import { RootStackParamList } from 'app/App';
-import { RouteProp } from '@react-navigation/native';
-import { Button } from 'react-native-paper';
-import { toWords } from 'app/domain/services/Notation';
+import {SafeAreaView, StyleSheet, View} from 'react-native';
+import {MusicScoreView} from '../component/MusicScoreView';
+import {SpeechRecognizer} from '../../domain/services/SpeechRecognizer';
+import {MusicScoreBuilder} from 'app/domain/services/MusicScoreBuilder';
+import {Checker} from 'app/domain/services/Checker';
+import {Symbols} from 'app/config/symbols';
+import {Tempo} from 'app/domain/services/Tempo';
+import {TimeProvider} from 'app/domain/services/TimeProvider';
+import {useInjection} from 'inversify-react';
+import {RandomNoteGenerator} from 'app/domain/services/RandomNoteGenerator';
+import {Metronome} from 'app/domain/services/Metronome';
+import {RootStackParamList} from 'app/App';
+import {RouteProp} from '@react-navigation/native';
+import {Button} from 'react-native-paper';
+import {toWords} from 'app/domain/services/Notation';
 
 interface Props {
   route: RouteProp<RootStackParamList, 'TrainScreen'>;
 }
 
-export const TrainScreen = ({ route }: Props) => {
-  const { tempo, nbMeasure, clef, notation } = route.params;
+export const TrainScreen = ({route}: Props) => {
+  const {tempo, nbMeasure, clef, notation, accuracy} = route.params;
   const speechRecognition = useInjection<SpeechRecognizer>(
     Symbols.SpeechRecognizer,
   );
@@ -32,10 +32,10 @@ export const TrainScreen = ({ route }: Props) => {
   );
 
   const musicScoreBuilder = new MusicScoreBuilder(randomNoteGenerator);
-  const score = musicScoreBuilder.build({ measure: nbMeasure, clef: clef });
+  const score = musicScoreBuilder.build({measure: nbMeasure, clef: clef});
   speechRecognition.init('fr-fr');
 
-  const checker = new Checker(timeProvider, score, new Tempo(tempo));
+  const checker = new Checker(timeProvider, score, new Tempo(tempo), accuracy);
 
   const styles = StyleSheet.create({
     content: {
@@ -46,7 +46,7 @@ export const TrainScreen = ({ route }: Props) => {
       flex: 1,
       paddingHorizontal: 10,
     },
-    text: { color: 'black', fontSize: 25 },
+    text: {color: 'black', fontSize: 25},
   });
 
   return (
@@ -54,10 +54,15 @@ export const TrainScreen = ({ route }: Props) => {
       <View style={styles.score}>
         <MusicScoreView score={score} checker={checker} />
       </View>
-      <View style={{ flexDirection: 'row', padding: 20, justifyContent: 'space-around' }}>
+      <View
+        style={{
+          flexDirection: 'row',
+          padding: 20,
+          justifyContent: 'space-around',
+        }}>
         <Button
           icon="play"
-          mode='contained'
+          mode="contained"
           onPress={() => {
             metronome.play(tempo);
             let isFirst = true;
@@ -72,20 +77,19 @@ export const TrainScreen = ({ route }: Props) => {
                 speechRecognition?.stop();
               }
             });
-            speechRecognition?.start(
-              toWords(notation),
-            );
-          }}
-        >Start</Button>
+            speechRecognition?.start(toWords(notation));
+          }}>
+          Start
+        </Button>
         <Button
           icon="stop"
-          mode='contained'
+          mode="contained"
           onPress={() => {
             metronome.stop();
             speechRecognition?.stop();
-          }}
-        >Stop</Button>
-
+          }}>
+          Stop
+        </Button>
       </View>
     </SafeAreaView>
   );

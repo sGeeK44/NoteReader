@@ -3,12 +3,12 @@ import {
   MusicScore,
   Notes,
 } from 'app/domain/services/MusicScoreBuilder';
-import { toString } from 'app/domain/value-object/Signature';
-import { Flow, Formatter, Stave, StaveNote, Tickable, Voice } from 'vexflow';
-import { RnSvgContext } from './RnSvgContext';
+import {toString} from 'app/domain/value-object/Signature';
+import {Flow, Formatter, Stave, StaveNote, Tickable, Voice} from 'vexflow';
+import {RnSvgContext} from './RnSvgContext';
 
 export class VexflowScore {
-  constructor(private voices: Voice[] = []) { }
+  constructor(private voices: Voice[] = []) {}
 
   addVoice(voice: Voice) {
     this.voices.push(voice);
@@ -26,24 +26,36 @@ export class VexflowScore {
     });
   }
 
-  drawGoodNote(context: RnSvgContext | undefined, measure: number, note: number) {
-    this.drawNote(context, measure, note, "green");
+  drawGoodNote(
+    context: RnSvgContext | undefined,
+    measure: number,
+    note: number,
+  ) {
+    this.drawNote(context, measure, note, 'green');
   }
 
-  drawBadNote(context: RnSvgContext | undefined, measure: number, note: number) {
-    this.drawNote(context, measure, note, "red");
+  drawBadNote(
+    context: RnSvgContext | undefined,
+    measure: number,
+    note: number,
+  ) {
+    this.drawNote(context, measure, note, 'red');
   }
 
   resetNote(context: RnSvgContext | undefined, measure: number) {
     const voice = this.voices[measure - 1];
     voice.getTickables().forEach(note => {
-      this.setColorNote(note, "black");
-
+      this.setColorNote(note, 'black');
     });
     voice.draw(context);
   }
 
-  drawNote(context: RnSvgContext | undefined, measure: number, note: number, color: string) {
+  drawNote(
+    context: RnSvgContext | undefined,
+    measure: number,
+    note: number,
+    color: string,
+  ) {
     const voice = this.voices[measure - 1];
     const good = voice.getTickables()[note - 1];
     this.setColorNote(good, color);
@@ -51,7 +63,7 @@ export class VexflowScore {
   }
 
   setColorNote(note: Tickable, color: string) {
-    note.setStyle({ fillStyle: color, strokeStyle: color });
+    note.setStyle({fillStyle: color, strokeStyle: color});
   }
 }
 
@@ -60,7 +72,7 @@ export class VexflowConverter {
 
   toVexflow(
     score: MusicScore,
-    settings: { width: number; measurePerLine: number },
+    settings: {width: number; measurePerLine: number},
   ): VexflowScore {
     const staveWidth = settings.width / settings.measurePerLine;
     const staveLines = this.split(score.measures, settings.measurePerLine);
@@ -85,7 +97,7 @@ export class VexflowConverter {
     return result;
   }
 
-  drawGoodNote(score: MusicScore, measure: Measure,): void {
+  drawGoodNote(score: MusicScore, measure: Measure): void {
     this.createStave(score, measure.notes, 0, 0, 200);
   }
 
@@ -105,11 +117,7 @@ export class VexflowConverter {
     return this.createNotes(stave, score, notes);
   }
 
-  createNotes(
-    stave: Stave,
-    score: MusicScore,
-    notes: Notes[]
-  ): Voice {
+  createNotes(stave: Stave, score: MusicScore, notes: Notes[]): Voice {
     const notesToDraw = notes.map(note => this.createNote(score, note));
 
     const voice = new Voice({
@@ -118,7 +126,7 @@ export class VexflowConverter {
       resolution: Flow.RESOLUTION,
     });
     voice.addTickables([...notesToDraw]);
-    this.formatter.formatToStave([voice], stave, { auto_beam: true });
+    this.formatter.formatToStave([voice], stave, {auto_beam: true});
     voice.setStave(stave);
     return voice;
   }

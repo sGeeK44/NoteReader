@@ -1,6 +1,6 @@
-import React, { ReactElement, ReactNode } from 'react';
-import { Attributes, SVGContext } from 'vexflow';
-import Svg, { Text, Path, Rect, G } from 'react-native-svg';
+import React, {ReactElement, ReactNode} from 'react';
+import {Attributes, SVGContext} from 'vexflow';
+import Svg, {Text, Path, Rect, G} from 'react-native-svg';
 
 const propMap = {
   'font-family': 'fontFamily',
@@ -11,18 +11,18 @@ const propMap = {
 
 class ContextElement {
   children: ContextElement[];
-  props: { [key: string]: unknown; key: number };
+  props: {[key: string]: unknown; key: number};
   constructor(props: object) {
     this.children = [];
-    this.props = { style: {}, key: 0, ...props };
+    this.props = {style: {}, key: 0, ...props};
   }
 
   get style() {
     return this.props.style;
   }
 
-  applyProps(attributes: { style: object; key: number }) {
-    this.props = { ...this.props, ...attributes };
+  applyProps(attributes: {style: object; key: number}) {
+    this.props = {...this.props, ...attributes};
   }
 
   setAttribute(propertyName: string, value: string) {
@@ -55,7 +55,7 @@ class ContextElement {
 
 class DivContextElement extends ContextElement {
   constructor(props: object) {
-    super({ ...props, svgElementType: 'div' });
+    super({...props, svgElementType: 'div'});
   }
 
   _toReactElement(): ReactNode {
@@ -87,7 +87,7 @@ class SVGContextElement extends ContextElement {
 
 class PathContextElement extends ContextElement {
   constructor(props: object) {
-    super({ ...props, svgElementType: 'path' });
+    super({...props, svgElementType: 'path'});
   }
 
   _toReactElement(): ReactNode {
@@ -104,7 +104,7 @@ class PathContextElement extends ContextElement {
 
 class RectContextElement extends ContextElement {
   constructor(props: object) {
-    super({ ...props, svgElementType: 'rect' });
+    super({...props, svgElementType: 'rect'});
   }
 
   _toReactElement(): ReactNode {
@@ -118,7 +118,7 @@ class RectContextElement extends ContextElement {
 
 class GContextElement extends ContextElement {
   constructor(props: object) {
-    super({ ...props, svgElementType: 'g' });
+    super({...props, svgElementType: 'g'});
   }
 
   _toReactElement(): ReactNode {
@@ -132,7 +132,7 @@ class GContextElement extends ContextElement {
 
 class TextContextElement extends ContextElement {
   constructor(props: object) {
-    super({ ...props, svgElementType: 'text' });
+    super({...props, svgElementType: 'text'});
   }
 
   _toReactElement(): ReactNode {
@@ -156,15 +156,15 @@ export class RnSvgContext extends SVGContext {
     const key = this.nextElementKey ? this.nextElementKey++ : 0;
     switch (svgElementType) {
       case 'svg':
-        return new SVGContextElement({ key: key });
+        return new SVGContextElement({key: key});
       case 'rect':
-        return new RectContextElement({ key: key });
+        return new RectContextElement({key: key});
       case 'path':
-        return new PathContextElement({ key: key });
+        return new PathContextElement({key: key});
       case 'g':
-        return new GContextElement({ key: key });
+        return new GContextElement({key: key});
       case 'text':
-        return new TextContextElement({ key: key });
+        return new TextContextElement({key: key});
     }
 
     throw new Error(`Type ${svgElementType} not implemented.`);

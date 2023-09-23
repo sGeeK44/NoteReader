@@ -14,6 +14,7 @@
   "dependencies": {
     "@babel/plugin-proposal-decorators": "^7.22.15",
     "@react-native-community/cli-doctor": "^11.3.7",
+    "@react-native-community/slider": "^4.4.3",
     "@react-navigation/native-stack": "^6.9.13",
     "@testing-library/jest-native": "^5.4.3",
     "@testing-library/react-native": "^12.2.2",
