@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
 import { MusicScoreView } from '../component/MusicScoreView';
 import { SpeechRecognizer } from '../../domain/services/SpeechRecognizer';
@@ -13,13 +13,14 @@ import { Metronome } from 'app/domain/services/Metronome';
 import { RootStackParamList } from 'app/App';
 import { RouteProp } from '@react-navigation/native';
 import { Button } from 'react-native-paper';
+import { toWords } from 'app/domain/services/Notation';
 
 interface Props {
   route: RouteProp<RootStackParamList, 'TrainScreen'>;
 }
 
 export const TrainScreen = ({ route }: Props) => {
-  const { tempo, nbMeasure, clef } = route.params;
+  const { tempo, nbMeasure, clef, notation } = route.params;
   const speechRecognition = useInjection<SpeechRecognizer>(
     Symbols.SpeechRecognizer,
   );
@@ -72,7 +73,7 @@ export const TrainScreen = ({ route }: Props) => {
               }
             });
             speechRecognition?.start(
-              '["do", "ré", "mi", "fa", "sol", "la", "si"]',
+              toWords(notation),
             );
           }}
         >Start</Button>

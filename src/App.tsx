@@ -14,13 +14,15 @@ import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useAsync } from 'react-async-hook';
 import { TrainScreen } from './ui/screen/TrainScreen';
 import { Clef } from './domain/services/MusicScoreBuilder';
+import { Notation } from './domain/services/Notation';
 
 export type RootStackParamList = {
   MainScreen: undefined;
   TrainScreen: {
     tempo: number;
     nbMeasure: number;
-    clef: Clef
+    clef: Clef;
+    notation: Notation;
   };
 };
 

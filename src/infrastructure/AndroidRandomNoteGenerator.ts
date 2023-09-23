@@ -1,8 +1,8 @@
 import { injectable } from 'inversify';
 import {
   NoteHead,
-  AlphabetNotation,
 } from 'app/domain/services/MusicScoreBuilder';
+import { AlphabetNotation } from 'app/domain/services/Notation';
 import { RandomNoteGenerator } from 'app/domain/services/RandomNoteGenerator';
 
 @injectable()
