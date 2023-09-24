@@ -2,7 +2,7 @@
  * @format
  */
 
-import {AppRegistry} from 'react-native';
+import React, {AppRegistry} from 'react-native';
 import {PaperProvider} from 'react-native-paper';
 import App from './src/App';
 import {name as appName} from './src/app.json';

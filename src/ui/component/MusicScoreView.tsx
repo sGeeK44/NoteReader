@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Dimensions, View, StyleSheet, ScrollView, Text} from 'react-native';
+import {Dimensions, View, StyleSheet, ScrollView} from 'react-native';
 import {MusicScore} from 'app/domain/services/MusicScoreBuilder';
 import {VexflowConverter, VexflowScore} from 'app/vexflow/VexfloxConverter';
 import {RnSvgContext} from 'app/vexflow/RnSvgContext';
@@ -11,16 +11,17 @@ export interface MusicScoreProps {
 }
 
 export const MusicScoreView = ({score, checker}: MusicScoreProps) => {
-  const [, updateState] = React.useState<{}>();
+  const [, updateState] = React.useState<object>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
   const [isLandscape, setIsLandscape] = useState<boolean>();
-  const [rawContext, setRawContext] = useState<RnSvgContext>();
-  const [resultContext, setResultContext] = useState<RnSvgContext>();
-  const [vexflowScore, setvexflowScore] = useState<VexflowScore>();
+  const [scoreSvg] = useState<RnSvgContext>(new RnSvgContext(0, 1000));
+  const [feedbackSvg] = useState<RnSvgContext>(new RnSvgContext(0, 1000));
+  const [vexflowScore, setVexflowScore] = useState<VexflowScore>();
   const styles = StyleSheet.create({
     content: {
       backgroundColor: '#f2f2f2',
     },
+    feedbackScore: {position: 'absolute'},
   });
 
   const converter = new VexflowConverter();
@@ -33,7 +34,7 @@ export const MusicScoreView = ({score, checker}: MusicScoreProps) => {
   }, []);
 
   checker.onGoodNote((measure: number, note: number) => {
-    vexflowScore?.drawGoodNote(resultContext, measure, note);
+    vexflowScore?.drawGoodNote(feedbackSvg, measure, note);
     forceUpdate();
   });
 
@@ -43,13 +44,13 @@ export const MusicScoreView = ({score, checker}: MusicScoreProps) => {
       note: number,
       result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE',
     ) => {
-      resultContext?.clear();
+      feedbackSvg?.clear();
       for (let i = 1; i <= measure; i++) {
-        vexflowScore?.resetNote(resultContext, i);
+        vexflowScore?.resetNote(feedbackSvg, i);
       }
 
       const color = getColor(result);
-      vexflowScore?.drawNote(resultContext, measure, note, color);
+      vexflowScore?.drawNote(feedbackSvg, measure, note, color);
       forceUpdate();
     },
   );
@@ -60,20 +61,18 @@ export const MusicScoreView = ({score, checker}: MusicScoreProps) => {
         style={styles.content}
         onLayout={event => {
           const layout = event.nativeEvent.layout;
-          const rawContext = new RnSvgContext(layout.width, 1000);
-          const resultContext = new RnSvgContext(layout.width, 1000);
-          const vexflowScore = converter.toVexflow(score, {
+          scoreSvg.clear();
+          scoreSvg.setWidth(layout.width);
+          feedbackSvg.setWidth(layout.width);
+          const vfScore = converter.toVexflow(score, {
             width: layout.width - 2,
             measurePerLine: isLandscape ? 5 : 2,
           });
-          vexflowScore?.draw(rawContext);
-
-          setvexflowScore(vexflowScore);
-          setRawContext(rawContext);
-          setResultContext(resultContext);
+          vfScore?.draw(scoreSvg);
+          setVexflowScore(vfScore);
         }}>
-        <View>{rawContext?.render()}</View>
-        <View style={{position: 'absolute'}}>{resultContext?.render()}</View>
+        <View>{scoreSvg?.render()}</View>
+        <View style={styles.feedbackScore}>{feedbackSvg?.render()}</View>
       </View>
     </ScrollView>
   );

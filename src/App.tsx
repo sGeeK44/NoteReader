@@ -6,7 +6,7 @@
  */
 
 import React from 'react';
-import {Provider, useInjection} from 'inversify-react';
+import {Provider} from 'inversify-react';
 import {MainScreen} from './ui/screen/MainScreen';
 import {buildDependencies} from './config/common';
 import {NavigationContainer} from '@react-navigation/native';

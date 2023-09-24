@@ -170,6 +170,12 @@ export class RnSvgContext extends SVGContext {
     throw new Error(`Type ${svgElementType} not implemented.`);
   }
 
+  setWidth(value: number): void {
+    this.getSvg().applyProps({
+      width: value,
+    });
+  }
+
   /**
    * Overriden so that functions inherited from SVGContext can use it.
    * @param element  Element to add attributes to.

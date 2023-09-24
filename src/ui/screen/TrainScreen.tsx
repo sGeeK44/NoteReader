@@ -46,6 +46,11 @@ export const TrainScreen = ({route}: Props) => {
       flex: 1,
       paddingHorizontal: 10,
     },
+    buttons: {
+      flexDirection: 'row',
+      padding: 20,
+      justifyContent: 'space-around',
+    },
     text: {color: 'black', fontSize: 25},
   });
 
@@ -54,12 +59,7 @@ export const TrainScreen = ({route}: Props) => {
       <View style={styles.score}>
         <MusicScoreView score={score} checker={checker} />
       </View>
-      <View
-        style={{
-          flexDirection: 'row',
-          padding: 20,
-          justifyContent: 'space-around',
-        }}>
+      <View style={styles.buttons}>
         <Button
           icon="play"
           mode="contained"

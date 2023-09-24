@@ -4,7 +4,7 @@ export class FakeSoundPlayer implements Metronome {
   init(_name: string): void {
     // do nothing.
   }
-  play(tempo: number): void {
+  play(_tempo: number): void {
     // do nothing.
   }
   stop(): void {

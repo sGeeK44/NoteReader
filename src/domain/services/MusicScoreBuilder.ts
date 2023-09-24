@@ -56,7 +56,7 @@ export class MusicScoreBuilder {
         return {
           notes: [...Array(4)].map(() => {
             return {
-              pitch: trustedSettings.clef == 'treble' ? '4' : '2',
+              pitch: trustedSettings.clef === 'treble' ? '4' : '2',
               notehead: this.randomNoteGenerator.next(),
               duration: 4,
             };

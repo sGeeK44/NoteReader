@@ -11,12 +11,16 @@ export class Checker {
   noteHeaChecker: NoteHeadChecker;
   currentMeasure = 1;
   currentNote = 1;
-  onGoodCallback: (measure: number, note: number) => void = () => {};
+  onGoodCallback: (measure: number, note: number) => void = () => {
+    // Nothing by default
+  };
   onBadCallback: (
     measure: number,
     note: number,
     result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE',
-  ) => void = () => {};
+  ) => void = () => {
+    // Nothing by default
+  };
 
   constructor(
     timeProvider: TimeProvider,
@@ -46,7 +50,7 @@ export class Checker {
       receive,
       expected.value,
     );
-    if (isRigthNote && this.currentMeasure == 1 && this.currentNote == 1) {
+    if (isRigthNote && this.currentMeasure === 1 && this.currentNote === 1) {
       this.timeChecker.start();
       return this.onGoodResult();
     }

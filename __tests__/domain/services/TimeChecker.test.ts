@@ -53,7 +53,7 @@ describe('TimeChecker', () => {
     expect(result).toStrictEqual('ON_TIME');
   });
 
-  it('respond just before on time with default accuracy', () => {
+  it('respond just after on time with default accuracy', () => {
     const timeProvider = new FakeTimeProvider();
     const timechecker = new TimeChecker(timeProvider, 400);
 

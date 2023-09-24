@@ -39,6 +39,8 @@ export const MainScreen = ({ navigation }: Props) => {
     inputWithLabel: { alignItems: 'center' },
     label: { color: 'black', fontSize: 25 },
     secondaryLabel: { color: 'black', fontSize: 12 },
+    sliderContainer: { width: '60%', alignItems: 'center' },
+    slider: { width: '100%' },
   });
 
   return (
@@ -113,10 +115,10 @@ export const MainScreen = ({ navigation }: Props) => {
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Précision</Text>
-          <View style={{ width: '60%', ...styles.inputWithLabel }}>
+          <View style={styles.sliderContainer}>
             <Text style={styles.secondaryLabel}>{accuracy} ms</Text>
             <Slider
-              style={{ width: '100%' }}
+              style={styles.slider}
               onValueChange={setAccuracy}
               value={accuracy}
               step={50}
