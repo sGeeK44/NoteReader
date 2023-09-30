@@ -14,6 +14,7 @@ import {RootStackParamList} from 'app/App';
 import {RouteProp} from '@react-navigation/native';
 import {Button} from 'react-native-paper';
 import {toWords} from 'app/domain/services/Notation';
+import {AndroidRandomRhytmicNoteGenerator} from 'app/infrastructure/AndroidRandomRhytmicFigureGenerator';
 
 interface Props {
   route: RouteProp<RootStackParamList, 'TrainScreen'>;
@@ -31,8 +32,15 @@ export const TrainScreen = ({route}: Props) => {
     Symbols.RandomNoteGenerator,
   );
 
-  const musicScoreBuilder = new MusicScoreBuilder(randomNoteGenerator);
-  const score = musicScoreBuilder.build({measure: nbMeasure, clef: clef});
+  const musicScoreBuilder = new MusicScoreBuilder(
+    randomNoteGenerator,
+    new AndroidRandomRhytmicNoteGenerator(),
+  );
+  const score = musicScoreBuilder.build({
+    measure: nbMeasure,
+    clef: clef,
+    timeSignature: {beat: 4, duration: 4},
+  });
   speechRecognition.init('fr-fr');
 
   const checker = new Checker(timeProvider, score, new Tempo(tempo), accuracy);

@@ -4,10 +4,23 @@ import {
   Notes,
 } from 'app/domain/services/MusicScoreBuilder';
 import {toString} from 'app/domain/value-object/Signature';
-import {Flow, Formatter, Stave, StaveNote, Tickable, Voice} from 'vexflow';
+import {
+  Beam,
+  Dot,
+  Flow,
+  Formatter,
+  GraceNoteGroup,
+  Stave,
+  StaveNote,
+  StemmableNote,
+  Tickable,
+  Voice,
+  VoiceMode,
+} from 'vexflow';
 import {RnSvgContext} from './RnSvgContext';
 
 export class VexflowScore {
+  private formatter: Formatter = new Formatter();
   constructor(private voices: Voice[] = []) {}
 
   addVoice(voice: Voice) {
@@ -22,7 +35,14 @@ export class VexflowScore {
       }
       stave.setContext(context);
       stave.draw();
-      voice.draw(context);
+
+      const beams = this.createBeams(voice);
+      this.formatter.formatToStave([voice], stave, {auto_beam: true});
+
+      voice.setContext(context).draw();
+      beams.forEach(_ => _.setContext(context).draw());
+
+      //Beam.applyAndGetBeams(voice).forEach(_ => _.setContext(context).draw());
     });
   }
 
@@ -64,6 +84,39 @@ export class VexflowScore {
 
   setColorNote(note: Tickable, color: string) {
     note.setStyle({fillStyle: color, strokeStyle: color});
+  }
+
+  createBeams(voice: Voice): Beam[] {
+    return this.bunchBeamNotes(voice.getTickables() as StaveNote[]).map(
+      _ => new Beam(_),
+    );
+  }
+
+  bunchBeamNotes(notes: StaveNote[]): StaveNote[][] {
+    const result: StaveNote[][] = [];
+    let chunk: StaveNote[] = [];
+    for (let i = 0; i < notes.length; i++) {
+      const duration = notes[i].getDuration();
+      if (!this.canBeBeam(duration)) {
+        this.addInResult(chunk, result);
+        chunk = [];
+      } else {
+        chunk.push(notes[i]);
+      }
+    }
+
+    this.addInResult(chunk, result);
+    return result;
+  }
+
+  private canBeBeam(duration: string) {
+    return parseInt(duration, 10) > 4;
+  }
+
+  private addInResult(chunk: StaveNote[], result: StaveNote[][]) {
+    if (chunk.length > 1) {
+      result.push(chunk);
+    }
   }
 }
 
@@ -114,7 +167,9 @@ export class VexflowConverter {
       stave.setClef(score.clef);
       stave.setTimeSignature(toString(score.timeSignature));
     }
-    return this.createNotes(stave, score, notes);
+    const voice = this.createNotes(stave, score, notes);
+    voice.setStave(stave);
+    return voice;
   }
 
   createNotes(stave: Stave, score: MusicScore, notes: Notes[]): Voice {
@@ -125,18 +180,21 @@ export class VexflowConverter {
       beat_value: score.timeSignature.duration,
       resolution: Flow.RESOLUTION,
     });
+
+    voice.setMode(VoiceMode.FULL);
     voice.addTickables([...notesToDraw]);
-    this.formatter.formatToStave([voice], stave, {auto_beam: true});
-    voice.setStave(stave);
+
     return voice;
   }
 
   createNote(score: MusicScore, note: Notes): StaveNote {
-    const result = new StaveNote({
+    let result = new StaveNote({
       clef: score.clef,
       keys: [`${note.notehead}/${note.pitch}`],
-      duration: note.duration.toString(),
+      duration: this.toBasicRhytm(note.duration).toString(),
     });
+    result = this.addDot(note, result);
+
     return result;
   }
 
@@ -147,5 +205,37 @@ export class VexflowConverter {
       result.push(chunk);
     }
     return result;
+  }
+
+  addDot(note: Notes, result: StaveNote): StaveNote {
+    if (
+      note.duration === 1 ||
+      note.duration === 2 ||
+      note.duration === 4 ||
+      note.duration === 8 ||
+      note.duration === 16 ||
+      note.duration === 32
+    ) {
+      return result;
+    }
+
+    Dot.buildAndAttach([result]);
+    return result;
+  }
+
+  toBasicRhytm(duration: number) {
+    switch (duration) {
+      case 1.5:
+        return 1;
+      case 3:
+        return 2;
+      case 6:
+        return 4;
+      case 12:
+        return 8;
+      case 24:
+        return 16;
+    }
+    return duration;
   }
 }

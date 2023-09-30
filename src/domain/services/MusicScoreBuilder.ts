@@ -1,13 +1,14 @@
 import {Signature} from '../value-object/Signature';
-import {AlphabetNotation} from './Notation';
+import {Beat, toBeatValue} from './Beat';
+import {AlphabetNotations} from './Notation';
 import {RandomNoteGenerator} from './RandomNoteGenerator';
+import {RandomRhytmicNoteGenerator} from './RandomRhytmicNoteGenerator';
+import {toDuration, toRhtymicFigures} from './RhytmicNote';
 
 export type Pitch = '1' | '2' | '3' | '4' | '5' | '6';
-export type NoteHead = (typeof AlphabetNotation)[number];
-export type NoteDuration = 1 | 2 | 4 | 8 | 16 | 32;
+export type NoteHead = (typeof AlphabetNotations)[number];
+export type NoteDuration = 1 | 2 | 3 | 4 | 6 | 8 | 12 | 16 | 32;
 export type Clef = 'treble' | 'bass';
-export type Beat = 1 | 2 | 3 | 4 | 6 | 9 | 12;
-
 export interface Notes {
   pitch: Pitch;
   notehead: NoteHead;
@@ -25,44 +26,80 @@ export interface Measure {
 }
 
 export interface Settings {
-  clef?: Clef;
-  measure?: number;
-  timeSignature?: {
-    beat?: Beat;
-    duration?: NoteDuration;
+  clef: Clef;
+  measure: number;
+  timeSignature: {
+    beat: Beat;
+    duration: NoteDuration;
   };
 }
 
 export class MusicScoreBuilder {
-  constructor(private randomNoteGenerator: RandomNoteGenerator) {}
+  constructor(
+    private randomNoteGenerator: RandomNoteGenerator,
+    private randomRhytmicNoteGenerator: RandomRhytmicNoteGenerator,
+  ) {}
 
-  build(settings?: Settings): MusicScore {
-    const trustedSettings = {
-      clef: settings?.clef ?? 'treble',
-      measures: settings?.measure ?? 1,
-      timeSignature: {
-        beat: settings?.timeSignature?.beat ?? 4,
-        duration: settings?.timeSignature?.duration ?? 4,
-      },
-    };
+  build(settings: Settings): MusicScore {
+    const measureBuilder = new MeasureBuilder(
+      this.randomNoteGenerator,
+      this.randomRhytmicNoteGenerator,
+    );
 
     return {
-      clef: trustedSettings.clef,
+      clef: settings.clef,
       timeSignature: {
-        beat: trustedSettings.timeSignature.beat,
-        duration: trustedSettings.timeSignature.duration,
+        beat: settings.timeSignature.beat,
+        duration: settings.timeSignature.duration,
       },
-      measures: [...Array(trustedSettings.measures)].map(() => {
-        return {
-          notes: [...Array(4)].map(() => {
-            return {
-              pitch: trustedSettings.clef === 'treble' ? '4' : '2',
-              notehead: this.randomNoteGenerator.next(),
-              duration: 4,
-            };
-          }),
-        };
-      }),
+      measures: [...Array(settings.measure)].map(() =>
+        measureBuilder.build(settings.timeSignature),
+      ),
     };
+  }
+}
+
+export class MeasureBuilder {
+  constructor(
+    private randomNoteGenerator: RandomNoteGenerator,
+    private randomRhytmicNoteGenerator: RandomRhytmicNoteGenerator,
+  ) {}
+
+  build(signature: {beat: Beat; duration: NoteDuration}): Measure {
+    const result = {
+      notes: [] as Notes[],
+    };
+    let total = 0;
+    do {
+      const notes = this.buidlNote(signature.beat - total, signature);
+      result.notes.push(...notes);
+      total += this.sumDuration(notes, signature);
+    } while (total < signature.beat);
+
+    return result;
+  }
+
+  private sumDuration(notes: Notes[], signature: Signature): number {
+    return notes.reduce(
+      (sum, note) => sum + toBeatValue(note.duration, signature.duration),
+      0,
+    );
+  }
+
+  private buidlNote(beatRemaining: number, signature: Signature): Notes[] {
+    const rhytmicNote = this.randomRhytmicNoteGenerator.next(
+      beatRemaining,
+      signature.duration,
+    );
+
+    return (
+      toRhtymicFigures(rhytmicNote)?.map(rhytmicFigure => {
+        return {
+          pitch: '4',
+          notehead: this.randomNoteGenerator.next(),
+          duration: toDuration(rhytmicFigure) ?? 1,
+        } as Notes;
+      }) ?? []
+    );
   }
 }

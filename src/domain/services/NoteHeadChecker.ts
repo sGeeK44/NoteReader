@@ -1,7 +1,11 @@
 import {NoteHead} from './MusicScoreBuilder';
-import {SyllaAlphaMap} from './Notation';
-import {SyllabicNotation} from './Notation';
-import {AlphabetNotation} from './Notation';
+import {
+  SyllabicNotations,
+  SyllabicNotation,
+  AlphabetNotations,
+  AlphabetNotation,
+  SyllaAlphaMap,
+} from './Notation';
 
 export class NoteHeadChecker {
   isRigthNote(receive: string, expected: NoteHead) {
@@ -9,13 +13,21 @@ export class NoteHeadChecker {
       return receive === expected;
     }
 
-    const index = SyllabicNotation.indexOf(receive);
-    const alphabetNote = SyllaAlphaMap.get(SyllabicNotation[index]);
+    if (!this.isSyllabic(receive)) {
+      return false;
+    }
+
+    const index = SyllabicNotations.indexOf(receive as SyllabicNotation);
+    const alphabetNote = SyllaAlphaMap.get(SyllabicNotations[index]);
 
     return alphabetNote === expected;
   }
 
   isAlphabet(value: string): boolean {
-    return AlphabetNotation.indexOf(value) > -1;
+    return AlphabetNotations.includes(value as AlphabetNotation);
+  }
+
+  isSyllabic(value: string): boolean {
+    return SyllabicNotations.includes(value as SyllabicNotation);
   }
 }

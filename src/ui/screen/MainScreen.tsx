@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { SafeAreaView, StyleSheet, View } from 'react-native';
-import { NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from 'app/App';
+import React, {useState} from 'react';
+import {SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
+import {NavigationProp} from '@react-navigation/native';
+import {RootStackParamList} from 'app/App';
 import {
   Button,
   IconButton,
@@ -9,17 +9,17 @@ import {
   Text,
   TextInput,
 } from 'react-native-paper';
-import { Clef } from 'app/domain/services/MusicScoreBuilder';
-import { Notation } from 'app/domain/services/Notation';
+import {Clef} from 'app/domain/services/MusicScoreBuilder';
+import {Notation} from 'app/domain/services/Notation';
 import Slider from '@react-native-community/slider';
 
 export interface Props {
   navigation: NavigationProp<RootStackParamList>;
 }
 
-export const MainScreen = ({ navigation }: Props) => {
+export const MainScreen = ({navigation}: Props) => {
   const [tempo, setTempo] = useState<number | undefined>(60);
-  const [nbMeasure, setNbMeasure] = useState<number | undefined>(20);
+  const [nbMeasure, setNbMeasure] = useState<number | undefined>(6);
   const [clef, setClef] = useState<Clef>('treble');
   const [notation, setNotation] = useState<Notation>('syllabic');
   const [accuracy, setAccuracy] = useState<number>(300);
@@ -36,16 +36,16 @@ export const MainScreen = ({ navigation }: Props) => {
       alignItems: 'center',
       margin: 20,
     },
-    inputWithLabel: { alignItems: 'center' },
-    label: { color: 'black', fontSize: 25 },
-    secondaryLabel: { color: 'black', fontSize: 12 },
-    sliderContainer: { width: '60%', alignItems: 'center' },
-    slider: { width: '100%' },
+    inputWithLabel: {alignItems: 'center'},
+    label: {color: 'black', fontSize: 25},
+    secondaryLabel: {color: 'black', fontSize: 12},
+    sliderContainer: {width: '60%', alignItems: 'center'},
+    slider: {width: '100%'},
   });
 
   return (
     <SafeAreaView style={styles.content}>
-      <View>
+      <ScrollView>
         <View style={styles.row}>
           <Text style={styles.label}>Clé</Text>
           <View style={styles.inputWithLabel}>
@@ -127,7 +127,7 @@ export const MainScreen = ({ navigation }: Props) => {
             />
           </View>
         </View>
-      </View>
+      </ScrollView>
       <Button
         icon="music"
         mode="contained"
