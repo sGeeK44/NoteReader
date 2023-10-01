@@ -1,6 +1,8 @@
-import {NoteDuration} from './MusicScoreBuilder';
+import {Signature} from '../value-object/Signature';
+import {Measure, NoteDuration} from './MusicScoreBuilder';
 
 export type Beat = 1 | 2 | 3 | 4 | 6 | 9 | 12;
+
 export function toBeatValue(
   noteDurations: NoteDuration,
   timeUnit: NoteDuration,
@@ -22,4 +24,23 @@ export function toBeatValue(
   }
 
   return toBeatValue(noteDurations, (timeUnit / 2) as NoteDuration) * 2;
+}
+
+export function count(measure: Measure, noteIndex: number): number {
+  let result = 0;
+  for (let i = 0; i < noteIndex; i++) {
+    result += toBeatValue(measure.notes[i].duration, 4);
+  }
+  return result;
+}
+
+export function countBeatBefore(
+  signature: Signature,
+  measure: Measure,
+  measureIndex: number,
+  noteIndex: number,
+): number {
+  const nbBeatBefore = measureIndex * signature.beat;
+  const nbBeatInMeasure = count(measure, noteIndex);
+  return nbBeatBefore + nbBeatInMeasure;
 }

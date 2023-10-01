@@ -3,14 +3,15 @@ import {MusicScore} from './MusicScoreBuilder';
 import {TimeProvider} from './TimeProvider';
 import {TimeChecker} from './TimeChecker';
 import {NoteHeadChecker} from './NoteHeadChecker';
+import {countBeatBefore} from './Beat';
 
 export type CheckResult = 'GOOD' | 'BAD' | 'WIN';
 
 export class Checker {
   timeChecker: TimeChecker;
   noteHeaChecker: NoteHeadChecker;
-  currentMeasure = 1;
-  currentNote = 1;
+  currentMeasureIndex = 0;
+  currentNoteIndex = 0;
   onGoodCallback: (measure: number, note: number) => void = () => {
     // Nothing by default
   };
@@ -33,32 +34,37 @@ export class Checker {
   }
 
   start() {
-    this.currentMeasure = 1;
-    this.currentNote = 1;
+    this.currentMeasureIndex = 0;
+    this.currentNoteIndex = 0;
   }
 
   next(receive: string): CheckResult {
+    const actualMeasure = this.score.measures[this.currentMeasureIndex];
+    const actualNote = actualMeasure.notes[this.currentNoteIndex];
     const expected = {
-      measure: this.currentMeasure,
-      value:
-        this.score.measures[this.currentMeasure - 1].notes[this.currentNote - 1]
-          .notehead,
-      measurePosition: this.currentNote,
+      value: actualNote.notehead,
       scoreSignature: this.score.timeSignature,
     };
+
     const isRigthNote = this.noteHeaChecker.isRigthNote(
       receive,
       expected.value,
     );
-    if (isRigthNote && this.currentMeasure === 1 && this.currentNote === 1) {
+    if (isRigthNote && this.readFirstNote()) {
       this.timeChecker.start();
       return this.onGoodResult();
     }
 
-    const nbBeatBefore = (expected.measure - 1) * expected.scoreSignature.beat;
-    const isOnTime = this.timeChecker.isOnTime(
-      (nbBeatBefore + expected.measurePosition - 1) * this.tempo.toBpMs(),
+    const nbBeatBefore = countBeatBefore(
+      this.score.timeSignature,
+      actualMeasure,
+      this.currentMeasureIndex,
+      this.currentNoteIndex,
     );
+    const isOnTime = this.timeChecker.isOnTime(
+      nbBeatBefore * this.tempo.toBpMs(),
+    );
+
     if (!isRigthNote) {
       return this.onBadResult('BAD_NOTE');
     }
@@ -66,14 +72,23 @@ export class Checker {
       return this.onBadResult(isOnTime);
     }
 
-    if (
-      this.currentMeasure === this.score.measures.length &&
-      this.currentNote === this.score.timeSignature.beat
-    ) {
+    if (this.readLastNote()) {
       return this.onWin();
     }
 
     return this.onGoodResult();
+  }
+
+  readLastNote() {
+    return (
+      this.currentMeasureIndex === this.score.measures.length - 1 &&
+      this.currentNoteIndex ===
+        this.score.measures[this.currentMeasureIndex].notes.length - 1
+    );
+  }
+
+  readFirstNote(): boolean {
+    return this.currentMeasureIndex === 0 && this.currentNoteIndex === 0;
   }
 
   onGoodNote(onGoodCallback: (measure: number, note: number) => void) {
@@ -91,25 +106,28 @@ export class Checker {
   }
 
   private onWin(): 'WIN' {
-    this.currentMeasure = 1;
-    this.currentNote = 1;
+    this.currentMeasureIndex = 0;
+    this.currentNoteIndex = 0;
     return 'WIN';
   }
 
   private onBadResult(result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE'): 'BAD' {
-    this.onBadCallback(this.currentMeasure, this.currentNote, result);
-    this.currentMeasure = 1;
-    this.currentNote = 1;
+    this.onBadCallback(this.currentMeasureIndex, this.currentNoteIndex, result);
+    this.currentMeasureIndex = 0;
+    this.currentNoteIndex = 0;
     this.timeChecker.reset();
     return 'BAD';
   }
 
   private onGoodResult(): 'GOOD' {
-    this.onGoodCallback(this.currentMeasure, this.currentNote);
-    this.currentNote++;
-    if (this.currentNote > this.score.timeSignature.beat) {
-      this.currentNote = 1;
-      this.currentMeasure++;
+    this.onGoodCallback(this.currentMeasureIndex, this.currentNoteIndex);
+    this.currentNoteIndex++;
+    if (
+      this.currentNoteIndex >
+      this.score.measures[this.currentMeasureIndex].notes.length - 1
+    ) {
+      this.currentNoteIndex = 0;
+      this.currentMeasureIndex++;
     }
     return 'GOOD';
   }

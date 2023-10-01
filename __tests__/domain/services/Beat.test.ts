@@ -1,7 +1,7 @@
 import {describe, it, expect} from '@jest/globals';
-import {toBeatValue} from 'app/domain/services/Beat';
+import {toBeatValue, count} from 'app/domain/services/Beat';
 
-describe('Convert note duration to beat value', () => {
+describe('Convert note duration to beat value with quarter for time unit ', () => {
   it('whole', () => {
     const result = toBeatValue(1, 4);
 
@@ -54,5 +54,54 @@ describe('Convert note duration to beat value', () => {
     const result = toBeatValue(32, 4);
 
     expect(result).toStrictEqual(0.125);
+  });
+});
+
+describe('Convert note duration to beat value with half for time unit ', () => {
+  it('whole', () => {
+    const result = toBeatValue(1, 2);
+
+    expect(result).toStrictEqual(2);
+  });
+});
+
+describe('Compute beat before note', () => {
+  it('', () => {
+    const result = count(
+      {
+        notes: [{notehead: 'a', duration: 4, pitch: '4'}],
+      },
+      0,
+    );
+
+    expect(result).toStrictEqual(0);
+  });
+
+  it('', () => {
+    const result = count(
+      {
+        notes: [
+          {notehead: 'a', duration: 4, pitch: '4'},
+          {notehead: 'a', duration: 4, pitch: '4'},
+        ],
+      },
+      1,
+    );
+
+    expect(result).toStrictEqual(1);
+  });
+
+  it('', () => {
+    const result = count(
+      {
+        notes: [
+          {notehead: 'a', duration: 6, pitch: '4'},
+          {notehead: 'a', duration: 8, pitch: '4'},
+        ],
+      },
+      1,
+    );
+
+    expect(result).toStrictEqual(1.5);
   });
 });

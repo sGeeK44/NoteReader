@@ -45,7 +45,7 @@ export const MusicScoreView = ({score, checker}: MusicScoreProps) => {
       result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE',
     ) => {
       feedbackSvg?.clear();
-      for (let i = 1; i <= measure; i++) {
+      for (let i = 0; i <= measure; i++) {
         vexflowScore?.resetNote(feedbackSvg, i);
       }
 
@@ -54,9 +54,6 @@ export const MusicScoreView = ({score, checker}: MusicScoreProps) => {
       forceUpdate();
     },
   );
-
-  console.log(score);
-  score.measures.forEach(_ => console.log(_.notes));
 
   return (
     <ScrollView>

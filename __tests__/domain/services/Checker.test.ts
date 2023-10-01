@@ -351,3 +351,69 @@ describe('Listen result.', () => {
     checker.next('a');
   });
 });
+
+describe('With different duration', () => {
+  it('Only whole', () => {
+    const timeProvider = new FakeTimeProvider();
+    const checker = new Checker(
+      timeProvider,
+      {
+        clef: 'treble',
+        timeSignature: {
+          beat: 4,
+          duration: 4,
+        },
+        measures: [
+          {
+            notes: [{notehead: 'a', duration: 1, pitch: '1'}],
+          },
+          {
+            notes: [{notehead: 'a', duration: 1, pitch: '1'}],
+          },
+        ],
+      },
+      new Tempo(60),
+      400,
+    );
+
+    checker.start();
+    checker.next('a');
+
+    timeProvider.setNow(4000);
+    expect(checker.next('a')).toStrictEqual('WIN');
+  });
+
+  it('xx', () => {
+    const timeProvider = new FakeTimeProvider();
+    const checker = new Checker(
+      timeProvider,
+      {
+        clef: 'treble',
+        timeSignature: {
+          beat: 4,
+          duration: 4,
+        },
+        measures: [
+          {
+            notes: [
+              {notehead: 'a', duration: 6, pitch: '1'},
+              {notehead: 'a', duration: 8, pitch: '1'},
+              {notehead: 'a', duration: 12, pitch: '1'},
+              {notehead: 'a', duration: 16, pitch: '1'},
+              {notehead: 'a', duration: 12, pitch: '1'},
+              {notehead: 'a', duration: 16, pitch: '1'},
+            ],
+          },
+        ],
+      },
+      new Tempo(60),
+      400,
+    );
+
+    checker.start();
+    checker.next('a');
+
+    timeProvider.setNow(1500);
+    expect(checker.next('a')).toStrictEqual('GOOD');
+  });
+});

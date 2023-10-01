@@ -9,10 +9,8 @@ import {
   Dot,
   Flow,
   Formatter,
-  GraceNoteGroup,
   Stave,
   StaveNote,
-  StemmableNote,
   Tickable,
   Voice,
   VoiceMode,
@@ -63,7 +61,7 @@ export class VexflowScore {
   }
 
   resetNote(context: RnSvgContext | undefined, measure: number) {
-    const voice = this.voices[measure - 1];
+    const voice = this.voices[measure];
     voice.getTickables().forEach(note => {
       this.setColorNote(note, 'black');
     });
@@ -76,8 +74,8 @@ export class VexflowScore {
     note: number,
     color: string,
   ) {
-    const voice = this.voices[measure - 1];
-    const good = voice.getTickables()[note - 1];
+    const voice = this.voices[measure];
+    const good = voice.getTickables()[note];
     this.setColorNote(good, color);
     voice.draw(context);
   }
