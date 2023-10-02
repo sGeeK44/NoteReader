@@ -93,13 +93,17 @@ export class VexflowScore {
   bunchBeamNotes(notes: StaveNote[]): StaveNote[][] {
     const result: StaveNote[][] = [];
     let chunk: StaveNote[] = [];
-    for (let i = 0; i < notes.length; i++) {
-      const duration = notes[i].getDuration();
+    for (const note of notes) {
+      const duration = note.getDuration();
       if (!this.canBeBeam(duration)) {
         this.addInResult(chunk, result);
         chunk = [];
       } else {
-        chunk.push(notes[i]);
+        chunk.push(note);
+        if (chunk.length === 4) {
+          this.addInResult(chunk, result);
+          chunk = [];
+        }
       }
     }
 

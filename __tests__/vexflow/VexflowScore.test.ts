@@ -1,11 +1,9 @@
 import {describe, it, expect} from '@jest/globals';
-import {MusicScore, Notes} from 'app/domain/services/MusicScoreBuilder';
-import {RnSvgContext} from 'app/vexflow/RnSvgContext';
-import {VexflowConverter, VexflowScore} from 'app/vexflow/VexfloxConverter';
-import {Beam, Stave, StaveNote} from 'vexflow';
+import {VexflowScore} from 'app/vexflow/VexfloxConverter';
+import {StaveNote} from 'vexflow';
 
-describe('', () => {
-  it('', () => {
+describe('Beams note toogether', () => {
+  it('No beams note', () => {
     const notes: StaveNote[] = [
       new StaveNote({clef: 'bass', keys: [`a/4`], duration: '2'}),
       new StaveNote({clef: 'bass', keys: [`a/4`], duration: '2'}),
@@ -18,7 +16,7 @@ describe('', () => {
     expect(result).toStrictEqual([]);
   });
 
-  it('', () => {
+  it('Only two note that should be beam', () => {
     const notes: StaveNote[] = [
       new StaveNote({clef: 'bass', keys: [`a/4`], duration: '8'}),
       new StaveNote({clef: 'bass', keys: [`a/4`], duration: '8'}),
@@ -30,7 +28,7 @@ describe('', () => {
     expect(result).toStrictEqual([notes]);
   });
 
-  it('', () => {
+  it('Two note beams followed by two other normal', () => {
     const notes: StaveNote[] = [
       new StaveNote({clef: 'bass', keys: [`a/4`], duration: '8'}),
       new StaveNote({clef: 'bass', keys: [`a/4`], duration: '8'}),
@@ -44,7 +42,7 @@ describe('', () => {
     expect(result).toStrictEqual([[notes[0], notes[1]]]);
   });
 
-  it('', () => {
+  it('Two note beams after by two other normal', () => {
     const notes: StaveNote[] = [
       new StaveNote({clef: 'bass', keys: [`a/4`], duration: '4'}),
       new StaveNote({clef: 'bass', keys: [`a/4`], duration: '4'}),
@@ -58,7 +56,7 @@ describe('', () => {
     expect(result).toStrictEqual([[notes[2], notes[3]]]);
   });
 
-  it('', () => {
+  it('Two groups of two note beams separated by one normal', () => {
     const notes: StaveNote[] = [
       new StaveNote({clef: 'bass', keys: [`a/4`], duration: '8'}),
       new StaveNote({clef: 'bass', keys: [`a/4`], duration: '8'}),
@@ -76,7 +74,7 @@ describe('', () => {
     ]);
   });
 
-  it('', () => {
+  it('One note should not be beams', () => {
     const notes: StaveNote[] = [
       new StaveNote({clef: 'bass', keys: [`a/4`], duration: '8'}),
       new StaveNote({clef: 'bass', keys: [`a/4`], duration: '4'}),
@@ -88,18 +86,22 @@ describe('', () => {
     expect(result).toStrictEqual([]);
   });
 
-  it('', () => {
+  it('Beams maximum of 4 eighth toogether', () => {
     const notes: StaveNote[] = [
       new StaveNote({clef: 'bass', keys: [`a/4`], duration: '8'}),
       new StaveNote({clef: 'bass', keys: [`a/4`], duration: '8'}),
-      new StaveNote({clef: 'bass', keys: [`a/4`], duration: '4'}),
-      new StaveNote({clef: 'bass', keys: [`a/4`], duration: '4'}),
+      new StaveNote({clef: 'bass', keys: [`a/4`], duration: '8'}),
+      new StaveNote({clef: 'bass', keys: [`a/4`], duration: '8'}),
+      new StaveNote({clef: 'bass', keys: [`a/4`], duration: '8'}),
       new StaveNote({clef: 'bass', keys: [`a/4`], duration: '8'}),
     ];
 
     const vexflow = new VexflowScore();
     const result = vexflow.bunchBeamNotes(notes);
-
-    expect(result).toStrictEqual([[notes[0], notes[1]]]);
+    console.log(result.length, result[0].length);
+    expect(result).toStrictEqual([
+      [notes[0], notes[1], notes[2], notes[3]],
+      [notes[4], notes[5]],
+    ]);
   });
 });
