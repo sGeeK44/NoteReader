@@ -1,9 +1,10 @@
 import {
+  Clef,
   Measure,
   MusicScore,
   Notes,
 } from 'app/domain/services/MusicScoreBuilder';
-import {toString} from 'app/domain/value-object/Signature';
+import {Signature, toString} from 'app/domain/value-object/Signature';
 import {
   Beam,
   Dot,
@@ -18,11 +19,14 @@ import {
 import {RnSvgContext} from './RnSvgContext';
 
 export class VexflowScore {
-  private formatter: Formatter = new Formatter();
-  constructor(private voices: Voice[] = []) {}
+  constructor(private voices: Voice[] = [], private beams: Beam[] = []) {}
 
   addVoice(voice: Voice) {
     this.voices.push(voice);
+  }
+
+  addBeams(beams: Beam[]) {
+    this.beams.push(...beams);
   }
 
   draw(context: RnSvgContext | undefined) {
@@ -34,14 +38,9 @@ export class VexflowScore {
       stave.setContext(context);
       stave.draw();
 
-      const beams = this.createBeams(voice);
-      this.formatter.formatToStave([voice], stave, {auto_beam: true});
-
       voice.setContext(context).draw();
-      beams.forEach(_ => _.setContext(context).draw());
-
-      //Beam.applyAndGetBeams(voice).forEach(_ => _.setContext(context).draw());
     });
+    this.beams.forEach(_ => _.setContext(context).draw());
   }
 
   drawGoodNote(
@@ -83,43 +82,6 @@ export class VexflowScore {
   setColorNote(note: Tickable, color: string) {
     note.setStyle({fillStyle: color, strokeStyle: color});
   }
-
-  createBeams(voice: Voice): Beam[] {
-    return this.bunchBeamNotes(voice.getTickables() as StaveNote[]).map(
-      _ => new Beam(_),
-    );
-  }
-
-  bunchBeamNotes(notes: StaveNote[]): StaveNote[][] {
-    const result: StaveNote[][] = [];
-    let chunk: StaveNote[] = [];
-    for (const note of notes) {
-      const duration = note.getDuration();
-      if (!this.canBeBeam(duration)) {
-        this.addInResult(chunk, result);
-        chunk = [];
-      } else {
-        chunk.push(note);
-        if (chunk.length === 4) {
-          this.addInResult(chunk, result);
-          chunk = [];
-        }
-      }
-    }
-
-    this.addInResult(chunk, result);
-    return result;
-  }
-
-  private canBeBeam(duration: string) {
-    return parseInt(duration, 10) > 4;
-  }
-
-  private addInResult(chunk: StaveNote[], result: StaveNote[][]) {
-    if (chunk.length > 1) {
-      result.push(chunk);
-    }
-  }
 }
 
 export class VexflowConverter {
@@ -135,15 +97,21 @@ export class VexflowConverter {
     const result = new VexflowScore();
     staveLines.forEach(line => {
       let x = 0;
-      let voice: Voice;
       line.forEach((measure, i) => {
-        voice = this.createStave(score, measure.notes, x, y, staveWidth);
+        const [voice, beams] = this.createStave(
+          score,
+          measure,
+          x,
+          y,
+          staveWidth,
+        );
         const stave = voice.getStave();
         if (stave === undefined) {
           throw new Error();
         }
         x += stave.getWidth();
         result.addVoice(voice);
+        result.addBeams(beams);
         if (i === line.length - 1) {
           y += stave.getHeight();
         }
@@ -152,34 +120,40 @@ export class VexflowConverter {
     return result;
   }
 
-  drawGoodNote(score: MusicScore, measure: Measure): void {
-    this.createStave(score, measure.notes, 0, 0, 200);
-  }
-
   createStave(
     score: MusicScore,
-    notes: Notes[],
+    measure: Measure,
     x: number,
     y: number,
     staveWidth: number,
-  ): Voice {
+  ): [Voice, Beam[]] {
     const stave = new Stave(x, y, staveWidth);
 
     if (x === 0 && y === 0) {
       stave.setClef(score.clef);
       stave.setTimeSignature(toString(score.timeSignature));
     }
-    const voice = this.createNotes(stave, score, notes);
+    const voice = this.createVoice(
+      score.clef,
+      score.timeSignature,
+      measure.notes,
+    );
     voice.setStave(stave);
-    return voice;
+
+    const beams = this.createBeams(
+      measure,
+      voice.getTickables() as StaveNote[],
+    ).map(_ => new Beam(_));
+    this.formatter.formatToStave([voice], stave, {auto_beam: true});
+    return [voice, beams];
   }
 
-  createNotes(stave: Stave, score: MusicScore, notes: Notes[]): Voice {
-    const notesToDraw = notes.map(note => this.createNote(score, note));
+  createVoice(clef: Clef, timeSignature: Signature, notes: Notes[]): Voice {
+    const notesToDraw = notes.map(note => this.createNote(clef, note));
 
     const voice = new Voice({
-      num_beats: score.timeSignature.beat,
-      beat_value: score.timeSignature.duration,
+      num_beats: timeSignature.beat,
+      beat_value: timeSignature.duration,
       resolution: Flow.RESOLUTION,
     });
 
@@ -189,9 +163,9 @@ export class VexflowConverter {
     return voice;
   }
 
-  createNote(score: MusicScore, note: Notes): StaveNote {
+  createNote(clef: Clef, note: Notes): StaveNote {
     let result = new StaveNote({
-      clef: score.clef,
+      clef: clef,
       keys: [`${note.notehead}/${note.pitch}`],
       duration: this.toBasicRhytm(note.duration).toString(),
     });
@@ -223,6 +197,37 @@ export class VexflowConverter {
 
     Dot.buildAndAttach([result]);
     return result;
+  }
+
+  createBeams(measure: Measure, notes: StaveNote[]): StaveNote[][] {
+    const result: StaveNote[][] = [];
+    let chunk: StaveNote[] = [];
+    for (let i = 0; i < measure.notes.length; i++) {
+      const note = measure.notes[i];
+      if (!this.canBeBeam(note.duration)) {
+        this.addInResult(chunk, result);
+        chunk = [];
+      } else {
+        chunk.push(notes[i]);
+        if (chunk.length === 4) {
+          this.addInResult(chunk, result);
+          chunk = [];
+        }
+      }
+    }
+
+    this.addInResult(chunk, result);
+    return result;
+  }
+
+  private canBeBeam(duration: number) {
+    return duration >= 8;
+  }
+
+  private addInResult(chunk: StaveNote[], result: StaveNote[][]) {
+    if (chunk.length > 1) {
+      result.push(chunk);
+    }
   }
 
   toBasicRhytm(duration: number) {
