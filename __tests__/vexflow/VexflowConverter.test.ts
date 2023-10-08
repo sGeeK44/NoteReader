@@ -188,7 +188,7 @@ describe('Beams note toogether', () => {
     const measure: Measure = {
       notes: [
         {duration: 6, notehead: 'a', pitch: '4'},
-        {duration: 4, notehead: 'a', pitch: '4'},
+        {duration: 8, notehead: 'a', pitch: '4'},
       ],
     };
     const notes = createNotes(measure);
@@ -214,7 +214,8 @@ describe('Beams note toogether', () => {
     const beams = vexflow.createBeams(measure, notes);
     console.log(beams.length);
     expect(beams).toStrictEqual([
-      [notes[0], notes[1], notes[2], notes[3]],
+      [notes[0], notes[1]],
+      [notes[2], notes[3]],
       [notes[4], notes[5]],
     ]);
   });
@@ -222,7 +223,7 @@ describe('Beams note toogether', () => {
   it('Beams should not denature rythmic note', () => {
     const measure: Measure = {
       notes: [
-        {duration: 4, notehead: 'a', pitch: '4'},
+        {duration: 6, notehead: 'a', pitch: '4'},
         {duration: 8, notehead: 'a', pitch: '4'},
         {duration: 12, notehead: 'a', pitch: '4'},
         {duration: 16, notehead: 'a', pitch: '4'},
@@ -232,9 +233,6 @@ describe('Beams note toogether', () => {
 
     const beams = vexflow.createBeams(measure, notes);
 
-    expect(beams).toStrictEqual([
-      [notes[0], notes[1]],
-      [notes[2], notes[3]],
-    ]);
+    expect(beams).toStrictEqual([[notes[2], notes[3]]]);
   });
 });

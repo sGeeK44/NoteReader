@@ -39,6 +39,7 @@ export type RhytmicNote = (typeof RhytmicNotes)[number];
 export const RhytmicNoteFigureMap = new Map<RhytmicNote, RhytmicFigure[]>([
   ['quarter', ['quarter']],
   ['half', ['half']],
+  ['half-dotted', ['half-dotted']],
   ['whole', ['whole']],
   ['double-eighth', ['eighth', 'eighth']],
   ['eighth-dotted-double', ['eighth-dotted', 'sixteenth']],

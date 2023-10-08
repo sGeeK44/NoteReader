@@ -17,6 +17,7 @@ import {
   VoiceMode,
 } from 'vexflow';
 import {RnSvgContext} from './RnSvgContext';
+import {RhytmicNoteRecognizer} from './RhytmicNoteRecognizer';
 
 export class VexflowScore {
   constructor(private voices: Voice[] = [], private beams: Beam[] = []) {}
@@ -86,6 +87,8 @@ export class VexflowScore {
 
 export class VexflowConverter {
   private formatter: Formatter = new Formatter();
+  private rhytmicNoteRecognizer: RhytmicNoteRecognizer =
+    new RhytmicNoteRecognizer();
 
   toVexflow(
     score: MusicScore,
@@ -202,21 +205,22 @@ export class VexflowConverter {
   createBeams(measure: Measure, notes: StaveNote[]): StaveNote[][] {
     const result: StaveNote[][] = [];
     let chunk: StaveNote[] = [];
-    for (let i = 0; i < measure.notes.length; i++) {
-      const note = measure.notes[i];
-      if (!this.canBeBeam(note.duration)) {
-        this.addInResult(chunk, result);
-        chunk = [];
-      } else {
-        chunk.push(notes[i]);
-        if (chunk.length === 4) {
+    const rhtymicNotes = this.rhytmicNoteRecognizer.toRhytmicNote(measure);
+    for (let i = 0; i < rhtymicNotes.length; i++) {
+      const rhytmic = rhtymicNotes[i];
+      for (let j = 0; j < rhytmic.length; j++) {
+        const note = measure.notes[rhytmic[j]];
+        if (this.canBeBeam(note.duration)) {
+          chunk.push(notes[rhytmic[j]]);
+        } else {
           this.addInResult(chunk, result);
           chunk = [];
         }
       }
+      this.addInResult(chunk, result);
+      chunk = [];
     }
 
-    this.addInResult(chunk, result);
     return result;
   }
 
