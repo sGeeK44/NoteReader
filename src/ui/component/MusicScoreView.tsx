@@ -66,7 +66,7 @@ export const MusicScoreView = ({score, checker}: MusicScoreProps) => {
           feedbackSvg.setWidth(layout.width);
           const vfScore = converter.toVexflow(score, {
             width: layout.width - 2,
-            measurePerLine: isLandscape ? 4 : 2,
+            measurePerLine: isLandscape ? 2 : 1,
           });
           vfScore?.draw(scoreSvg);
           setVexflowScore(vfScore);
