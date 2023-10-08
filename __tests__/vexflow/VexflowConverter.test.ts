@@ -1,11 +1,8 @@
-import {describe, it, expect} from '@jest/globals';
 import {Clef, Measure} from 'app/domain/services/MusicScoreBuilder';
-import {Signature} from 'app/domain/value-object/Signature';
 import {VexflowConverter} from 'app/vexflow/VexfloxConverter';
-import {Beam} from 'vexflow';
 
 describe('', () => {
-  it('', () => {
+  it('Convert a score with beat set to 3', () => {
     const measure: Measure = {
       notes: [
         {duration: 2, notehead: 'g', pitch: '4'},
@@ -26,7 +23,7 @@ describe('', () => {
     // Expect not throw
   });
 
-  it('', () => {
+  it('Convert a score with beat set to 4', () => {
     const measure: Measure = {
       notes: [
         {duration: 3, notehead: 'g', pitch: '4'},
@@ -48,7 +45,7 @@ describe('', () => {
   });
 });
 
-describe('', () => {
+describe('Whole should return whole', () => {
   it('', () => {
     const vexflow = new VexflowConverter();
 
@@ -56,14 +53,16 @@ describe('', () => {
 
     expect(result).toStrictEqual(1);
   });
-  it('', () => {
+
+  it('Whole dotted should return whole', () => {
     const vexflow = new VexflowConverter();
 
     const result = vexflow.toBasicRhytm(2);
 
     expect(result).toStrictEqual(2);
   });
-  it('', () => {
+
+  it('half dotted should return half', () => {
     const vexflow = new VexflowConverter();
 
     const result = vexflow.toBasicRhytm(3);
@@ -71,7 +70,7 @@ describe('', () => {
     expect(result).toStrictEqual(2);
   });
 
-  it('', () => {
+  it('Quarter should return quarter', () => {
     const vexflow = new VexflowConverter();
 
     const result = vexflow.toBasicRhytm(4);
@@ -79,14 +78,15 @@ describe('', () => {
     expect(result).toStrictEqual(4);
   });
 
-  it('', () => {
+  it('Quarter dotted should return quarter', () => {
     const vexflow = new VexflowConverter();
 
     const result = vexflow.toBasicRhytm(6);
 
     expect(result).toStrictEqual(4);
   });
-  it('', () => {
+
+  it('Eighth dotted should return eighth', () => {
     const vexflow = new VexflowConverter();
 
     const result = vexflow.toBasicRhytm(12);

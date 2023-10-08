@@ -1,4 +1,3 @@
-import {describe, it, expect} from '@jest/globals';
 import {RhytmicNotes} from 'app/domain/services/RhytmicNote';
 import {AndroidRandomRhytmicNoteGenerator} from 'app/infrastructure/AndroidRandomRhytmicFigureGenerator';
 

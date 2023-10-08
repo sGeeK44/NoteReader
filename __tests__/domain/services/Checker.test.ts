@@ -1,4 +1,3 @@
-import {describe, it, expect} from '@jest/globals';
 import {Checker} from 'app/domain/services/Checker';
 import {FakeTimeProvider} from '../../fakes/FakeTimeProvider';
 import {Tempo} from 'app/domain/services/Tempo';

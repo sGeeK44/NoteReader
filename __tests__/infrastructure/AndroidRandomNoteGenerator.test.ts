@@ -1,4 +1,3 @@
-import {describe, it, expect} from '@jest/globals';
 import {AlphabetNotations} from 'app/domain/services/Notation';
 import {AndroidRandomNoteGenerator} from 'app/infrastructure/AndroidRandomNoteGenerator';
 

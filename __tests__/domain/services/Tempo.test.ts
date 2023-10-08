@@ -1,4 +1,3 @@
-import {describe, it, expect} from '@jest/globals';
 import {Tempo} from 'app/domain/services/Tempo';
 
 describe('Convert tempo to BpMs', () => {

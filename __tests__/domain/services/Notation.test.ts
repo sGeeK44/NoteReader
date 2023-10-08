@@ -1,4 +1,3 @@
-import {describe, it, expect} from '@jest/globals';
 import {toWords} from 'app/domain/services/Notation';
 
 describe('Convert notation values to grammar', () => {

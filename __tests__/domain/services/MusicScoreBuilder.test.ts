@@ -1,4 +1,3 @@
-import {describe, it, expect} from '@jest/globals';
 import {
   MeasureBuilder,
   MusicScoreBuilder,
@@ -56,7 +55,7 @@ describe('MusicScoreBuilder', () => {
     });
   });
 
-  it('', () => {
+  it('With restricted Rhytmic note', () => {
     const measureBuilder = new MeasureBuilder(
       new FakeRandomNoteGenerator(),
       new RoundRobinRhytmicNoteGenerator(['quarter', 'half']),
@@ -86,7 +85,7 @@ describe('MusicScoreBuilder', () => {
     });
   });
 
-  it('', () => {
+  it('With beat set to 3', () => {
     const measureBuilder = new MeasureBuilder(
       new FakeRandomNoteGenerator(),
       new RoundRobinRhytmicNoteGenerator(['quarter', 'double-eighth']),

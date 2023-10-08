@@ -1,4 +1,3 @@
-import {describe, it, expect} from '@jest/globals';
 import {NoteHeadChecker} from 'app/domain/services/NoteHeadChecker';
 
 describe('NoteHeadChecker', () => {

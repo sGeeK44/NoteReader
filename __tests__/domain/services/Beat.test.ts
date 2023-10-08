@@ -1,4 +1,3 @@
-import {describe, it, expect} from '@jest/globals';
 import {toBeatValue, count} from 'app/domain/services/Beat';
 
 describe('Convert note duration to beat value with quarter for time unit ', () => {
