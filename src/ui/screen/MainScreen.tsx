@@ -22,7 +22,7 @@ export const MainScreen = ({navigation}: Props) => {
   const [nbMeasure, setNbMeasure] = useState<number | undefined>(6);
   const [clef, setClef] = useState<Clef>('treble');
   const [notation, setNotation] = useState<Notation>('syllabic');
-  const [accuracy, setAccuracy] = useState<number>(300);
+  const [accuracy, setAccuracy] = useState<number>(500);
 
   const styles = StyleSheet.create({
     content: {
