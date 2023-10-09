@@ -212,7 +212,6 @@ describe('Beams note toogether', () => {
     const notes = createNotes(measure);
 
     const beams = vexflow.createBeams(measure, notes);
-    console.log(beams.length);
     expect(beams).toStrictEqual([
       [notes[0], notes[1]],
       [notes[2], notes[3]],
