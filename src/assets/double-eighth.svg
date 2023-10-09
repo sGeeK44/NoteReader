@@ -1,0 +1,9 @@
+<svg width="60" height="60" viewBox="0 0 60 60">
+    <g>
+        <path stroke-width="0.3" stroke-dasharray="none" fill="black" stroke="none" d="M12.9312 50.0544C16.52544 50.0544,20.934 46.74096,20.934 43.3152C20.934 41.23728,19.30536 39.9456,17.0028 39.9456C12.56616 39.9456,9 43.23096,9 46.6848C9 48.7908,10.74096 50.0544,12.9312 50.0544"></path>
+        <path stroke-width="0.3" stroke-dasharray="none" fill="black" stroke="none" d="M39.7307 50.0544C43.324940000000005 50.0544,47.73350000000001 46.74096,47.73350000000001 43.3152C47.73350000000001 41.23728,46.10486 39.9456,43.8023 39.9456C39.365660000000005 39.9456,35.7995 43.23096,35.7995 46.6848C35.7995 48.7908,37.54046 50.0544,39.7307 50.0544"></path>
+        <path stroke-width="1.5" stroke-dasharray="none" fill="none" stroke="black" d="M20.184 43L20.184 10.75"></path>
+        <path stroke-width="1.5" stroke-dasharray="none" fill="none" stroke="black" d="M46.98350000000001 43L46.98350000000001 10.75"></path>
+        <path stroke-width="0.3" stroke-dasharray="none" fill="black" stroke="none" d="M19.434 10L19.434 15L47.23350000000001 14.999999999999998L47.23350000000001 9.999999999999998Z"></path>
+    </g>
+</svg>

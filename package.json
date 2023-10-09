@@ -28,6 +28,7 @@
     "react-native-safe-area-view": "^1.1.1",
     "react-native-screens": "^3.24.0",
     "react-native-svg": "^13.11.0",
+    "react-native-svg-transformer": "^1.1.0",
     "react-native-vector-icons": "^10.0.0",
     "reflect-metadata": "^0.1.13",
     "ts-jest": "^29.1.1",

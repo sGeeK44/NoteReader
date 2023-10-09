@@ -1,0 +1,11 @@
+<svg width="60" height="60" viewBox="0 0 60 60">
+    <g>
+        <path stroke-width="0.3" stroke-dasharray="none" fill="black" stroke="none" d="M10.9312 50.0544C14.52544 50.0544,18.934 46.74096,18.934 43.3152C18.934 41.23728,17.30536 39.9456,15.0028 39.9456C10.56616 39.9456,7 43.23096,7 46.6848C7 48.7908,8.74096 50.0544,10.9312 50.0544"></path>
+        <path stroke-width="0.3" stroke-dasharray="none" fill="black" stroke="none" d="M25.934 40 A2 2 0 0 0 21.934 40 A2 2 0 0 0 25.934 40"></path>
+        <path stroke-width="0.3" stroke-dasharray="none" fill="black" stroke="none" d="M44.9972089943276 50.0544C48.59144899432761 50.0544,53.0000089943276 46.74096,53.0000089943276 43.3152C53.0000089943276 41.23728,51.371368994327604 39.9456,49.068808994327604 39.9456C44.6321689943276 39.9456,41.0660089943276 43.23096,41.0660089943276 46.6848C41.0660089943276 48.7908,42.806968994327605 50.0544,44.9972089943276 50.0544"></path>
+        <path stroke-width="1.5" stroke-dasharray="none" fill="none" stroke="black" d="M18.184 43L18.184 10.75"></path>
+        <path stroke-width="1.5" stroke-dasharray="none" fill="none" stroke="black" d="M52.2500089943276 43L52.2500089943276 10.75"></path>
+        <path stroke-width="0.3" stroke-dasharray="none" fill="black" stroke="none" d="M17.434 10L17.434 15L52.5000089943276 14.999999999999998L52.5000089943276 9.999999999999998Z"></path>
+        <path stroke-width="0.3" stroke-dasharray="none" fill="black" stroke="none" d="M51.5000089943276 17.5L51.5000089943276 22.5L42.5000089943276 22.5L42.5000089943276 17.5Z"></path>
+    </g>
+</svg>

@@ -16,6 +16,14 @@ import {
   RhytmicNoteFigureMap,
 } from 'app/domain/services/RhytmicNote';
 import {MainScreenViewModel} from './MainScreenViewModel';
+import DoubleEighth from 'app/assets/double-eighth.svg';
+import EighthDottedDouble from 'app/assets/eighth-dotted-double.svg';
+import FourSixteen from 'app/assets/four-sixteen.svg';
+import HalfDotted from 'app/assets/half-dotted.svg';
+import Half from 'app/assets/half.svg';
+import Quarter from 'app/assets/quarter.svg';
+import QyarterDottedEighth from 'app/assets/quarter-dotted-eighth.svg';
+import Whole from 'app/assets/whole.svg';
 
 export interface Props {
   navigation: NavigationProp<RootStackParamList>;
@@ -71,6 +79,7 @@ export const MainScreen = ({navigation}: Props) => {
         return 'Noire pointée croche';
     }
   }
+  console.log(DoubleEighth);
 
   return (
     <SafeAreaView style={styles.content}>
@@ -112,6 +121,16 @@ export const MainScreen = ({navigation}: Props) => {
               onPress={viewModel.onAlphabetSelected}
             />
           </View>
+        </View>
+        <View style={styles.chips}>
+          <EighthDottedDouble width="60" height="60" />
+          <QyarterDottedEighth width="60" height="60" />
+          <DoubleEighth width="60" height="60" />
+          <FourSixteen width="60" height="60" />
+          <HalfDotted width="60" height="60" />
+          <Half width="60" height="60" />
+          <Whole width="60" height="60" />
+          <Quarter width="60" height="60" />
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Tempo</Text>
