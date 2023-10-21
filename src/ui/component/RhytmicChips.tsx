@@ -16,10 +16,12 @@ import Whole from 'app/assets/whole.svg';
 
 export interface MusicScoreProps {
   value: RhytmicNote;
+  onSelected: () => void;
+  onUnselected: () => void;
 }
 
-export const RhytmicChips = ({ value }: MusicScoreProps) => {
-  const [isChecked, setIsChecked] = useState<boolean>();
+export const RhytmicChips = ({ value, onSelected, onUnselected }: MusicScoreProps) => {
+  const [selected, setSelected] = useState<boolean>(false);
   const styles = StyleSheet.create({
     chip: { margin: 5, backgroundColor: 'transparent', height: 35, width: 80 },
   });
@@ -28,8 +30,16 @@ export const RhytmicChips = ({ value }: MusicScoreProps) => {
     <Chip
       style={styles.chip}
       mode="outlined"
-      selected={isChecked}
-      onPress={() => setIsChecked(!isChecked)}>
+      selected={selected}
+      onPress={() => {
+        setSelected(!selected)
+        if (selected) {
+          onUnselected();
+        }
+        else {
+          onSelected();
+        }
+      }}>
       {getName(value)}
     </Chip>
   );

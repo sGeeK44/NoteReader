@@ -1,16 +1,16 @@
-import React, {useEffect, useState} from 'react';
-import {Dimensions, View, StyleSheet, ScrollView} from 'react-native';
-import {MusicScore} from 'app/domain/services/MusicScoreBuilder';
-import {VexflowConverter, VexflowScore} from 'app/vexflow/VexfloxConverter';
-import {RnSvgContext} from 'app/vexflow/RnSvgContext';
-import {Checker} from 'app/domain/services/Checker';
+import React, { useEffect, useState } from 'react';
+import { Dimensions, View, StyleSheet, ScrollView } from 'react-native';
+import { MusicScore } from 'app/domain/services/MusicScoreBuilder';
+import { VexflowConverter, VexflowScore } from 'app/vexflow/VexfloxConverter';
+import { RnSvgContext } from 'app/vexflow/RnSvgContext';
+import { Checker } from 'app/domain/services/Checker';
 
 export interface MusicScoreProps {
   score: MusicScore;
   checker: Checker;
 }
 
-export const MusicScoreView = ({score, checker}: MusicScoreProps) => {
+export const MusicScoreView = ({ score, checker }: MusicScoreProps) => {
   const [, updateState] = React.useState<object>();
   const forceUpdate = React.useCallback(() => updateState({}), []);
   const [isLandscape, setIsLandscape] = useState<boolean>();
@@ -21,14 +21,14 @@ export const MusicScoreView = ({score, checker}: MusicScoreProps) => {
     content: {
       backgroundColor: '#f2f2f2',
     },
-    feedbackScore: {position: 'absolute'},
+    feedbackScore: { position: 'absolute' },
   });
 
   const converter = new VexflowConverter();
   useEffect(() => {
     const dim = Dimensions.get('window');
     setIsLandscape(dim.width >= dim.height);
-    Dimensions.addEventListener('change', ({screen}) => {
+    Dimensions.addEventListener('change', ({ screen }) => {
       setIsLandscape(screen.width >= screen.height);
     });
   }, []);

@@ -116,7 +116,14 @@ export const MainScreen = ({ navigation }: Props) => {
           <Text style={styles.label}>Rythme</Text>
           <View style={styles.chips}>
             {rhytmics.map(rhytmicNoteFigure => (
-              <RhytmicChips key={rhytmicNoteFigure} value={rhytmicNoteFigure} />
+              <RhytmicChips
+                key={rhytmicNoteFigure}
+                value={rhytmicNoteFigure}
+                onSelected={() => { viewModel.rhytmics.push(rhytmicNoteFigure) }}
+                onUnselected={() => {
+                  const index = viewModel.rhytmics.indexOf(rhytmicNoteFigure);
+                  viewModel.rhytmics.splice(index, 1)
+                }} />
             ))}
           </View>
         </View>
@@ -139,12 +146,16 @@ export const MainScreen = ({ navigation }: Props) => {
         icon="music"
         mode="contained"
         onPress={() => {
+          if (viewModel.rhytmics.length == 0) {
+            return;
+          }
           navigation.navigate('TrainScreen', {
             tempo: viewModel.tempo ?? 60,
             nbMeasure: viewModel.nbMeasure ?? 0,
             clef: viewModel.clef,
             notation: viewModel.notation,
             accuracy: viewModel.accuracy,
+            rhytmics: viewModel.rhytmics
           });
         }}>
         Start

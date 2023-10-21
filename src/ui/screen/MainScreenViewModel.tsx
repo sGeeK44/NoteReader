@@ -1,8 +1,10 @@
-import {useState} from 'react';
-import {Clef} from 'app/domain/services/MusicScoreBuilder';
-import {Notation} from 'app/domain/services/Notation';
+import { useState } from 'react';
+import { Clef } from 'app/domain/services/MusicScoreBuilder';
+import { Notation } from 'app/domain/services/Notation';
+import { RhytmicNote } from 'app/domain/services/RhytmicNote';
 
 export function MainScreenViewModel() {
+  const [rhytmics, setRhytmics] = useState<RhytmicNote[]>([]);
   const [tempo, setTempo] = useState<number | undefined>(60);
   const [nbMeasure, setNbMeasure] = useState<number | undefined>(6);
   const [clef, setClef] = useState<Clef>('treble');
@@ -18,7 +20,7 @@ export function MainScreenViewModel() {
     setTempo(parsed);
   };
 
-  const notations: {alphabet: Notation; syllabic: Notation} = {
+  const notations: { alphabet: Notation; syllabic: Notation } = {
     alphabet: 'alphabet',
     syllabic: 'syllabic',
   };
@@ -53,5 +55,6 @@ export function MainScreenViewModel() {
     onSyllabicSelected,
     accuracy,
     setAccuracy,
+    rhytmics
   };
 }

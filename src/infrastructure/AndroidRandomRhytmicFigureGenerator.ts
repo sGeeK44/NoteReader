@@ -1,20 +1,21 @@
-import {injectable} from 'inversify';
+import { injectable } from 'inversify';
 import {
   RhytmicNote,
-  RhytmicNotes,
   toDuration,
   toRhtymicFigures,
 } from 'app/domain/services/RhytmicNote';
-import {RandomRhytmicNoteGenerator} from 'app/domain/services/RandomRhytmicNoteGenerator';
-import {NoteDuration} from 'app/domain/services/MusicScoreBuilder';
-import {toBeatValue} from 'app/domain/services/Beat';
+import { RandomRhytmicNoteGenerator } from 'app/domain/services/RandomRhytmicNoteGenerator';
+import { NoteDuration } from 'app/domain/services/MusicScoreBuilder';
+import { toBeatValue } from 'app/domain/services/Beat';
 
 @injectable()
 export class AndroidRandomRhytmicNoteGenerator
-  implements RandomRhytmicNoteGenerator
-{
+  implements RandomRhytmicNoteGenerator {
+  constructor(private available: RhytmicNote[]) {
+  }
+
   next(maxDuration: number, timeForUnit: NoteDuration): RhytmicNote {
-    const possible = RhytmicNotes.filter(
+    const possible = this.available.filter(
       note =>
         (toRhtymicFigures(note)?.reduce(
           (sum, rhytmicFigure) =>

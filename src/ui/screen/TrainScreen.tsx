@@ -1,27 +1,27 @@
 import React from 'react';
-import {SafeAreaView, StyleSheet, View} from 'react-native';
-import {MusicScoreView} from '../component/MusicScoreView';
-import {SpeechRecognizer} from '../../domain/services/SpeechRecognizer';
-import {MusicScoreBuilder} from 'app/domain/services/MusicScoreBuilder';
-import {Checker} from 'app/domain/services/Checker';
-import {Symbols} from 'app/config/symbols';
-import {Tempo} from 'app/domain/services/Tempo';
-import {TimeProvider} from 'app/domain/services/TimeProvider';
-import {useInjection} from 'inversify-react';
-import {RandomNoteGenerator} from 'app/domain/services/RandomNoteGenerator';
-import {Metronome} from 'app/domain/services/Metronome';
-import {RootStackParamList} from 'app/App';
-import {RouteProp} from '@react-navigation/native';
-import {Button} from 'react-native-paper';
-import {toWords} from 'app/domain/services/Notation';
-import {AndroidRandomRhytmicNoteGenerator} from 'app/infrastructure/AndroidRandomRhytmicFigureGenerator';
+import { SafeAreaView, StyleSheet, View } from 'react-native';
+import { MusicScoreView } from '../component/MusicScoreView';
+import { SpeechRecognizer } from '../../domain/services/SpeechRecognizer';
+import { MusicScoreBuilder } from 'app/domain/services/MusicScoreBuilder';
+import { Checker } from 'app/domain/services/Checker';
+import { Symbols } from 'app/config/symbols';
+import { Tempo } from 'app/domain/services/Tempo';
+import { TimeProvider } from 'app/domain/services/TimeProvider';
+import { useInjection } from 'inversify-react';
+import { RandomNoteGenerator } from 'app/domain/services/RandomNoteGenerator';
+import { Metronome } from 'app/domain/services/Metronome';
+import { RootStackParamList } from 'app/App';
+import { RouteProp } from '@react-navigation/native';
+import { Button } from 'react-native-paper';
+import { toWords } from 'app/domain/services/Notation';
+import { AndroidRandomRhytmicNoteGenerator } from 'app/infrastructure/AndroidRandomRhytmicFigureGenerator';
 
 interface Props {
   route: RouteProp<RootStackParamList, 'TrainScreen'>;
 }
 
-export const TrainScreen = ({route}: Props) => {
-  const {tempo, nbMeasure, clef, notation, accuracy} = route.params;
+export const TrainScreen = ({ route }: Props) => {
+  const { tempo, nbMeasure, clef, notation, accuracy, rhytmics } = route.params;
   const speechRecognition = useInjection<SpeechRecognizer>(
     Symbols.SpeechRecognizer,
   );
@@ -34,12 +34,12 @@ export const TrainScreen = ({route}: Props) => {
 
   const musicScoreBuilder = new MusicScoreBuilder(
     randomNoteGenerator,
-    new AndroidRandomRhytmicNoteGenerator(),
+    new AndroidRandomRhytmicNoteGenerator(rhytmics),
   );
   const score = musicScoreBuilder.build({
     measure: nbMeasure,
     clef: clef,
-    timeSignature: {beat: 4, duration: 4},
+    timeSignature: { beat: 4, duration: 4 },
   });
   speechRecognition.init('fr-fr');
 
@@ -59,7 +59,7 @@ export const TrainScreen = ({route}: Props) => {
       padding: 20,
       justifyContent: 'space-around',
     },
-    text: {color: 'black', fontSize: 25},
+    text: { color: 'black', fontSize: 25 },
   });
 
   return (
