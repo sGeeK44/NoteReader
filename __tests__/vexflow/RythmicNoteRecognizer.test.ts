@@ -58,7 +58,7 @@ describe('RhytmicNoteRecognizer', () => {
     ]);
   });
 
-  it('four-double-eighth, double-eighth, four-double-eighth and eighth-dotted-double', () => {
+  it('four-sixteenth, double-eighth, four-sixteenth and eighth-dotted-double', () => {
     const rhytmicNoteRecognizer = new RhytmicNoteRecognizer();
 
     const result = rhytmicNoteRecognizer.toRhytmicNote({

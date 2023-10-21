@@ -31,7 +31,7 @@ export const RhytmicNotes = [
   'quarter',
   'double-eighth',
   'eighth-dotted-double',
-  'four-double-eighth',
+  'four-sixteenth',
   'quarter-dotted-eighth',
 ] as const;
 
@@ -43,7 +43,7 @@ export const RhytmicNoteFigureMap = new Map<RhytmicNote, RhytmicFigure[]>([
   ['whole', ['whole']],
   ['double-eighth', ['eighth', 'eighth']],
   ['eighth-dotted-double', ['eighth-dotted', 'sixteenth']],
-  ['four-double-eighth', ['sixteenth', 'sixteenth', 'sixteenth', 'sixteenth']],
+  ['four-sixteenth', ['sixteenth', 'sixteenth', 'sixteenth', 'sixteenth']],
   ['quarter-dotted-eighth', ['quarter-dotted', 'eighth']],
 ]);
 

@@ -1,10 +1,9 @@
 import React from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
-import {NavigationProp} from '@react-navigation/native';
-import {RootStackParamList} from 'app/App';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from 'app/App';
 import {
   Button,
-  Chip,
   IconButton,
   RadioButton,
   Text,
@@ -12,24 +11,16 @@ import {
 } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import {
-  RhytmicNote,
   RhytmicNoteFigureMap,
 } from 'app/domain/services/RhytmicNote';
-import {MainScreenViewModel} from './MainScreenViewModel';
-import DoubleEighth from 'app/assets/double-eighth.svg';
-import EighthDottedDouble from 'app/assets/eighth-dotted-double.svg';
-import FourSixteen from 'app/assets/four-sixteen.svg';
-import HalfDotted from 'app/assets/half-dotted.svg';
-import Half from 'app/assets/half.svg';
-import Quarter from 'app/assets/quarter.svg';
-import QyarterDottedEighth from 'app/assets/quarter-dotted-eighth.svg';
-import Whole from 'app/assets/whole.svg';
+import { MainScreenViewModel } from './MainScreenViewModel';
+import { RhytmicChips } from 'app/ui/component/RhytmicChips';
 
 export interface Props {
   navigation: NavigationProp<RootStackParamList>;
 }
 
-export const MainScreen = ({navigation}: Props) => {
+export const MainScreen = ({ navigation }: Props) => {
   const rhytmics = [...RhytmicNoteFigureMap.keys()];
   const viewModel = MainScreenViewModel();
 
@@ -45,41 +36,18 @@ export const MainScreen = ({navigation}: Props) => {
       alignItems: 'center',
       margin: 20,
     },
-    inputWithLabel: {alignItems: 'center'},
-    label: {color: 'black', fontSize: 25},
-    secondaryLabel: {color: 'black', fontSize: 12},
-    sliderContainer: {width: '60%', alignItems: 'center'},
-    slider: {width: '100%'},
+    inputWithLabel: { alignItems: 'center' },
+    label: { color: 'black', fontSize: 25 },
+    secondaryLabel: { color: 'black', fontSize: 12 },
+    sliderContainer: { width: '60%', alignItems: 'center' },
+    slider: { width: '100%' },
     chips: {
       flex: 1,
       flexDirection: 'row',
       flexWrap: 'wrap',
-      justifyContent: 'flex-start',
+      justifyContent: 'space-around',
     },
-    chip: {margin: 5},
   });
-
-  function getName(rhytmicFigures: RhytmicNote): string {
-    switch (rhytmicFigures) {
-      case 'quarter':
-        return 'Noire';
-      case 'half':
-        return 'Blanche';
-      case 'half-dotted':
-        return 'Blanche pointée';
-      case 'whole':
-        return 'Ronde';
-      case 'double-eighth':
-        return 'Double croche';
-      case 'eighth-dotted-double':
-        return 'Croche pointé double';
-      case 'four-double-eighth':
-        return 'Quatre double croche';
-      case 'quarter-dotted-eighth':
-        return 'Noire pointée croche';
-    }
-  }
-  console.log(DoubleEighth);
 
   return (
     <SafeAreaView style={styles.content}>
@@ -122,16 +90,6 @@ export const MainScreen = ({navigation}: Props) => {
             />
           </View>
         </View>
-        <View style={styles.chips}>
-          <EighthDottedDouble width="60" height="60" />
-          <QyarterDottedEighth width="60" height="60" />
-          <DoubleEighth width="60" height="60" />
-          <FourSixteen width="60" height="60" />
-          <HalfDotted width="60" height="60" />
-          <Half width="60" height="60" />
-          <Whole width="60" height="60" />
-          <Quarter width="60" height="60" />
-        </View>
         <View style={styles.row}>
           <Text style={styles.label}>Tempo</Text>
           <TextInput
@@ -154,16 +112,13 @@ export const MainScreen = ({navigation}: Props) => {
             value={viewModel.nbMeasure?.toString()}
           />
         </View>
-        <View style={styles.chips}>
-          {rhytmics.map(rhytmicNoteFigure => (
-            <Chip
-              key={rhytmicNoteFigure}
-              style={styles.chip}
-              mode="flat"
-              onPress={() => console.log('Pressed')}>
-              {getName(rhytmicNoteFigure)}
-            </Chip>
-          ))}
+        <View style={styles.row}>
+          <Text style={styles.label}>Rythme</Text>
+          <View style={styles.chips}>
+            {rhytmics.map(rhytmicNoteFigure => (
+              <RhytmicChips key={rhytmicNoteFigure} value={rhytmicNoteFigure} />
+            ))}
+          </View>
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Précision</Text>
