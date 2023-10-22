@@ -67,6 +67,13 @@ jobs:
           replacement: '"version": "${{ github.ref_name }}"'
           include: './package.json'
 
+      - name: Update ms center app secret
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: '"app_secret": "MS_CENTER_APP_SECRET"'
+          replacement: '"app_secret": "${{ secrets.MS_CENTER_APP_SECRET }}"'
+          include: './src/assets/appcenter-config.json'
+
       - name: Build Apk
         working-directory: android/
         run: ./gradlew assemblerelease
