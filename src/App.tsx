@@ -7,6 +7,7 @@
 
 import React from 'react';
 import { Provider } from 'inversify-react';
+import { SplashScreen } from './ui/screen/SplashScreen';
 import { MainScreen } from './ui/screen/MainScreen';
 import { buildDependencies } from './config/common';
 import { NavigationContainer } from '@react-navigation/native';
@@ -18,6 +19,7 @@ import { Notation } from './domain/services/Notation';
 import { RhytmicNote } from './domain/services/RhytmicNote';
 
 export type RootStackParamList = {
+  SplashScreen: undefined;
   MainScreen: undefined;
   TrainScreen: {
     tempo: number;
@@ -38,7 +40,8 @@ function App(): JSX.Element {
       {asyncDependencies.result && (
         <Provider container={asyncDependencies.result}>
           <NavigationContainer>
-            <Stack.Navigator initialRouteName="MainScreen">
+            <Stack.Navigator initialRouteName="SplashScreen">
+              <Stack.Screen name="SplashScreen" component={SplashScreen} />
               <Stack.Screen name="MainScreen" component={MainScreen} />
               <Stack.Screen name="TrainScreen" component={TrainScreen} />
             </Stack.Navigator>

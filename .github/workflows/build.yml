@@ -74,6 +74,13 @@ jobs:
           replacement: '"app_secret": "${{ secrets.MS_CENTER_APP_SECRET }}"'
           include: './src/assets/appcenter-config.json'
 
+      - name: Update code push key
+        uses: mingjun97/file-regex-replace@v1
+        with:
+          regex: "deploymentKey: 'CODE_PUSH_DEPLOYMENT_KEY',"
+          replacement: "deploymentKey: '${{ secrets.CODE_PUSH_DEPLOYMENT_KEY }}',"
+          include: './src/ui/screen/SplashScreen.tsx'
+
       - name: Build Apk
         working-directory: android/
         run: ./gradlew assemblerelease
@@ -86,4 +93,26 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: apk
-          path: android/app/build/outputs/apk/**/app*.apk
+          path: android/app/build/outputs/apk/**/app*.apk        
+
+      - name: Get APK version
+        id: get-apk-version
+        run: |
+          echo "apk-version=$(grep -oP "versionName \"\K[^\"]*" android/app/build.gradle)" >> $GITHUB_OUTPUT
+          
+      - name: Install App center
+        run: npm install -g appcenter-cli
+      
+      - name: App center login
+        run: appcenter login --token ${{ secrets.CODE_PUSH_TOKEN }}
+
+      - name: Deploy code push
+        run: |
+            appcenter codepush release-react -a sGeeK/MusicTheoryTeatcher -d ${{ secrets.CODE_PUSH_DEPLOYMENT_KEY_NAME }} -t ${{ steps.get-apk-version.outputs.apk-version }} || {
+              if [[ $? -eq 3 ]] ; then
+                echo "Code push deploy skipped."
+                exit 0
+              fi
+
+              exit $?
+            }
