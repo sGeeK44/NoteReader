@@ -13,6 +13,7 @@ import org.vosk.android.StorageService;
 import java.io.IOException;
 import org.json.JSONObject;
 
+
 public class SpeechRecognizerModule extends ReactContextBaseJavaModule {
   final ReactApplicationContext context;
   private Model model = null;
@@ -55,13 +56,14 @@ public class SpeechRecognizerModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   private void start(String grammar) throws IOException {
+    var frequency = 20000.0f;
     if (grammar != null) {
-      recognizer = new Recognizer(model, 32000.0f, grammar);
+      recognizer = new Recognizer(model, frequency, grammar);
     } else {
-      recognizer = new Recognizer(model, 32000.0f);
+      recognizer = new Recognizer(model, frequency);
     }
 
-    speechService = new SpeechService(recognizer, 32000.0f);
+    speechService = new SpeechService(recognizer, frequency);
     speechService.startListening(new SpeechListner(context));
   }
 
@@ -119,6 +121,7 @@ class SpeechListner implements RecognitionListener {
 
   @Override
   public void onFinalResult(String hypothesis) {
+    lastHypothesis = "";
   }
 
   @Override
@@ -128,13 +131,17 @@ class SpeechListner implements RecognitionListener {
     } catch (Exception e) {
       hypothesis = "";
     }
-    if (lastHypothesis.equals(hypothesis))
-      return;
+    var newPartialResult = hypothesis;
+    if (lastHypothesis.length() <= hypothesis.length())
+      newPartialResult = hypothesis.substring(lastHypothesis.length());
 
+    String[] words = newPartialResult.split(" ");
+    for(var newWord: words) {
+      if (newWord.equals(""))
+        continue;
+      sendEvent("onResult", newWord);
+    }
     lastHypothesis = hypothesis;
-    String[] words = hypothesis.split(" ");
-    String newWord = words[words.length - 1];
-    sendEvent("onResult", newWord);
   }
 
   @Override
