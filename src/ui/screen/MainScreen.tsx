@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from 'app/App';
@@ -22,7 +22,7 @@ export interface Props {
 
 export const MainScreen = ({ navigation }: Props) => {
   const rhytmics = [...RhytmicNoteFigureMap.keys()];
-  const viewModel = MainScreenViewModel();
+  const viewModel = new MainScreenViewModel();
 
   const styles = StyleSheet.create({
     content: {
@@ -59,7 +59,7 @@ export const MainScreen = ({ navigation }: Props) => {
             <RadioButton
               value="treble"
               status={viewModel.clef === 'treble' ? 'checked' : 'unchecked'}
-              onPress={() => viewModel.setClef('treble')}
+              onPress={() => viewModel?.setClef('treble')}
             />
           </View>
           <View style={styles.inputWithLabel}>
@@ -78,7 +78,7 @@ export const MainScreen = ({ navigation }: Props) => {
             <RadioButton
               value={viewModel.notations.syllabic}
               status={viewModel.isSyllabicChecked}
-              onPress={viewModel.onSyllabicSelected}
+              onPress={() => viewModel.onSyllabicSelected()}
             />
           </View>
           <View style={styles.inputWithLabel}>
@@ -86,7 +86,7 @@ export const MainScreen = ({ navigation }: Props) => {
             <RadioButton
               value={viewModel.notations.alphabet}
               status={viewModel.isAlphabetChecked}
-              onPress={viewModel.onAlphabetSelected}
+              onPress={() => viewModel.onAlphabetSelected()}
             />
           </View>
         </View>
@@ -94,22 +94,14 @@ export const MainScreen = ({ navigation }: Props) => {
           <Text style={styles.label}>Tempo</Text>
           <TextInput
             right={<TextInput.Icon icon="metronome" />}
-            onChangeText={viewModel.onTempoChanged}
+            onChangeText={(value) => viewModel.onTempoChanged(value)}
             value={viewModel.tempo?.toString()}
           />
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Nombre de mesure</Text>
           <TextInput
-            onChangeText={value => {
-              const parsed = parseInt(value, 10);
-              if (isNaN(parsed)) {
-                viewModel.setNbMeasure(undefined);
-                return;
-              }
-              viewModel.setNbMeasure(parsed);
-            }}
-            value={viewModel.nbMeasure?.toString()}
+            onChangeText={value => viewModel.OnNbMeasureChanged(value)}
           />
         </View>
         <View style={styles.row}>
@@ -119,10 +111,9 @@ export const MainScreen = ({ navigation }: Props) => {
               <RhytmicChips
                 key={rhytmicNoteFigure}
                 value={rhytmicNoteFigure}
-                onSelected={() => { viewModel.rhytmics.push(rhytmicNoteFigure) }}
+                onSelected={() => { viewModel.OnRhytmicSelected(rhytmicNoteFigure) }}
                 onUnselected={() => {
-                  const index = viewModel.rhytmics.indexOf(rhytmicNoteFigure);
-                  viewModel.rhytmics.splice(index, 1)
+                  viewModel.OnRhytmicUnselected(rhytmicNoteFigure)
                 }} />
             ))}
           </View>

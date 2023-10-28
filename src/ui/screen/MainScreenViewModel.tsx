@@ -1,60 +1,81 @@
-import { useState } from 'react';
+import { Dispatch, SetStateAction, useState } from 'react';
 import { Clef } from 'app/domain/services/MusicScoreBuilder';
 import { Notation } from 'app/domain/services/Notation';
 import { RhytmicNote } from 'app/domain/services/RhytmicNote';
 
-export function MainScreenViewModel() {
-  const [rhytmics, setRhytmics] = useState<RhytmicNote[]>([]);
-  const [tempo, setTempo] = useState<number | undefined>(60);
-  const [nbMeasure, setNbMeasure] = useState<number | undefined>(6);
-  const [clef, setClef] = useState<Clef>('treble');
-  const [notation, setNotation] = useState<Notation>('syllabic');
-  const [accuracy, setAccuracy] = useState<number>(500);
+export class MainScreenViewModel {
+  rhytmics: RhytmicNote[];
+  setRhytmics: Dispatch<SetStateAction<RhytmicNote[]>>;
 
-  const onTempoChanged = (value: string) => {
+  tempo: number | undefined;
+  setTempo: Dispatch<SetStateAction<number | undefined>>;
+
+  nbMeasure: number;
+  setNbMeasure: Dispatch<SetStateAction<number>>;
+
+  clef: Clef;
+  setClef: Dispatch<SetStateAction<Clef>>;
+
+  notation: Notation;
+  setNotation: Dispatch<SetStateAction<Notation>>;
+
+  accuracy: number;
+  setAccuracy: Dispatch<SetStateAction<number>>;
+
+  /**
+   *
+   */
+  constructor() {
+    [this.rhytmics, this.setRhytmics] = useState<RhytmicNote[]>([]);
+    [this.tempo, this.setTempo] = useState<number | undefined>(60);
+    [this.nbMeasure, this.setNbMeasure] = useState<number>(6);
+    [this.clef, this.setClef] = useState<Clef>('treble');
+    [this.notation, this.setNotation] = useState<Notation>('syllabic');
+    [this.accuracy, this.setAccuracy] = useState<number>(500);
+  }
+
+  onTempoChanged(value: string): void {
     const parsed = parseInt(value, 10);
     if (isNaN(parsed)) {
-      setTempo(undefined);
+      this.setTempo(undefined);
       return;
     }
-    setTempo(parsed);
+    this.setTempo(parsed);
   };
 
-  const notations: { alphabet: Notation; syllabic: Notation } = {
-    alphabet: 'alphabet',
-    syllabic: 'syllabic',
+  get notations(): { alphabet: Notation; syllabic: Notation } {
+    return {
+      alphabet: 'alphabet',
+      syllabic: 'syllabic',
+    }
   };
 
-  const onSyllabicSelected = () => {
-    setNotation(notations.syllabic);
+  OnNbMeasureChanged(value: string): void {
+    const parsed = parseInt(value, 10);
+    if (isNaN(parsed)) {
+      return;
+    }
+    this.setNbMeasure(parsed);
+  }
+
+  onSyllabicSelected(): void {
+    this.setNotation(this.notations.syllabic);
   };
 
-  const isSyllabicChecked: 'checked' | 'unchecked' =
-    notation === notations.syllabic ? 'checked' : 'unchecked';
+  get isSyllabicChecked(): 'checked' | 'unchecked' { return this.notation === this.notations.syllabic ? 'checked' : 'unchecked'; }
 
-  const onAlphabetSelected = () => {
-    console.log(notation);
-    setNotation(notations.alphabet);
+  onAlphabetSelected(): void {
+    console.log(this.notation);
+    this.setNotation(this.notations.alphabet);
   };
 
-  const isAlphabetChecked: 'checked' | 'unchecked' =
-    notation === notations.alphabet ? 'checked' : 'unchecked';
+  get isAlphabetChecked(): 'checked' | 'unchecked' { return this.notation === this.notations.alphabet ? 'checked' : 'unchecked'; }
 
-  return {
-    tempo: tempo,
-    onTempoChanged,
-    nbMeasure,
-    setNbMeasure,
-    clef,
-    setClef,
-    notation,
-    notations,
-    isAlphabetChecked,
-    onAlphabetSelected,
-    isSyllabicChecked,
-    onSyllabicSelected,
-    accuracy,
-    setAccuracy,
-    rhytmics
-  };
+  OnRhytmicUnselected(rhytmicNoteFigure: RhytmicNote) {
+    const index = this.rhytmics.indexOf(rhytmicNoteFigure);
+    this.rhytmics.splice(index, 1);
+  }
+  OnRhytmicSelected(rhytmicNoteFigure: RhytmicNote) {
+    this.rhytmics.push(rhytmicNoteFigure)
+  }
 }
