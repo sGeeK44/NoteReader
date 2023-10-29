@@ -45,7 +45,7 @@ This is one way to run your app — you can also run it directly from within And
 ## TODO
 
 - [x] Restart at begining of current measure on mistake
-- [ ] Do not stop on temporal mistake
+- [x] Do not stop on temporal mistake
 - [ ] Indicate in blue where reading restart after mistake
 - [ ] write right note in red under a mistake
 - [ ] Put in orange when is to early an violet when is to late

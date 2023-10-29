@@ -12,13 +12,17 @@ export class Checker {
   noteHeaChecker: NoteHeadChecker;
   currentMeasureIndex = 0;
   currentNoteIndex = 0;
-  onGoodCallback: (measure: number, note: number) => void = () => {
+  onGoodCallback: (
+    measure: number,
+    note: number,
+    result: 'TO_EARLY' | 'TO_LATE' | 'PERFECT'
+  ) => void = () => {
     // Nothing by default
   };
   onBadCallback: (
     measure: number,
     note: number,
-    result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE',
+    result: 'BAD_NOTE'
   ) => void = () => {
     // Nothing by default
   };
@@ -40,7 +44,7 @@ export class Checker {
   start(receive: string) {
     this.currentNoteIndex = 0;
     if (this.isRightNote(receive)) {
-      return this.onGoodResult();
+      return this.onGoodResult('PERFECT');
     }
 
     return this.onBadResult('BAD_NOTE');
@@ -63,19 +67,18 @@ export class Checker {
       expectedTime
     );
     if (isOnTime !== 'ON_TIME') {
-      return this.onBadResult(isOnTime);
+      return this.onGoodResult(isOnTime);
     }
 
     if (this.readLastNote()) {
       return this.onWin();
     }
 
-    return this.onGoodResult();
+    return this.onGoodResult('PERFECT');
   }
 
   isRightNote(receive: string): boolean {
     const actualNote = this.currentMeasure.notes[this.currentNoteIndex];
-    console.log(actualNote)
     return this.noteHeaChecker.isRigthNote(
       receive,
       actualNote.notehead,
@@ -94,7 +97,7 @@ export class Checker {
     return this.currentMeasureIndex === 0 && this.currentNoteIndex === 0;
   }
 
-  onGoodNote(onGoodCallback: (measure: number, note: number) => void) {
+  onGoodNote(onGoodCallback: (measure: number, note: number, result: 'TO_EARLY' | 'TO_LATE' | 'PERFECT') => void) {
     this.onGoodCallback = onGoodCallback;
   }
 
@@ -102,7 +105,7 @@ export class Checker {
     onBadCallback: (
       measure: number,
       note: number,
-      result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE',
+      result: 'BAD_NOTE',
     ) => void,
   ) {
     this.onBadCallback = onBadCallback;
@@ -114,14 +117,14 @@ export class Checker {
     return 'WIN';
   }
 
-  private onBadResult(result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE'): 'BAD' {
+  private onBadResult(result: 'BAD_NOTE'): 'BAD' {
     this.onBadCallback(this.currentMeasureIndex, this.currentNoteIndex, result);
     this.currentNoteIndex = 0;
     return 'BAD';
   }
 
-  private onGoodResult(): 'GOOD' {
-    this.onGoodCallback(this.currentMeasureIndex, this.currentNoteIndex);
+  private onGoodResult(result: 'TO_EARLY' | 'TO_LATE' | 'PERFECT'): 'GOOD' {
+    this.onGoodCallback(this.currentMeasureIndex, this.currentNoteIndex, result);
     if (this.currentNoteIndex === 0) {
       this.timeChecker.start();
     }

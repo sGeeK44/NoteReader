@@ -59,7 +59,7 @@ describe('Validate speech against music score and time', () => {
     timeProvider.setNow(500);
     const result = checker.next('a');
 
-    expect(result).toStrictEqual('BAD');
+    expect(result).toStrictEqual('GOOD');
   });
 
   it('Spell to late !', () => {
@@ -90,7 +90,7 @@ describe('Validate speech against music score and time', () => {
     timeProvider.setNow(1500);
     const result = checker.next('a');
 
-    expect(result).toStrictEqual('BAD');
+    expect(result).toStrictEqual('GOOD');
   });
 
   it('Spell all right :)', () => {
