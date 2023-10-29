@@ -33,7 +33,7 @@ export const MusicScoreView = ({ score, checker }: MusicScoreProps) => {
     });
   }, []);
 
-  const drawNote = (feedbackSvg: RnSvgContext, measure: number, note: number, result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE' | 'PERFECT') => {
+  const drawNote = (feedbackSvg: RnSvgContext, measure: number, note: number, result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE' | 'PERFECT' | 'START_POINT') => {
     const color = getColor(result);
     vexflowScore?.drawNote(feedbackSvg, measure, note, color);
   }
@@ -51,6 +51,7 @@ export const MusicScoreView = ({ score, checker }: MusicScoreProps) => {
     ) => {
       vexflowScore?.resetNote(feedbackSvg, measure);
       drawNote(feedbackSvg, measure, note, result)
+      drawNote(feedbackSvg, measure, 0, 'START_POINT')
       forceUpdate();
     },
   );
@@ -78,7 +79,7 @@ export const MusicScoreView = ({ score, checker }: MusicScoreProps) => {
   );
 };
 
-function getColor(result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE' | 'PERFECT') {
+function getColor(result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE' | 'PERFECT' | 'START_POINT') {
   switch (result) {
     case 'PERFECT':
       return 'green';
@@ -88,6 +89,8 @@ function getColor(result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE' | 'PERFECT') {
       return 'mediumpurple';
     case 'BAD_NOTE':
       return 'red';
+    case 'START_POINT':
+      return 'blue';
     default:
       return 'black';
   }

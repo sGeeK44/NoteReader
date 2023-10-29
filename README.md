@@ -46,7 +46,7 @@ This is one way to run your app — you can also run it directly from within And
 
 - [x] Restart at begining of current measure on mistake
 - [x] Do not stop on temporal mistake
-- [ ] Indicate in blue where reading restart after mistake
+- [x] Indicate in blue where reading restart after mistake
 - [ ] write right note in red under a mistake
 - [x] Put in yellow when is to early an purple when is to late
 - [ ] Add reset
