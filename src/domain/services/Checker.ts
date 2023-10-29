@@ -1,9 +1,9 @@
-import {Tempo} from './Tempo';
-import {MusicScore} from './MusicScoreBuilder';
-import {TimeProvider} from './TimeProvider';
-import {TimeChecker} from './TimeChecker';
-import {NoteHeadChecker} from './NoteHeadChecker';
-import {countBeatBefore} from './Beat';
+import { Tempo } from './Tempo';
+import { Measure, MusicScore } from './MusicScoreBuilder';
+import { TimeProvider } from './TimeProvider';
+import { TimeChecker } from './TimeChecker';
+import { NoteHeadChecker } from './NoteHeadChecker';
+import { countBeatBefore } from './Beat';
 
 export type CheckResult = 'GOOD' | 'BAD' | 'WIN';
 
@@ -23,6 +23,10 @@ export class Checker {
     // Nothing by default
   };
 
+  private get currentMeasure(): Measure {
+    return this.score.measures[this.currentMeasureIndex];
+  }
+
   constructor(
     timeProvider: TimeProvider,
     private score: MusicScore,
@@ -33,23 +37,19 @@ export class Checker {
     this.noteHeaChecker = new NoteHeadChecker();
   }
 
-  start() {
+  start(receive: string) {
     this.currentMeasureIndex = 0;
     this.currentNoteIndex = 0;
+    if (this.isRightNote(receive)) {
+      return this.onGoodResult();
+    }
+
+    return this.onBadResult('BAD_NOTE');
   }
 
   next(receive: string): CheckResult {
-    const actualMeasure = this.score.measures[this.currentMeasureIndex];
-    const actualNote = actualMeasure.notes[this.currentNoteIndex];
-    const expected = {
-      value: actualNote.notehead,
-      scoreSignature: this.score.timeSignature,
-    };
+    const isRigthNote = this.isRightNote(receive);
 
-    const isRigthNote = this.noteHeaChecker.isRigthNote(
-      receive,
-      expected.value,
-    );
     if (isRigthNote && this.readFirstNote()) {
       this.timeChecker.start();
       return this.onGoodResult();
@@ -57,7 +57,7 @@ export class Checker {
 
     const nbBeatBefore = countBeatBefore(
       this.score.timeSignature,
-      actualMeasure,
+      this.currentMeasure,
       this.currentMeasureIndex,
       this.currentNoteIndex,
     );
@@ -79,11 +79,20 @@ export class Checker {
     return this.onGoodResult();
   }
 
+  isRightNote(receive: string): boolean {
+    const actualNote = this.currentMeasure.notes[this.currentNoteIndex];
+    console.log(actualNote)
+    return this.noteHeaChecker.isRigthNote(
+      receive,
+      actualNote.notehead,
+    );
+  }
+
   readLastNote() {
     return (
       this.currentMeasureIndex === this.score.measures.length - 1 &&
       this.currentNoteIndex ===
-        this.score.measures[this.currentMeasureIndex].notes.length - 1
+      this.score.measures[this.currentMeasureIndex].notes.length - 1
     );
   }
 

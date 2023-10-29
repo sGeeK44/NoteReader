@@ -75,11 +75,14 @@ export const TrainScreen = ({ route }: Props) => {
             metronome.play(tempo);
             let isFirst = true;
             speechRecognition?.subscribe(value => {
+              let result;
               if (isFirst) {
-                checker?.start();
+                result = checker?.start(value);
                 isFirst = false;
               }
-              const result = checker?.next(value);
+              else {
+                result = checker?.next(value);
+              }
               if (result === 'WIN') {
                 metronome.stop();
                 speechRecognition?.stop();

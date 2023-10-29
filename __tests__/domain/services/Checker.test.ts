@@ -1,7 +1,7 @@
-import {Checker} from 'app/domain/services/Checker';
-import {FakeTimeProvider} from '../../fakes/FakeTimeProvider';
-import {Tempo} from 'app/domain/services/Tempo';
-import {MusicScore} from 'app/domain/services/MusicScoreBuilder';
+import { Checker } from 'app/domain/services/Checker';
+import { FakeTimeProvider } from '../../fakes/FakeTimeProvider';
+import { Tempo } from 'app/domain/services/Tempo';
+import { MusicScore } from 'app/domain/services/MusicScoreBuilder';
 
 describe('Validate speech against music score and time', () => {
   it('First note can be spell at any time !', () => {
@@ -17,8 +17,8 @@ describe('Validate speech against music score and time', () => {
         measures: [
           {
             notes: [
-              {notehead: 'a', duration: 4, pitch: '4'},
-              {notehead: 'a', duration: 4, pitch: '4'},
+              { notehead: 'a', duration: 4, pitch: '4' },
+              { notehead: 'a', duration: 4, pitch: '4' },
             ],
           },
         ],
@@ -27,10 +27,7 @@ describe('Validate speech against music score and time', () => {
       400,
     );
 
-    checker.start();
-
-    timeProvider.setNow(3000);
-    const result = checker.next('a');
+    const result = checker.start('a');
 
     expect(result).toStrictEqual('GOOD');
   });
@@ -47,8 +44,8 @@ describe('Validate speech against music score and time', () => {
         measures: [
           {
             notes: [
-              {notehead: 'a', duration: 4, pitch: '4'},
-              {notehead: 'a', duration: 4, pitch: '4'},
+              { notehead: 'a', duration: 4, pitch: '4' },
+              { notehead: 'a', duration: 4, pitch: '4' },
             ],
           },
         ],
@@ -57,8 +54,7 @@ describe('Validate speech against music score and time', () => {
       400,
     );
 
-    checker.start();
-    checker.next('a');
+    checker.start('a');
 
     timeProvider.setNow(500);
     const result = checker.next('a');
@@ -79,8 +75,8 @@ describe('Validate speech against music score and time', () => {
         measures: [
           {
             notes: [
-              {notehead: 'a', duration: 4, pitch: '4'},
-              {notehead: 'a', duration: 4, pitch: '4'},
+              { notehead: 'a', duration: 4, pitch: '4' },
+              { notehead: 'a', duration: 4, pitch: '4' },
             ],
           },
         ],
@@ -89,8 +85,7 @@ describe('Validate speech against music score and time', () => {
       400,
     );
 
-    checker.start();
-    checker.next('a');
+    checker.start('a');
 
     timeProvider.setNow(1500);
     const result = checker.next('a');
@@ -109,27 +104,25 @@ describe('Validate speech against music score and time', () => {
       measures: [
         {
           notes: [
-            {notehead: 'a', duration: 4, pitch: '4'},
-            {notehead: 'b', duration: 4, pitch: '4'},
-            {notehead: 'c', duration: 4, pitch: '4'},
-            {notehead: 'd', duration: 4, pitch: '4'},
+            { notehead: 'a', duration: 4, pitch: '4' },
+            { notehead: 'b', duration: 4, pitch: '4' },
+            { notehead: 'c', duration: 4, pitch: '4' },
+            { notehead: 'd', duration: 4, pitch: '4' },
           ],
         },
         {
           notes: [
-            {notehead: 'e', duration: 4, pitch: '4'},
-            {notehead: 'f', duration: 4, pitch: '4'},
-            {notehead: 'g', duration: 4, pitch: '4'},
-            {notehead: 'a', duration: 4, pitch: '4'},
+            { notehead: 'e', duration: 4, pitch: '4' },
+            { notehead: 'f', duration: 4, pitch: '4' },
+            { notehead: 'g', duration: 4, pitch: '4' },
+            { notehead: 'a', duration: 4, pitch: '4' },
           ],
         },
       ],
     };
     const checker = new Checker(timeProvider, score, new Tempo(60), 400);
 
-    checker.start();
-
-    expect(checker.next('a')).toStrictEqual('GOOD');
+    expect(checker.start('a')).toStrictEqual('GOOD');
 
     timeProvider.setNow(1000);
     expect(checker.next('b')).toStrictEqual('GOOD');
@@ -175,10 +168,7 @@ describe('Validate speech against music score and time', () => {
     };
     const checker = new Checker(timeProvider, score, new Tempo(60), 400);
 
-    checker.start();
-
-    timeProvider.setNow(1000);
-    const result = checker.next('do');
+    const result = checker.start('do');
 
     expect(result).toStrictEqual('GOOD');
   });
@@ -205,10 +195,7 @@ describe('Validate speech against music score and time', () => {
     };
     const checker = new Checker(timeProvider, score, new Tempo(60), 400);
 
-    checker.start();
-
-    timeProvider.setNow(1000);
-    const result = checker.next('d');
+    const result = checker.start('d');
 
     expect(result).toStrictEqual('BAD');
   });
@@ -226,10 +213,10 @@ describe('Validate speech against music score and time', () => {
         measures: [
           {
             notes: [
-              {notehead: 'a', duration: 4, pitch: '4'},
-              {notehead: 'b', duration: 4, pitch: '4'},
-              {notehead: 'c', duration: 4, pitch: '4'},
-              {notehead: 'd', duration: 4, pitch: '4'},
+              { notehead: 'a', duration: 4, pitch: '4' },
+              { notehead: 'b', duration: 4, pitch: '4' },
+              { notehead: 'c', duration: 4, pitch: '4' },
+              { notehead: 'd', duration: 4, pitch: '4' },
             ],
           },
         ],
@@ -238,21 +225,18 @@ describe('Validate speech against music score and time', () => {
       400,
     );
 
-    checker.start();
+    expect(checker.start('a')).toStrictEqual('GOOD');
 
     timeProvider.setNow(1000);
-    expect(checker.next('a')).toStrictEqual('GOOD');
-
-    timeProvider.setNow(2000);
     expect(checker.next('b')).toStrictEqual('GOOD');
 
-    timeProvider.setNow(3000);
+    timeProvider.setNow(2000);
     expect(checker.next('a')).toStrictEqual('BAD');
 
-    timeProvider.setNow(1000);
+    timeProvider.setNow(3000);
     expect(checker.next('a')).toStrictEqual('GOOD');
 
-    timeProvider.setNow(2000);
+    timeProvider.setNow(4000);
     expect(checker.next('b')).toStrictEqual('GOOD');
 
     timeProvider.setNow(2500);
@@ -286,8 +270,8 @@ describe('Listen result.', () => {
         measures: [
           {
             notes: [
-              {notehead: 'a', duration: 4, pitch: '4'},
-              {notehead: 'b', duration: 4, pitch: '4'},
+              { notehead: 'a', duration: 4, pitch: '4' },
+              { notehead: 'b', duration: 4, pitch: '4' },
             ],
           },
         ],
@@ -296,14 +280,12 @@ describe('Listen result.', () => {
       400,
     );
 
-    checker.start();
-
-    expect(checker.next('a')).toStrictEqual('GOOD');
+    expect(checker.start('a')).toStrictEqual('GOOD');
     timeProvider.setNow(500);
     checker.onBadNote(
       (
-        measure: number,
-        note: number,
+        _measure: number,
+        _note: number,
         result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE',
       ) => {
         expect(result).toStrictEqual('BAD_NOTE');
@@ -324,8 +306,8 @@ describe('Listen result.', () => {
         measures: [
           {
             notes: [
-              {notehead: 'a', duration: 4, pitch: '4'},
-              {notehead: 'b', duration: 4, pitch: '4'},
+              { notehead: 'a', duration: 4, pitch: '4' },
+              { notehead: 'b', duration: 4, pitch: '4' },
             ],
           },
         ],
@@ -334,14 +316,14 @@ describe('Listen result.', () => {
       400,
     );
 
-    checker.start();
 
-    expect(checker.next('a')).toStrictEqual('GOOD');
+
+    expect(checker.start('a')).toStrictEqual('GOOD');
     timeProvider.setNow(1500);
     checker.onBadNote(
       (
-        measure: number,
-        note: number,
+        _measure: number,
+        _note: number,
         result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE',
       ) => {
         expect(result).toStrictEqual('BAD_NOTE');
@@ -364,10 +346,10 @@ describe('With different duration', () => {
         },
         measures: [
           {
-            notes: [{notehead: 'a', duration: 1, pitch: '1'}],
+            notes: [{ notehead: 'a', duration: 1, pitch: '1' }],
           },
           {
-            notes: [{notehead: 'a', duration: 1, pitch: '1'}],
+            notes: [{ notehead: 'a', duration: 1, pitch: '1' }],
           },
         ],
       },
@@ -375,8 +357,7 @@ describe('With different duration', () => {
       400,
     );
 
-    checker.start();
-    checker.next('a');
+    checker.start('a');
 
     timeProvider.setNow(4000);
     expect(checker.next('a')).toStrictEqual('WIN');
@@ -395,12 +376,12 @@ describe('With different duration', () => {
         measures: [
           {
             notes: [
-              {notehead: 'a', duration: 6, pitch: '1'},
-              {notehead: 'a', duration: 8, pitch: '1'},
-              {notehead: 'a', duration: 12, pitch: '1'},
-              {notehead: 'a', duration: 16, pitch: '1'},
-              {notehead: 'a', duration: 12, pitch: '1'},
-              {notehead: 'a', duration: 16, pitch: '1'},
+              { notehead: 'a', duration: 6, pitch: '1' },
+              { notehead: 'a', duration: 8, pitch: '1' },
+              { notehead: 'a', duration: 12, pitch: '1' },
+              { notehead: 'a', duration: 16, pitch: '1' },
+              { notehead: 'a', duration: 12, pitch: '1' },
+              { notehead: 'a', duration: 16, pitch: '1' },
             ],
           },
         ],
@@ -409,8 +390,7 @@ describe('With different duration', () => {
       400,
     );
 
-    checker.start();
-    checker.next('a');
+    checker.start('a');
 
     timeProvider.setNow(1500);
     expect(checker.next('a')).toStrictEqual('GOOD');
