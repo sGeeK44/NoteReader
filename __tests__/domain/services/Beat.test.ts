@@ -1,4 +1,4 @@
-import {toBeatValue, count} from 'app/domain/services/Beat';
+import { toBeatValue, countBeatBefore } from 'app/domain/services/Beat';
 
 describe('Convert note duration to beat value with quarter for time unit ', () => {
   it('whole', () => {
@@ -65,10 +65,11 @@ describe('Convert note duration to beat value with half for time unit ', () => {
 });
 
 describe('Compute beat before note', () => {
-  it('', () => {
-    const result = count(
+  it('First note', () => {
+    const result = countBeatBefore(
+      4,
       {
-        notes: [{notehead: 'a', duration: 4, pitch: '4'}],
+        notes: [{ notehead: 'a', duration: 4, pitch: '4' }],
       },
       0,
     );
@@ -76,12 +77,13 @@ describe('Compute beat before note', () => {
     expect(result).toStrictEqual(0);
   });
 
-  it('', () => {
-    const result = count(
+  it('Second shoud return beat value of first', () => {
+    const result = countBeatBefore(
+      4,
       {
         notes: [
-          {notehead: 'a', duration: 4, pitch: '4'},
-          {notehead: 'a', duration: 4, pitch: '4'},
+          { notehead: 'a', duration: 4, pitch: '4' },
+          { notehead: 'a', duration: 4, pitch: '4' },
         ],
       },
       1,
@@ -90,17 +92,19 @@ describe('Compute beat before note', () => {
     expect(result).toStrictEqual(1);
   });
 
-  it('', () => {
-    const result = count(
+  it('Third should return sum of previous note beat', () => {
+    const result = countBeatBefore(
+      4,
       {
         notes: [
-          {notehead: 'a', duration: 6, pitch: '4'},
-          {notehead: 'a', duration: 8, pitch: '4'},
+          { notehead: 'a', duration: 6, pitch: '4' },
+          { notehead: 'a', duration: 6, pitch: '4' },
+          { notehead: 'a', duration: 8, pitch: '4' },
         ],
       },
-      1,
+      2,
     );
 
-    expect(result).toStrictEqual(1.5);
+    expect(result).toStrictEqual(3);
   });
 });

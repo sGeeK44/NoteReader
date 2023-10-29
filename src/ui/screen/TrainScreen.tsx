@@ -77,15 +77,16 @@ export const TrainScreen = ({ route }: Props) => {
             speechRecognition?.subscribe(value => {
               let result;
               if (isFirst) {
-                result = checker?.start(value);
+                result = checker?.start(value)
                 isFirst = false;
               }
               else {
                 result = checker?.next(value);
               }
-              if (result === 'WIN') {
-                metronome.stop();
-                speechRecognition?.stop();
+
+              console.log(checker.timeChecker.elapse(), value, result);
+              if (result === 'BAD') {
+                isFirst = true;
               }
             });
             speechRecognition?.start(toWords(notation));
@@ -102,6 +103,6 @@ export const TrainScreen = ({ route }: Props) => {
           Stop
         </Button>
       </View>
-    </SafeAreaView>
+    </SafeAreaView >
   );
 };

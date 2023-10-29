@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from 'app/App';

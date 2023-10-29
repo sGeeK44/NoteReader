@@ -199,10 +199,15 @@ describe('Validate speech against music score and time', () => {
 
     expect(result).toStrictEqual('BAD');
   });
+});
 
-  it('Has mistake restart at begining :(', () => {
-    const timeProvider = new FakeTimeProvider();
-    const checker = new Checker(
+describe('Has mistake', () => {
+  let checker: Checker;
+  let timeProvider: FakeTimeProvider;
+
+  beforeEach(() => {
+    timeProvider = new FakeTimeProvider();
+    checker = new Checker(
       timeProvider,
       {
         clef: 'treble',
@@ -219,42 +224,101 @@ describe('Validate speech against music score and time', () => {
               { notehead: 'd', duration: 4, pitch: '4' },
             ],
           },
+          {
+            notes: [
+              { notehead: 'e', duration: 4, pitch: '4' },
+              { notehead: 'f', duration: 4, pitch: '4' },
+              { notehead: 'g', duration: 4, pitch: '4' },
+              { notehead: 'a', duration: 4, pitch: '4' },
+            ],
+          },
         ],
       },
       new Tempo(60),
       400,
     );
-
-    expect(checker.start('a')).toStrictEqual('GOOD');
-
-    timeProvider.setNow(1000);
-    expect(checker.next('b')).toStrictEqual('GOOD');
-
-    timeProvider.setNow(2000);
-    expect(checker.next('a')).toStrictEqual('BAD');
-
-    timeProvider.setNow(3000);
-    expect(checker.next('a')).toStrictEqual('GOOD');
-
-    timeProvider.setNow(4000);
-    expect(checker.next('b')).toStrictEqual('GOOD');
-
-    timeProvider.setNow(2500);
-    expect(checker.next('c')).toStrictEqual('BAD');
-
-    timeProvider.setNow(1000);
-    expect(checker.next('a')).toStrictEqual('GOOD');
-
-    timeProvider.setNow(2000);
-    expect(checker.next('b')).toStrictEqual('GOOD');
-
-    timeProvider.setNow(3000);
-    expect(checker.next('c')).toStrictEqual('GOOD');
-
-    timeProvider.setNow(4000);
-    expect(checker.next('d')).toStrictEqual('WIN');
   });
-});
+
+
+  describe("Time should be restarted", () => {
+
+    it('Fail in second measure', () => {
+      checker.start('a');
+      timeProvider.setNow(1000);
+      checker.next('b');
+      timeProvider.setNow(2000);
+      checker.next('c');
+      timeProvider.setNow(3000);
+      checker.next('d');
+      timeProvider.setNow(4000);
+      checker.next('d');
+
+
+      timeProvider.setNow(10000);
+      expect(checker.start('e')).toStrictEqual('GOOD');
+      timeProvider.setNow(11000);
+      expect(checker.next('f')).toStrictEqual('GOOD');
+    });
+  });
+
+  describe("Restart at the current measure begining", () => {
+
+    it('Fail in first measure first note', () => {
+      checker.start('b');
+
+      expect(checker.currentMeasureIndex).toStrictEqual(0);
+      expect(checker.currentNoteIndex).toStrictEqual(0);
+      expect(checker.timeChecker.elapse)
+    });
+
+    it('Fail in first measuren third note', () => {
+      checker.start('a');
+      timeProvider.setNow(1000);
+      checker.next('b');
+      timeProvider.setNow(2000);
+      checker.next('a');
+      timeProvider.setNow(3000);
+
+      expect(checker.currentMeasureIndex).toStrictEqual(0);
+      expect(checker.currentNoteIndex).toStrictEqual(0);
+    });
+
+    it('Fail in second measuren first note', () => {
+      checker.start('a');
+      timeProvider.setNow(1000);
+      checker.next('b');
+      timeProvider.setNow(2000);
+      checker.next('c');
+      timeProvider.setNow(3000);
+      checker.next('d');
+      timeProvider.setNow(5000);
+      checker.next('d');
+
+
+      expect(checker.currentMeasureIndex).toStrictEqual(1);
+      expect(checker.currentNoteIndex).toStrictEqual(0);
+    });
+
+    it('Fail in second measuren third note', () => {
+      checker.start('a');
+      timeProvider.setNow(1000);
+      checker.next('b');
+      timeProvider.setNow(2000);
+      checker.next('c');
+      timeProvider.setNow(3000);
+      checker.next('d');
+      timeProvider.setNow(4000);
+      checker.next('e');
+      timeProvider.setNow(5000);
+      checker.next('f');
+      timeProvider.setNow(6000);
+      checker.next('d');
+
+      expect(checker.currentMeasureIndex).toStrictEqual(1);
+      expect(checker.currentNoteIndex).toStrictEqual(0);
+    });
+  });
+})
 
 describe('Listen result.', () => {
   it('When spell bad note to early', () => {
@@ -293,6 +357,7 @@ describe('Listen result.', () => {
     );
     checker.next('a');
   });
+
   it('When spell bad note to late', () => {
     const timeProvider = new FakeTimeProvider();
     const checker = new Checker(
@@ -396,3 +461,4 @@ describe('With different duration', () => {
     expect(checker.next('a')).toStrictEqual('GOOD');
   });
 });
+

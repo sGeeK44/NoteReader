@@ -38,7 +38,6 @@ export class Checker {
   }
 
   start(receive: string) {
-    this.currentMeasureIndex = 0;
     this.currentNoteIndex = 0;
     if (this.isRightNote(receive)) {
       return this.onGoodResult();
@@ -50,24 +49,19 @@ export class Checker {
   next(receive: string): CheckResult {
     const isRigthNote = this.isRightNote(receive);
 
-    if (isRigthNote && this.readFirstNote()) {
-      this.timeChecker.start();
-      return this.onGoodResult();
-    }
-
-    const nbBeatBefore = countBeatBefore(
-      this.score.timeSignature,
-      this.currentMeasure,
-      this.currentMeasureIndex,
-      this.currentNoteIndex,
-    );
-    const isOnTime = this.timeChecker.isOnTime(
-      nbBeatBefore * this.tempo.toBpMs(),
-    );
-
     if (!isRigthNote) {
       return this.onBadResult('BAD_NOTE');
     }
+
+    const nbBeatBefore = this.currentNoteIndex === 0 ? this.score.timeSignature.beat : countBeatBefore(
+      this.score.timeSignature.duration,
+      this.currentMeasure,
+      this.currentNoteIndex,
+    );
+    const expectedTime = nbBeatBefore * this.tempo.toBpMs();
+    const isOnTime = this.timeChecker.isOnTime(
+      expectedTime
+    );
     if (isOnTime !== 'ON_TIME') {
       return this.onBadResult(isOnTime);
     }
@@ -122,14 +116,16 @@ export class Checker {
 
   private onBadResult(result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE'): 'BAD' {
     this.onBadCallback(this.currentMeasureIndex, this.currentNoteIndex, result);
-    this.currentMeasureIndex = 0;
     this.currentNoteIndex = 0;
-    this.timeChecker.reset();
     return 'BAD';
   }
 
   private onGoodResult(): 'GOOD' {
     this.onGoodCallback(this.currentMeasureIndex, this.currentNoteIndex);
+    if (this.currentNoteIndex === 0) {
+      this.timeChecker.start();
+    }
+
     this.currentNoteIndex++;
     if (
       this.currentNoteIndex >
