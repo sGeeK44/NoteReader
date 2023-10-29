@@ -80,10 +80,12 @@ export const MusicScoreView = ({ score, checker }: MusicScoreProps) => {
 
 function getColor(result: 'TO_EARLY' | 'TO_LATE' | 'BAD_NOTE' | 'PERFECT') {
   switch (result) {
+    case 'PERFECT':
+      return 'green';
     case 'TO_EARLY':
-      return 'lightblue';
+      return 'gold';
     case 'TO_LATE':
-      return 'yellow';
+      return 'mediumpurple';
     case 'BAD_NOTE':
       return 'red';
     default:

@@ -48,5 +48,5 @@ This is one way to run your app — you can also run it directly from within And
 - [x] Do not stop on temporal mistake
 - [ ] Indicate in blue where reading restart after mistake
 - [ ] write right note in red under a mistake
-- [ ] Put in orange when is to early an violet when is to late
+- [x] Put in yellow when is to early an purple when is to late
 - [ ] Add reset
