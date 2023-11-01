@@ -1,4 +1,4 @@
-import { NoteHead } from './MusicScoreBuilder';
+import {NoteHead} from './MusicScoreBuilder';
 import {
   SyllabicNotations,
   SyllabicNotation,

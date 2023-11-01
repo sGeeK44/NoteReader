@@ -1,6 +1,6 @@
-import { inject } from 'inversify';
-import { Symbols } from 'app/config/symbols';
-import { TimeProvider } from './TimeProvider';
+import {inject} from 'inversify';
+import {Symbols} from 'app/config/symbols';
+import {TimeProvider} from './TimeProvider';
 
 export class TimeChecker {
   private startAt = 0;
@@ -8,7 +8,7 @@ export class TimeChecker {
   constructor(
     @inject(Symbols.TimeProvider) private timeProvider: TimeProvider,
     private accuracy: number,
-  ) { }
+  ) {}
 
   start() {
     this.startAt = this.timeProvider.now();

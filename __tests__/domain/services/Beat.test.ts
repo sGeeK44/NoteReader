@@ -1,4 +1,4 @@
-import { toBeatValue, countBeatBefore } from 'app/domain/services/Beat';
+import {toBeatValue, countBeatBefore} from 'app/domain/services/Beat';
 
 describe('Convert note duration to beat value with quarter for time unit ', () => {
   it('whole', () => {
@@ -69,7 +69,7 @@ describe('Compute beat before note', () => {
     const result = countBeatBefore(
       4,
       {
-        notes: [{ notehead: 'a', duration: 4, pitch: '4' }],
+        notes: [{notehead: 'a', duration: 4, pitch: '4'}],
       },
       0,
     );
@@ -82,8 +82,8 @@ describe('Compute beat before note', () => {
       4,
       {
         notes: [
-          { notehead: 'a', duration: 4, pitch: '4' },
-          { notehead: 'a', duration: 4, pitch: '4' },
+          {notehead: 'a', duration: 4, pitch: '4'},
+          {notehead: 'a', duration: 4, pitch: '4'},
         ],
       },
       1,
@@ -97,9 +97,9 @@ describe('Compute beat before note', () => {
       4,
       {
         notes: [
-          { notehead: 'a', duration: 6, pitch: '4' },
-          { notehead: 'a', duration: 6, pitch: '4' },
-          { notehead: 'a', duration: 8, pitch: '4' },
+          {notehead: 'a', duration: 6, pitch: '4'},
+          {notehead: 'a', duration: 6, pitch: '4'},
+          {notehead: 'a', duration: 8, pitch: '4'},
         ],
       },
       2,

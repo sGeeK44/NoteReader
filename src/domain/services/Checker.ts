@@ -1,9 +1,9 @@
-import { Tempo } from './Tempo';
-import { Measure, MusicScore } from './MusicScoreBuilder';
-import { TimeProvider } from './TimeProvider';
-import { TimeChecker } from './TimeChecker';
-import { NoteHeadChecker } from './NoteHeadChecker';
-import { countBeatBefore } from './Beat';
+import {Tempo} from './Tempo';
+import {Measure, MusicScore} from './MusicScoreBuilder';
+import {TimeProvider} from './TimeProvider';
+import {TimeChecker} from './TimeChecker';
+import {NoteHeadChecker} from './NoteHeadChecker';
+import {countBeatBefore} from './Beat';
 
 export type CheckResult = 'GOOD' | 'BAD' | 'WIN';
 
@@ -15,17 +15,14 @@ export class Checker {
   onGoodCallback: (
     measure: number,
     note: number,
-    result: 'TO_EARLY' | 'TO_LATE' | 'PERFECT'
+    result: 'TO_EARLY' | 'TO_LATE' | 'PERFECT',
   ) => void = () => {
     // Nothing by default
   };
-  onBadCallback: (
-    measure: number,
-    note: number,
-    result: 'BAD_NOTE'
-  ) => void = () => {
-    // Nothing by default
-  };
+  onBadCallback: (measure: number, note: number, result: 'BAD_NOTE') => void =
+    () => {
+      // Nothing by default
+    };
 
   private get currentMeasure(): Measure {
     return this.score.measures[this.currentMeasureIndex];
@@ -57,15 +54,16 @@ export class Checker {
       return this.onBadResult('BAD_NOTE');
     }
 
-    const nbBeatBefore = this.currentNoteIndex === 0 ? this.score.timeSignature.beat : countBeatBefore(
-      this.score.timeSignature.duration,
-      this.currentMeasure,
-      this.currentNoteIndex,
-    );
+    const nbBeatBefore =
+      this.currentNoteIndex === 0
+        ? this.score.timeSignature.beat
+        : countBeatBefore(
+            this.score.timeSignature.duration,
+            this.currentMeasure,
+            this.currentNoteIndex,
+          );
     const expectedTime = nbBeatBefore * this.tempo.toBpMs();
-    const isOnTime = this.timeChecker.isOnTime(
-      expectedTime
-    );
+    const isOnTime = this.timeChecker.isOnTime(expectedTime);
     if (isOnTime !== 'ON_TIME') {
       return this.onGoodResult(isOnTime);
     }
@@ -79,17 +77,14 @@ export class Checker {
 
   isRightNote(receive: string): boolean {
     const actualNote = this.currentMeasure.notes[this.currentNoteIndex];
-    return this.noteHeaChecker.isRigthNote(
-      receive,
-      actualNote.notehead,
-    );
+    return this.noteHeaChecker.isRigthNote(receive, actualNote.notehead);
   }
 
   readLastNote() {
     return (
-      this.currentMeasureIndex === this.score.measures.length - 1 &&
+      this.currentMeasureIndex === this.score.measures.length - 1 && //??
       this.currentNoteIndex ===
-      this.score.measures[this.currentMeasureIndex].notes.length - 1
+        this.score.measures[this.currentMeasureIndex].notes.length - 1
     );
   }
 
@@ -97,16 +92,18 @@ export class Checker {
     return this.currentMeasureIndex === 0 && this.currentNoteIndex === 0;
   }
 
-  onGoodNote(onGoodCallback: (measure: number, note: number, result: 'TO_EARLY' | 'TO_LATE' | 'PERFECT') => void) {
+  onGoodNote(
+    onGoodCallback: (
+      measure: number,
+      note: number,
+      result: 'TO_EARLY' | 'TO_LATE' | 'PERFECT',
+    ) => void,
+  ) {
     this.onGoodCallback = onGoodCallback;
   }
 
   onBadNote(
-    onBadCallback: (
-      measure: number,
-      note: number,
-      result: 'BAD_NOTE',
-    ) => void,
+    onBadCallback: (measure: number, note: number, result: 'BAD_NOTE') => void,
   ) {
     this.onBadCallback = onBadCallback;
   }
@@ -124,7 +121,11 @@ export class Checker {
   }
 
   private onGoodResult(result: 'TO_EARLY' | 'TO_LATE' | 'PERFECT'): 'GOOD' {
-    this.onGoodCallback(this.currentMeasureIndex, this.currentNoteIndex, result);
+    this.onGoodCallback(
+      this.currentMeasureIndex,
+      this.currentNoteIndex,
+      result,
+    );
     if (this.currentNoteIndex === 0) {
       this.timeChecker.start();
     }

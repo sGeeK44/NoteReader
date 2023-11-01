@@ -1,7 +1,7 @@
-import { Checker } from 'app/domain/services/Checker';
-import { FakeTimeProvider } from '../../fakes/FakeTimeProvider';
-import { Tempo } from 'app/domain/services/Tempo';
-import { MusicScore } from 'app/domain/services/MusicScoreBuilder';
+import {Checker} from 'app/domain/services/Checker';
+import {FakeTimeProvider} from '../../fakes/FakeTimeProvider';
+import {Tempo} from 'app/domain/services/Tempo';
+import {MusicScore} from 'app/domain/services/MusicScoreBuilder';
 
 describe('Validate speech against music score and time', () => {
   it('First note can be spell at any time !', () => {
@@ -17,8 +17,8 @@ describe('Validate speech against music score and time', () => {
         measures: [
           {
             notes: [
-              { notehead: 'a', duration: 4, pitch: '4' },
-              { notehead: 'a', duration: 4, pitch: '4' },
+              {notehead: 'a', duration: 4, pitch: '4'},
+              {notehead: 'a', duration: 4, pitch: '4'},
             ],
           },
         ],
@@ -44,8 +44,8 @@ describe('Validate speech against music score and time', () => {
         measures: [
           {
             notes: [
-              { notehead: 'a', duration: 4, pitch: '4' },
-              { notehead: 'a', duration: 4, pitch: '4' },
+              {notehead: 'a', duration: 4, pitch: '4'},
+              {notehead: 'a', duration: 4, pitch: '4'},
             ],
           },
         ],
@@ -75,8 +75,8 @@ describe('Validate speech against music score and time', () => {
         measures: [
           {
             notes: [
-              { notehead: 'a', duration: 4, pitch: '4' },
-              { notehead: 'a', duration: 4, pitch: '4' },
+              {notehead: 'a', duration: 4, pitch: '4'},
+              {notehead: 'a', duration: 4, pitch: '4'},
             ],
           },
         ],
@@ -104,18 +104,18 @@ describe('Validate speech against music score and time', () => {
       measures: [
         {
           notes: [
-            { notehead: 'a', duration: 4, pitch: '4' },
-            { notehead: 'b', duration: 4, pitch: '4' },
-            { notehead: 'c', duration: 4, pitch: '4' },
-            { notehead: 'd', duration: 4, pitch: '4' },
+            {notehead: 'a', duration: 4, pitch: '4'},
+            {notehead: 'b', duration: 4, pitch: '4'},
+            {notehead: 'c', duration: 4, pitch: '4'},
+            {notehead: 'd', duration: 4, pitch: '4'},
           ],
         },
         {
           notes: [
-            { notehead: 'e', duration: 4, pitch: '4' },
-            { notehead: 'f', duration: 4, pitch: '4' },
-            { notehead: 'g', duration: 4, pitch: '4' },
-            { notehead: 'a', duration: 4, pitch: '4' },
+            {notehead: 'e', duration: 4, pitch: '4'},
+            {notehead: 'f', duration: 4, pitch: '4'},
+            {notehead: 'g', duration: 4, pitch: '4'},
+            {notehead: 'a', duration: 4, pitch: '4'},
           ],
         },
       ],
@@ -218,18 +218,18 @@ describe('Has mistake', () => {
         measures: [
           {
             notes: [
-              { notehead: 'a', duration: 4, pitch: '4' },
-              { notehead: 'b', duration: 4, pitch: '4' },
-              { notehead: 'c', duration: 4, pitch: '4' },
-              { notehead: 'd', duration: 4, pitch: '4' },
+              {notehead: 'a', duration: 4, pitch: '4'},
+              {notehead: 'b', duration: 4, pitch: '4'},
+              {notehead: 'c', duration: 4, pitch: '4'},
+              {notehead: 'd', duration: 4, pitch: '4'},
             ],
           },
           {
             notes: [
-              { notehead: 'e', duration: 4, pitch: '4' },
-              { notehead: 'f', duration: 4, pitch: '4' },
-              { notehead: 'g', duration: 4, pitch: '4' },
-              { notehead: 'a', duration: 4, pitch: '4' },
+              {notehead: 'e', duration: 4, pitch: '4'},
+              {notehead: 'f', duration: 4, pitch: '4'},
+              {notehead: 'g', duration: 4, pitch: '4'},
+              {notehead: 'a', duration: 4, pitch: '4'},
             ],
           },
         ],
@@ -239,9 +239,7 @@ describe('Has mistake', () => {
     );
   });
 
-
-  describe("Time should be restarted", () => {
-
+  describe('Time should be restarted', () => {
     it('Fail in second measure', () => {
       checker.start('a');
       timeProvider.setNow(1000);
@@ -253,7 +251,6 @@ describe('Has mistake', () => {
       timeProvider.setNow(4000);
       checker.next('d');
 
-
       timeProvider.setNow(10000);
       expect(checker.start('e')).toStrictEqual('GOOD');
       timeProvider.setNow(11000);
@@ -261,14 +258,12 @@ describe('Has mistake', () => {
     });
   });
 
-  describe("Restart at the current measure begining", () => {
-
+  describe('Restart at the current measure begining', () => {
     it('Fail in first measure first note', () => {
       checker.start('b');
 
       expect(checker.currentMeasureIndex).toStrictEqual(0);
       expect(checker.currentNoteIndex).toStrictEqual(0);
-      expect(checker.timeChecker.elapse)
     });
 
     it('Fail in first measuren third note', () => {
@@ -294,7 +289,6 @@ describe('Has mistake', () => {
       timeProvider.setNow(5000);
       checker.next('d');
 
-
       expect(checker.currentMeasureIndex).toStrictEqual(1);
       expect(checker.currentNoteIndex).toStrictEqual(0);
     });
@@ -318,7 +312,7 @@ describe('Has mistake', () => {
       expect(checker.currentNoteIndex).toStrictEqual(0);
     });
   });
-})
+});
 
 describe('Listen result.', () => {
   it('When spell bad note to early', () => {
@@ -334,8 +328,8 @@ describe('Listen result.', () => {
         measures: [
           {
             notes: [
-              { notehead: 'a', duration: 4, pitch: '4' },
-              { notehead: 'b', duration: 4, pitch: '4' },
+              {notehead: 'a', duration: 4, pitch: '4'},
+              {notehead: 'b', duration: 4, pitch: '4'},
             ],
           },
         ],
@@ -371,8 +365,8 @@ describe('Listen result.', () => {
         measures: [
           {
             notes: [
-              { notehead: 'a', duration: 4, pitch: '4' },
-              { notehead: 'b', duration: 4, pitch: '4' },
+              {notehead: 'a', duration: 4, pitch: '4'},
+              {notehead: 'b', duration: 4, pitch: '4'},
             ],
           },
         ],
@@ -380,8 +374,6 @@ describe('Listen result.', () => {
       new Tempo(60),
       400,
     );
-
-
 
     expect(checker.start('a')).toStrictEqual('GOOD');
     timeProvider.setNow(1500);
@@ -411,10 +403,10 @@ describe('With different duration', () => {
         },
         measures: [
           {
-            notes: [{ notehead: 'a', duration: 1, pitch: '1' }],
+            notes: [{notehead: 'a', duration: 1, pitch: '1'}],
           },
           {
-            notes: [{ notehead: 'a', duration: 1, pitch: '1' }],
+            notes: [{notehead: 'a', duration: 1, pitch: '1'}],
           },
         ],
       },
@@ -441,12 +433,12 @@ describe('With different duration', () => {
         measures: [
           {
             notes: [
-              { notehead: 'a', duration: 6, pitch: '1' },
-              { notehead: 'a', duration: 8, pitch: '1' },
-              { notehead: 'a', duration: 12, pitch: '1' },
-              { notehead: 'a', duration: 16, pitch: '1' },
-              { notehead: 'a', duration: 12, pitch: '1' },
-              { notehead: 'a', duration: 16, pitch: '1' },
+              {notehead: 'a', duration: 6, pitch: '1'},
+              {notehead: 'a', duration: 8, pitch: '1'},
+              {notehead: 'a', duration: 12, pitch: '1'},
+              {notehead: 'a', duration: 16, pitch: '1'},
+              {notehead: 'a', duration: 12, pitch: '1'},
+              {notehead: 'a', duration: 16, pitch: '1'},
             ],
           },
         ],
@@ -461,4 +453,3 @@ describe('With different duration', () => {
     expect(checker.next('a')).toStrictEqual('GOOD');
   });
 });
-

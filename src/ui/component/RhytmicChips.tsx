@@ -1,9 +1,7 @@
-import { ReactElement, useEffect, useState } from 'react';
-import { StyleSheet } from 'react-native';
-import { Chip } from 'react-native-paper';
-import {
-  RhytmicNote,
-} from 'app/domain/services/RhytmicNote';
+import React, {ReactElement, useState} from 'react';
+import {StyleSheet} from 'react-native';
+import {Chip} from 'react-native-paper';
+import {RhytmicNote} from 'app/domain/services/RhytmicNote';
 
 import DoubleEighth from 'app/assets/double-eighth.svg';
 import EighthDottedDouble from 'app/assets/eighth-dotted-double.svg';
@@ -20,10 +18,14 @@ export interface MusicScoreProps {
   onUnselected: () => void;
 }
 
-export const RhytmicChips = ({ value, onSelected, onUnselected }: MusicScoreProps) => {
+export const RhytmicChips = ({
+  value,
+  onSelected,
+  onUnselected,
+}: MusicScoreProps) => {
   const [selected, setSelected] = useState<boolean>(false);
   const styles = StyleSheet.create({
-    chip: { margin: 5, backgroundColor: 'transparent', height: 35, width: 80 },
+    chip: {margin: 5, backgroundColor: 'transparent', height: 35, width: 80},
   });
 
   return (
@@ -32,11 +34,10 @@ export const RhytmicChips = ({ value, onSelected, onUnselected }: MusicScoreProp
       mode="outlined"
       selected={selected}
       onPress={() => {
-        setSelected(!selected)
+        setSelected(!selected);
         if (selected) {
           onUnselected();
-        }
-        else {
+        } else {
           onSelected();
         }
       }}>

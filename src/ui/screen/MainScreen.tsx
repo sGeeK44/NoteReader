@@ -1,7 +1,7 @@
-import React from 'react';
-import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
-import { NavigationProp } from '@react-navigation/native';
-import { RootStackParamList } from 'app/App';
+import React, {useState} from 'react';
+import {SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
+import {NavigationProp} from '@react-navigation/native';
+import {RootStackParamList} from 'app/App';
 import {
   Button,
   IconButton,
@@ -11,18 +11,27 @@ import {
 } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import {
+  RhytmicNote,
   RhytmicNoteFigureMap,
 } from 'app/domain/services/RhytmicNote';
-import { MainScreenViewModel } from './MainScreenViewModel';
-import { RhytmicChips } from 'app/ui/component/RhytmicChips';
+import {MainScreenViewModel} from './MainScreenViewModel';
+import {RhytmicChips} from 'app/ui/component/RhytmicChips';
+import {Clef} from 'app/domain/services/MusicScoreBuilder';
+import {Notation} from 'app/domain/services/Notation';
 
 export interface Props {
   navigation: NavigationProp<RootStackParamList>;
 }
 
-export const MainScreen = ({ navigation }: Props) => {
+export const MainScreen = ({navigation}: Props) => {
   const rhytmics = [...RhytmicNoteFigureMap.keys()];
   const viewModel = new MainScreenViewModel();
+  [viewModel.rhytmics, viewModel.setRhytmics] = useState<RhytmicNote[]>([]);
+  [viewModel.tempo, viewModel.setTempo] = useState<number | undefined>(60);
+  [viewModel.nbMeasure, viewModel.setNbMeasure] = useState<number>(6);
+  [viewModel.clef, viewModel.setClef] = useState<Clef>('treble');
+  [viewModel.notation, viewModel.setNotation] = useState<Notation>('syllabic');
+  [viewModel.accuracy, viewModel.setAccuracy] = useState<number>(500);
 
   const styles = StyleSheet.create({
     content: {
@@ -36,11 +45,11 @@ export const MainScreen = ({ navigation }: Props) => {
       alignItems: 'center',
       margin: 20,
     },
-    inputWithLabel: { alignItems: 'center' },
-    label: { color: 'black', fontSize: 25 },
-    secondaryLabel: { color: 'black', fontSize: 12 },
-    sliderContainer: { width: '60%', alignItems: 'center' },
-    slider: { width: '100%' },
+    inputWithLabel: {alignItems: 'center'},
+    label: {color: 'black', fontSize: 25},
+    secondaryLabel: {color: 'black', fontSize: 12},
+    sliderContainer: {width: '60%', alignItems: 'center'},
+    slider: {width: '100%'},
     chips: {
       flex: 1,
       flexDirection: 'row',
@@ -94,7 +103,7 @@ export const MainScreen = ({ navigation }: Props) => {
           <Text style={styles.label}>Tempo</Text>
           <TextInput
             right={<TextInput.Icon icon="metronome" />}
-            onChangeText={(value) => viewModel.onTempoChanged(value)}
+            onChangeText={value => viewModel.onTempoChanged(value)}
             value={viewModel.tempo?.toString()}
           />
         </View>
@@ -111,10 +120,13 @@ export const MainScreen = ({ navigation }: Props) => {
               <RhytmicChips
                 key={rhytmicNoteFigure}
                 value={rhytmicNoteFigure}
-                onSelected={() => { viewModel.OnRhytmicSelected(rhytmicNoteFigure) }}
+                onSelected={() => {
+                  viewModel.OnRhytmicSelected(rhytmicNoteFigure);
+                }}
                 onUnselected={() => {
-                  viewModel.OnRhytmicUnselected(rhytmicNoteFigure)
-                }} />
+                  viewModel.OnRhytmicUnselected(rhytmicNoteFigure);
+                }}
+              />
             ))}
           </View>
         </View>
@@ -137,7 +149,7 @@ export const MainScreen = ({ navigation }: Props) => {
         icon="music"
         mode="contained"
         onPress={() => {
-          if (viewModel.rhytmics.length == 0) {
+          if (viewModel.rhytmics.length === 0) {
             return;
           }
           navigation.navigate('TrainScreen', {
@@ -146,7 +158,7 @@ export const MainScreen = ({ navigation }: Props) => {
             clef: viewModel.clef,
             notation: viewModel.notation,
             accuracy: viewModel.accuracy,
-            rhytmics: viewModel.rhytmics
+            rhytmics: viewModel.rhytmics,
           });
         }}>
         Start

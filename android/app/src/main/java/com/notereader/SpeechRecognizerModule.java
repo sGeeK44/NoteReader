@@ -1,5 +1,6 @@
 package com.musictheoryteacher;
 
+import android.util.Log;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import com.facebook.react.bridge.*;
@@ -106,6 +107,7 @@ public class SpeechRecognizerModule extends ReactContextBaseJavaModule {
 }
 
 class SpeechListner implements RecognitionListener {
+  private static final String TAG = "SpeechRecognizerModule";
   final ReactApplicationContext context;
 
   private String lastHypothesis = "";
@@ -117,20 +119,20 @@ class SpeechListner implements RecognitionListener {
   @Override
   public void onResult(String hypothesis) {
     lastHypothesis = "";
+    Log.v(TAG, "OnResult:" + getText(hypothesis, "text"));
   }
 
   @Override
   public void onFinalResult(String hypothesis) {
     lastHypothesis = "";
+    Log.v(TAG, "Final:" + getText(hypothesis, "text"));
   }
 
   @Override
   public void onPartialResult(String hypothesis) {
-    try {
-      hypothesis = new JSONObject(hypothesis).getString("partial");
-    } catch (Exception e) {
-      hypothesis = "";
-    }
+    hypothesis = getText(hypothesis, "partial");
+    
+    Log.v(TAG, "onPartialResult:" + hypothesis);
     var newPartialResult = hypothesis;
     if (lastHypothesis.length() <= hypothesis.length())
       newPartialResult = hypothesis.substring(lastHypothesis.length());
@@ -155,8 +157,19 @@ class SpeechListner implements RecognitionListener {
   }
 
   private void sendEvent(String eventName, String params) {
+    
+    Log.v(TAG, "Send:" + eventName + ". Value:" +params);
     context
         .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
         .emit(eventName, params);
+  }
+
+  private String getText(String hypothesis, String value) {
+    try {
+      return new JSONObject(hypothesis).getString(value);
+    }
+    catch (Exception e) {
+      return "";
+    }
   }
 }

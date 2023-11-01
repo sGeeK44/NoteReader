@@ -4,7 +4,7 @@ import {
   MusicScore,
   Notes,
 } from 'app/domain/services/MusicScoreBuilder';
-import { Signature, toString } from 'app/domain/value-object/Signature';
+import {Signature, toString} from 'app/domain/value-object/Signature';
 import {
   Beam,
   Dot,
@@ -16,11 +16,11 @@ import {
   Voice,
   VoiceMode,
 } from 'vexflow';
-import { RnSvgContext } from './RnSvgContext';
-import { RhytmicNoteRecognizer } from './RhytmicNoteRecognizer';
+import {RnSvgContext} from './RnSvgContext';
+import {RhytmicNoteRecognizer} from './RhytmicNoteRecognizer';
 
 export class VexflowScore {
-  constructor(private voices: Voice[] = [], private beams: Beam[] = []) { }
+  constructor(private voices: Voice[] = [], private beams: Beam[] = []) {}
 
   addVoice(voice: Voice) {
     this.voices.push(voice);
@@ -65,7 +65,7 @@ export class VexflowScore {
   }
 
   setColorNote(note: Tickable, color: string) {
-    note.setStyle({ fillStyle: color, strokeStyle: color });
+    note.setStyle({fillStyle: color, strokeStyle: color});
   }
 }
 
@@ -76,7 +76,7 @@ export class VexflowConverter {
 
   toVexflow(
     score: MusicScore,
-    settings: { width: number; measurePerLine: number },
+    settings: {width: number; measurePerLine: number},
   ): VexflowScore {
     const staveWidth = settings.width / settings.measurePerLine;
     const staveLines = this.split(score.measures, settings.measurePerLine);
@@ -131,7 +131,7 @@ export class VexflowConverter {
       measure,
       voice.getTickables() as StaveNote[],
     ).map(_ => new Beam(_));
-    this.formatter.formatToStave([voice], stave, { auto_beam: true });
+    this.formatter.formatToStave([voice], stave, {auto_beam: true});
     return [voice, beams];
   }
 
