@@ -1,7 +1,7 @@
-import React, {useState} from 'react';
-import {SafeAreaView, ScrollView, StyleSheet, View} from 'react-native';
-import {NavigationProp} from '@react-navigation/native';
-import {RootStackParamList} from 'app/App';
+import React, { useState } from 'react';
+import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
+import { NavigationProp } from '@react-navigation/native';
+import { RootStackParamList } from 'app/App';
 import {
   Button,
   IconButton,
@@ -14,16 +14,18 @@ import {
   RhytmicNote,
   RhytmicNoteFigureMap,
 } from 'app/domain/services/RhytmicNote';
-import {MainScreenViewModel} from './MainScreenViewModel';
-import {RhytmicChips} from 'app/ui/component/RhytmicChips';
-import {Clef} from 'app/domain/services/MusicScoreBuilder';
-import {Notation} from 'app/domain/services/Notation';
+import { MainScreenViewModel } from './MainScreenViewModel';
+import { RhytmicChips } from 'app/ui/component/RhytmicChips';
+import { Clef } from 'app/domain/services/MusicScoreBuilder';
+import { Notation } from 'app/domain/services/Notation';
+import { useDisableBackButton } from '../hook/navigation/useDisableBackButton';
 
 export interface Props {
   navigation: NavigationProp<RootStackParamList>;
 }
 
-export const MainScreen = ({navigation}: Props) => {
+export const MainScreen = ({ navigation }: Props) => {
+  useDisableBackButton();
   const rhytmics = [...RhytmicNoteFigureMap.keys()];
   const viewModel = new MainScreenViewModel();
   [viewModel.rhytmics, viewModel.setRhytmics] = useState<RhytmicNote[]>([]);
@@ -45,11 +47,11 @@ export const MainScreen = ({navigation}: Props) => {
       alignItems: 'center',
       margin: 20,
     },
-    inputWithLabel: {alignItems: 'center'},
-    label: {color: 'black', fontSize: 25},
-    secondaryLabel: {color: 'black', fontSize: 12},
-    sliderContainer: {width: '60%', alignItems: 'center'},
-    slider: {width: '100%'},
+    inputWithLabel: { alignItems: 'center' },
+    label: { color: 'black', fontSize: 25 },
+    secondaryLabel: { color: 'black', fontSize: 12 },
+    sliderContainer: { width: '60%', alignItems: 'center' },
+    slider: { width: '100%' },
     chips: {
       flex: 1,
       flexDirection: 'row',
