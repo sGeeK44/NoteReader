@@ -8,6 +8,8 @@ import {AndroidTimeProvider} from 'app/infrastructure/AndroidTimeProvider';
 import {TimeProvider} from 'app/domain/services/TimeProvider';
 import {Metronome} from 'app/domain/services/Metronome';
 import {AndroidMetronome} from 'app/infrastructure/AndroidMetronome';
+import {MittEventBus} from 'app/infrastructure/MittEventBus';
+import {EventBus} from 'app/domain/core/EventBus';
 
 export async function buildDependencies(): Promise<Container> {
   const container = new Container();
@@ -26,6 +28,10 @@ export async function buildDependencies(): Promise<Container> {
   container
     .bind<TimeProvider>(Symbols.TimeProvider)
     .to(AndroidTimeProvider)
+    .inSingletonScope();
+  container
+    .bind<EventBus>(Symbols.EventBus)
+    .to(MittEventBus)
     .inSingletonScope();
   return Promise.resolve(container);
 }
