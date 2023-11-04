@@ -43,7 +43,7 @@ export class MainScreenViewModel {
   OnNbMeasureChanged(value: string): void {
     const parsed = parseInt(value, 10);
     if (value === '') {
-      this.setTempo('');
+      this.setNbMeasure('');
     }
     if (isNaN(parsed)) {
       return;
@@ -89,5 +89,13 @@ export class MainScreenViewModel {
       return 6;
     }
     return parsed;
+  }
+
+  get validRhytmicsOrDefault(): RhytmicNote[] {
+    if (this.rhytmics.length === 0) {
+      return ["quarter"];
+    }
+
+    return this.rhytmics;
   }
 }

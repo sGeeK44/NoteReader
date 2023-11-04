@@ -28,7 +28,7 @@ export const MainScreen = ({ navigation }: Props) => {
   useDisableBackButton();
   const rhytmics = [...RhytmicNoteFigureMap.keys()];
   const viewModel = new MainScreenViewModel();
-  [viewModel.rhytmics, viewModel.setRhytmics] = useState<RhytmicNote[]>([]);
+  [viewModel.rhytmics, viewModel.setRhytmics] = useState<RhytmicNote[]>(["quarter"]);
   [viewModel.tempo, viewModel.setTempo] = useState<string>('60');
   [viewModel.nbMeasure, viewModel.setNbMeasure] = useState<string>('6');
   [viewModel.clef, viewModel.setClef] = useState<Clef>('treble');
@@ -152,16 +152,13 @@ export const MainScreen = ({ navigation }: Props) => {
         icon="music"
         mode="contained"
         onPress={() => {
-          if (viewModel.rhytmics.length === 0) {
-            return;
-          }
           navigation.navigate('TrainScreen', {
-            tempo: viewModel.tempo ?? 60,
-            nbMeasure: viewModel.nbMeasure ?? 6,
+            tempo: viewModel.validTempoOrDefault,
+            nbMeasure: viewModel.validNbMeasureOrDefault,
             clef: viewModel.clef,
             notation: viewModel.notation,
             accuracy: viewModel.accuracy,
-            rhytmics: viewModel.rhytmics,
+            rhytmics: viewModel.validRhytmicsOrDefault,
           });
         }}>
         Start
