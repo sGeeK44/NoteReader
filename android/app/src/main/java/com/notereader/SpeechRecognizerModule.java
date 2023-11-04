@@ -1,4 +1,4 @@
-package com.musictheoryteacher;
+package org.musictheoryteacher;
 
 import android.util.Log;
 import androidx.core.app.ActivityCompat;

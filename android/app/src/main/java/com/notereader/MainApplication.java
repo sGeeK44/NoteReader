@@ -1,4 +1,4 @@
-package com.musictheoryteacher;
+package org.musictheoryteacher;
 
 import android.app.Application;
 import com.facebook.react.PackageList;

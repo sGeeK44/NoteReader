@@ -73,9 +73,9 @@ android {
 
     compileSdkVersion rootProject.ext.compileSdkVersion
 
-    namespace "com.musictheoryteacher"
+    namespace "org.musictheoryteacher"
     defaultConfig {
-        applicationId "com.musictheoryteacher"
+        applicationId "org.musictheoryteacher"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
         versionCode 1

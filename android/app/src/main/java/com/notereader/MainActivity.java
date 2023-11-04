@@ -1,4 +1,4 @@
-package com.musictheoryteacher;
+package org.musictheoryteacher;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

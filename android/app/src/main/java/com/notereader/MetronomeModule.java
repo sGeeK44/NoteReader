@@ -1,4 +1,4 @@
-package com.musictheoryteacher;
+package org.musictheoryteacher;
 
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
