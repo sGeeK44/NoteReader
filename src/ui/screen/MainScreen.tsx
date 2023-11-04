@@ -29,8 +29,8 @@ export const MainScreen = ({ navigation }: Props) => {
   const rhytmics = [...RhytmicNoteFigureMap.keys()];
   const viewModel = new MainScreenViewModel();
   [viewModel.rhytmics, viewModel.setRhytmics] = useState<RhytmicNote[]>([]);
-  [viewModel.tempo, viewModel.setTempo] = useState<number | undefined>(60);
-  [viewModel.nbMeasure, viewModel.setNbMeasure] = useState<number>(6);
+  [viewModel.tempo, viewModel.setTempo] = useState<string>('60');
+  [viewModel.nbMeasure, viewModel.setNbMeasure] = useState<string>('6');
   [viewModel.clef, viewModel.setClef] = useState<Clef>('treble');
   [viewModel.notation, viewModel.setNotation] = useState<Notation>('syllabic');
   [viewModel.accuracy, viewModel.setAccuracy] = useState<number>(500);
@@ -106,13 +106,14 @@ export const MainScreen = ({ navigation }: Props) => {
           <TextInput
             right={<TextInput.Icon icon="metronome" />}
             onChangeText={value => viewModel.onTempoChanged(value)}
-            value={viewModel.tempo?.toString()}
+            value={viewModel.tempo}
           />
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Nombre de mesure</Text>
           <TextInput
             onChangeText={value => viewModel.OnNbMeasureChanged(value)}
+            value={viewModel.nbMeasure}
           />
         </View>
         <View style={styles.row}>
@@ -156,7 +157,7 @@ export const MainScreen = ({ navigation }: Props) => {
           }
           navigation.navigate('TrainScreen', {
             tempo: viewModel.tempo ?? 60,
-            nbMeasure: viewModel.nbMeasure ?? 0,
+            nbMeasure: viewModel.nbMeasure ?? 6,
             clef: viewModel.clef,
             notation: viewModel.notation,
             accuracy: viewModel.accuracy,

@@ -1,17 +1,17 @@
-import {Dispatch, SetStateAction} from 'react';
-import {Clef} from 'app/domain/services/MusicScoreBuilder';
-import {Notation} from 'app/domain/services/Notation';
-import {RhytmicNote} from 'app/domain/services/RhytmicNote';
+import { Dispatch, SetStateAction } from 'react';
+import { Clef } from 'app/domain/services/MusicScoreBuilder';
+import { Notation } from 'app/domain/services/Notation';
+import { RhytmicNote } from 'app/domain/services/RhytmicNote';
 
 export class MainScreenViewModel {
   rhytmics!: RhytmicNote[];
   setRhytmics!: Dispatch<SetStateAction<RhytmicNote[]>>;
 
-  tempo: number | undefined;
-  setTempo!: Dispatch<SetStateAction<number | undefined>>;
+  tempo!: string;
+  setTempo!: Dispatch<SetStateAction<string>>;
 
-  nbMeasure!: number;
-  setNbMeasure!: Dispatch<SetStateAction<number>>;
+  nbMeasure!: string;
+  setNbMeasure!: Dispatch<SetStateAction<string>>;
 
   clef!: Clef;
   setClef!: Dispatch<SetStateAction<Clef>>;
@@ -24,14 +24,16 @@ export class MainScreenViewModel {
 
   onTempoChanged(value: string): void {
     const parsed = parseInt(value, 10);
+    if (value === '') {
+      this.setTempo('');
+    }
     if (isNaN(parsed)) {
-      this.setTempo(undefined);
       return;
     }
-    this.setTempo(parsed);
+    this.setTempo(parsed.toString());
   }
 
-  get notations(): {alphabet: Notation; syllabic: Notation} {
+  get notations(): { alphabet: Notation; syllabic: Notation } {
     return {
       alphabet: 'alphabet',
       syllabic: 'syllabic',
@@ -40,10 +42,13 @@ export class MainScreenViewModel {
 
   OnNbMeasureChanged(value: string): void {
     const parsed = parseInt(value, 10);
+    if (value === '') {
+      this.setTempo('');
+    }
     if (isNaN(parsed)) {
       return;
     }
-    this.setNbMeasure(parsed);
+    this.setNbMeasure(parsed.toString());
   }
 
   onSyllabicSelected(): void {
@@ -55,7 +60,6 @@ export class MainScreenViewModel {
   }
 
   onAlphabetSelected(): void {
-    console.log(this.notation);
     this.setNotation(this.notations.alphabet);
   }
 
@@ -69,5 +73,21 @@ export class MainScreenViewModel {
   }
   OnRhytmicSelected(rhytmicNoteFigure: RhytmicNote) {
     this.rhytmics.push(rhytmicNoteFigure);
+  }
+
+  get validTempoOrDefault(): number {
+    const parsed = parseInt(this.tempo, 10);
+    if (isNaN(parsed)) {
+      return 60;
+    }
+    return parsed;
+  }
+
+  get validNbMeasureOrDefault(): number {
+    const parsed = parseInt(this.nbMeasure, 10);
+    if (isNaN(parsed)) {
+      return 6;
+    }
+    return parsed;
   }
 }
