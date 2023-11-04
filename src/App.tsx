@@ -42,7 +42,10 @@ function App(): JSX.Element {
           <NavigationContainer>
             <Stack.Navigator initialRouteName="SplashScreen">
               <Stack.Screen name="SplashScreen" component={SplashScreen} options={{ headerShown: false }} />
-              <Stack.Screen name="MainScreen" component={MainScreen} options={{ headerShown: false }} />
+              <Stack.Screen name="MainScreen" component={MainScreen} options={{
+                title: 'Music Theory Teacher',
+                headerTitleAlign: 'center', headerBackVisible: false
+              }} />
               <Stack.Screen name="TrainScreen" component={TrainScreen} options={{ title: 'Entrainement' }} />
             </Stack.Navigator>
           </NavigationContainer>
