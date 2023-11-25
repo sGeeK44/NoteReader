@@ -57,6 +57,7 @@ public class MetronomeModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void play(int bpm) {
+    stop();
     int interval = toInterval(bpm);
     ex.setRemoveOnCancelPolicy(true);
     scheduledFuture = ex.scheduleAtFixedRate(playSound, interval, interval, TimeUnit.MILLISECONDS);
@@ -64,7 +65,11 @@ public class MetronomeModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   public void stop() {
-    scheduledFuture.cancel(false);
+    if (scheduledFuture != null) {
+      scheduledFuture.cancel(false);
+    }
+
+    scheduledFuture = null;
   }
 
   @Override

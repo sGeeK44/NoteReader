@@ -14,7 +14,6 @@ import org.vosk.android.StorageService;
 import java.io.IOException;
 import org.json.JSONObject;
 
-
 public class SpeechRecognizerModule extends ReactContextBaseJavaModule {
   final ReactApplicationContext context;
   private Model model = null;
@@ -57,6 +56,7 @@ public class SpeechRecognizerModule extends ReactContextBaseJavaModule {
 
   @ReactMethod
   private void start(String grammar) throws IOException {
+    stop();
     var frequency = 20000.0f;
     if (grammar != null) {
       recognizer = new Recognizer(model, frequency, grammar);
@@ -131,14 +131,14 @@ class SpeechListner implements RecognitionListener {
   @Override
   public void onPartialResult(String hypothesis) {
     hypothesis = getText(hypothesis, "partial");
-    
+
     Log.v(TAG, "onPartialResult:" + hypothesis);
     var newPartialResult = hypothesis;
     if (lastHypothesis.length() <= hypothesis.length())
       newPartialResult = hypothesis.substring(lastHypothesis.length());
 
     String[] words = newPartialResult.split(" ");
-    for(var newWord: words) {
+    for (var newWord : words) {
       if (newWord.equals(""))
         continue;
       sendEvent("onResult", newWord);
@@ -157,8 +157,8 @@ class SpeechListner implements RecognitionListener {
   }
 
   private void sendEvent(String eventName, String params) {
-    
-    Log.v(TAG, "Send:" + eventName + ". Value:" +params);
+
+    Log.v(TAG, "Send:" + eventName + ". Value:" + params);
     context
         .getJSModule(DeviceEventManagerModule.RCTDeviceEventEmitter.class)
         .emit(eventName, params);
@@ -167,8 +167,7 @@ class SpeechListner implements RecognitionListener {
   private String getText(String hypothesis, String value) {
     try {
       return new JSONObject(hypothesis).getString(value);
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       return "";
     }
   }
