@@ -23,14 +23,7 @@ export class MainScreenViewModel {
   setAccuracy!: Dispatch<SetStateAction<number>>;
 
   onTempoChanged(value: string): void {
-    const parsed = parseInt(value, 10);
-    if (value === '') {
-      this.setTempo('');
-    }
-    if (isNaN(parsed)) {
-      return;
-    }
-    this.setTempo(parsed.toString());
+    this.setTempo(value.replace(/[^0-9]/g, ''));
   }
 
   get notations(): { alphabet: Notation; syllabic: Notation } {
