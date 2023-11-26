@@ -1,6 +1,6 @@
 import Logo from 'app/assets/logo.svg';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigation } from 'app/ui/hook/navigation/useExtendedNavigation';
 import { RootStackParamList } from 'app/App';
 import codePush, { DownloadProgress } from 'react-native-code-push';
@@ -27,43 +27,50 @@ export function SplashScreen() {
     },
   });
 
-  codePush.sync(
-    {
-      deploymentKey: 'CODE_PUSH_DEPLOYMENT_KEY',
-      installMode: codePush.InstallMode.IMMEDIATE,
-    },
-    (status: CodePush.SyncStatus) => {
-      switch (status) {
-        case CodePush.SyncStatus.CHECKING_FOR_UPDATE:
-          setInfo('checking-update');
-          break;
-        case CodePush.SyncStatus.DOWNLOADING_PACKAGE:
-          setInfo('downloading-package');
-          break;
-        case CodePush.SyncStatus.INSTALLING_UPDATE:
-          setInfo('installing-update');
-          break;
-        case CodePush.SyncStatus.UPDATE_IGNORED:
-          setInfo('update-ignored');
-          break;
-        case CodePush.SyncStatus.UPDATE_INSTALLED:
-          setInfo('update-installed');
-          break;
-        case CodePush.SyncStatus.UNKNOWN_ERROR:
-        case CodePush.SyncStatus.UP_TO_DATE:
-          setInfo('loading-app');
-          navigation.replace('MainScreen');
-          break;
-      }
-    },
-    (progress: DownloadProgress) => {
-      setInfo(
-        `downloading-package ${Math.round(
-          (progress.receivedBytes / progress.totalBytes) * 100,
-        )}`,
-      );
-    },
-  );
+  if (__DEV__) {
+    useEffect(() => {
+      navigation.replace('MainScreen');
+    })
+  }
+  else {
+    codePush.sync(
+      {
+        deploymentKey: 'CODE_PUSH_DEPLOYMENT_KEY',
+        installMode: codePush.InstallMode.IMMEDIATE,
+      },
+      (status: CodePush.SyncStatus) => {
+        switch (status) {
+          case CodePush.SyncStatus.CHECKING_FOR_UPDATE:
+            setInfo('checking-update');
+            break;
+          case CodePush.SyncStatus.DOWNLOADING_PACKAGE:
+            setInfo('downloading-package');
+            break;
+          case CodePush.SyncStatus.INSTALLING_UPDATE:
+            setInfo('installing-update');
+            break;
+          case CodePush.SyncStatus.UPDATE_IGNORED:
+            setInfo('update-ignored');
+            break;
+          case CodePush.SyncStatus.UPDATE_INSTALLED:
+            setInfo('update-installed');
+            break;
+          case CodePush.SyncStatus.UNKNOWN_ERROR:
+          case CodePush.SyncStatus.UP_TO_DATE:
+            setInfo('loading-app');
+            navigation.replace('MainScreen');
+            break;
+        }
+      },
+      (progress: DownloadProgress) => {
+        setInfo(
+          `downloading-package ${Math.round(
+            (progress.receivedBytes / progress.totalBytes) * 100,
+          )}`,
+        );
+      },
+    );
+  }
 
   return (
     <SafeAreaView style={style.screen}>
