@@ -19,6 +19,7 @@ import { RhytmicChips } from 'app/ui/component/RhytmicChips';
 import { Clef } from 'app/domain/services/MusicScoreBuilder';
 import { Notation } from 'app/domain/services/Notation';
 import { useDisableBackButton } from '../hook/navigation/useDisableBackButton';
+import { ClefPicker } from '../component/ClefPicker';
 
 export interface Props {
   navigation: NavigationProp<RootStackParamList>;
@@ -63,25 +64,7 @@ export const MainScreen = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.content}>
       <ScrollView>
-        <View style={styles.row}>
-          <Text style={styles.label}>Clé</Text>
-          <View style={styles.inputWithLabel}>
-            <IconButton icon="music-clef-treble" />
-            <RadioButton
-              value="treble"
-              status={viewModel.clef === 'treble' ? 'checked' : 'unchecked'}
-              onPress={() => viewModel?.setClef('treble')}
-            />
-          </View>
-          <View style={styles.inputWithLabel}>
-            <IconButton icon="music-clef-bass" />
-            <RadioButton
-              value="bass"
-              status={viewModel.clef === 'bass' ? 'checked' : 'unchecked'}
-              onPress={() => viewModel.setClef('bass')}
-            />
-          </View>
-        </View>
+        <ClefPicker defaultClef='treble' onClefsSelected={viewModel.setClef} />
         <View style={styles.row}>
           <Text style={styles.label}>Notation</Text>
           <View style={styles.inputWithLabel}>
