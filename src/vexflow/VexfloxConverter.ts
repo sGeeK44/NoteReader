@@ -4,7 +4,7 @@ import {
   MusicScore,
   Notes,
 } from 'app/domain/services/MusicScoreBuilder';
-import {Signature, toString} from 'app/domain/value-object/Signature';
+import { Signature, toString } from 'app/domain/value-object/Signature';
 import {
   Beam,
   Dot,
@@ -16,11 +16,11 @@ import {
   Voice,
   VoiceMode,
 } from 'vexflow';
-import {RnSvgContext} from './RnSvgContext';
-import {RhytmicNoteRecognizer} from './RhytmicNoteRecognizer';
+import { RnSvgContext } from './RnSvgContext';
+import { RhytmicNoteRecognizer } from './RhytmicNoteRecognizer';
 
 export class VexflowScore {
-  constructor(private voices: Voice[] = [], private beams: Beam[] = []) {}
+  constructor(private voices: Voice[] = [], private beams: Beam[] = []) { }
 
   addVoice(voice: Voice) {
     this.voices.push(voice);
@@ -65,7 +65,7 @@ export class VexflowScore {
   }
 
   setColorNote(note: Tickable, color: string) {
-    note.setStyle({fillStyle: color, strokeStyle: color});
+    note.setStyle({ fillStyle: color, strokeStyle: color });
   }
 }
 
@@ -76,7 +76,7 @@ export class VexflowConverter {
 
   toVexflow(
     score: MusicScore,
-    settings: {width: number; measurePerLine: number},
+    settings: { width: number; measurePerLine: number },
   ): VexflowScore {
     const staveWidth = settings.width / settings.measurePerLine;
     const staveLines = this.split(score.measures, settings.measurePerLine);
@@ -85,7 +85,7 @@ export class VexflowConverter {
     staveLines.forEach(line => {
       let x = 0;
       line.forEach((measure, i) => {
-        const [voice, beams] = this.createStave(
+        const [voice, beams] = this.createLine(
           score,
           measure,
           x,
@@ -107,19 +107,14 @@ export class VexflowConverter {
     return result;
   }
 
-  createStave(
+  createLine(
     score: MusicScore,
     measure: Measure,
     x: number,
     y: number,
     staveWidth: number,
   ): [Voice, Beam[]] {
-    const stave = new Stave(x, y, staveWidth);
-
-    if (x === 0 && y === 0) {
-      stave.setClef(score.clef);
-      stave.setTimeSignature(toString(score.timeSignature));
-    }
+    const stave = this.createStave(x, y, staveWidth, score.clef, score.timeSignature)
     const voice = this.createVoice(
       score.clef,
       score.timeSignature,
@@ -131,8 +126,24 @@ export class VexflowConverter {
       measure,
       voice.getTickables() as StaveNote[],
     ).map(_ => new Beam(_));
-    this.formatter.formatToStave([voice], stave, {auto_beam: true});
+    this.formatter.formatToStave([voice], stave, { auto_beam: true });
     return [voice, beams];
+  }
+
+  createStave(x: number, y: number, width: number, clef: Clef, timeSignature: Signature | null = null): Stave {
+    const stave = new Stave(x, y, width);
+
+    if (x !== 0 || y !== 0) {
+      return stave;
+    }
+
+    stave.setClef(clef);
+    if (timeSignature == null) {
+      return stave;
+    }
+
+    stave.setTimeSignature(toString(timeSignature));
+    return stave;
   }
 
   createVoice(clef: Clef, timeSignature: Signature, notes: Notes[]): Voice {
