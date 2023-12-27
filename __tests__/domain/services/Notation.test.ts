@@ -1,4 +1,4 @@
-import {toWords} from 'app/domain/services/Notation';
+import { toWords } from 'app/domain/services/Notation';
 
 describe('Convert notation values to grammar', () => {
   it('Syllabic', () => {
@@ -10,6 +10,6 @@ describe('Convert notation values to grammar', () => {
   it('alphabet', () => {
     const result = toWords('alphabet');
 
-    expect(result).toStrictEqual('["a", "b", "c", "d", "e", "f", "g"]');
+    expect(result).toStrictEqual('["c", "d", "e", "f", "g", "a", "b"]');
   });
 });

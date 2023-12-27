@@ -64,7 +64,7 @@ export const MainScreen = ({ navigation }: Props) => {
   return (
     <SafeAreaView style={styles.content}>
       <ScrollView>
-        <ClefPicker defaultClef='treble' onClefsSelected={viewModel.setClef} />
+        <ClefPicker defaultClef={viewModel.clef} onClefsSelected={viewModel.setClef} />
         <View style={styles.row}>
           <Text style={styles.label}>Notation</Text>
           <View style={styles.inputWithLabel}>

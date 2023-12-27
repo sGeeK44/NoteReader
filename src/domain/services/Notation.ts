@@ -1,4 +1,4 @@
-export const AlphabetNotations = ['a', 'b', 'c', 'd', 'e', 'f', 'g'] as const;
+export const AlphabetNotations = ['c', 'd', 'e', 'f', 'g', 'a', 'b'] as const;
 export type AlphabetNotation = (typeof AlphabetNotations)[number];
 export const SyllabicNotations = [
   'do',
@@ -11,13 +11,13 @@ export const SyllabicNotations = [
 ] as const;
 export type SyllabicNotation = (typeof SyllabicNotations)[number];
 export const AlphaSyllaMap = new Map<string, string>([
-  ['a', 'la'],
-  ['b', 'si'],
   ['c', 'do'],
   ['d', 'ré'],
   ['e', 'mi'],
   ['f', 'fa'],
   ['g', 'sol'],
+  ['a', 'la'],
+  ['b', 'si'],
 ]);
 export const SyllaAlphaMap = new Map<string, string>([
   ['do', 'c'],
@@ -32,7 +32,7 @@ export type Notation = 'syllabic' | 'alphabet';
 
 export const toWords = (notation: Notation): string => {
   if (notation === 'alphabet') {
-    return '["a", "b", "c", "d", "e", "f", "g"]';
+    return '["c", "d", "e", "f", "g", "a", "b"]';
   }
 
   return '["do", "ré", "mi", "fa", "sol", "la", "si"]';

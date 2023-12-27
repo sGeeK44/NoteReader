@@ -1,4 +1,4 @@
-import {Measure} from 'app/domain/services/MusicScoreBuilder';
+import { Notes } from 'app/domain/services/Notes';
 import {
   RhytmicFigure,
   RhytmicNoteFigureMap,
@@ -6,15 +6,15 @@ import {
 } from 'app/domain/services/RhytmicNote';
 
 export class RhytmicNoteRecognizer {
-  toRhytmicNote(measure: Measure): number[][] {
+  toRhytmicNote(notes: Notes[],): number[][] {
     const rhytmicGroup: number[][] = [];
     for (
       let currentNoteIndex = 0;
-      currentNoteIndex < measure.notes.length;
+      currentNoteIndex < notes.length;
       currentNoteIndex++
     ) {
       const [nextIndex, newGroup] = this.findNextRhytmic(
-        measure,
+        notes,
         currentNoteIndex,
       );
       rhytmicGroup.push(newGroup);
@@ -24,12 +24,12 @@ export class RhytmicNoteRecognizer {
   }
 
   private findNextRhytmic(
-    measure: Measure,
+    notes: Notes[],
     currentNoteIndex: number,
   ): [number, number[]] {
     for (const rhytmicNoteMap of RhytmicNoteFigureMap) {
       const [nextNoteIndex, rhtymicFound] = this.checkRhytmic(
-        measure,
+        notes,
         rhytmicNoteMap[1],
         currentNoteIndex,
       );
@@ -41,14 +41,14 @@ export class RhytmicNoteRecognizer {
   }
 
   private checkRhytmic(
-    measure: Measure,
+    notes: Notes[],
     rhytmicFigure: RhytmicFigure[],
     currentNoteIndex: number,
   ): [number, number[]] {
     let potentialRhtymic: number[] = [];
     for (let j = 0; j < rhytmicFigure.length; j++) {
       const potentialNextNoteIndex = currentNoteIndex + j;
-      const potentialNextNote = measure.notes[potentialNextNoteIndex];
+      const potentialNextNote = notes[potentialNextNoteIndex];
 
       const nextNoteMatch =
         potentialNextNote.duration === toDuration(rhytmicFigure[j]);

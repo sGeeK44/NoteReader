@@ -1,5 +1,6 @@
-import {NoteDuration, Notes} from 'app/domain/services/MusicScoreBuilder';
-import {RhytmicNoteRecognizer} from 'app/vexflow/RhytmicNoteRecognizer';
+import { NoteDuration } from 'app/domain/services/MusicScoreBuilder';
+import { Notes } from 'app/domain/services/Notes';
+import { RhytmicNoteRecognizer } from 'app/vexflow/RhytmicNoteRecognizer';
 
 describe('RhytmicNoteRecognizer', () => {
   it('Only quarter', () => {
@@ -88,5 +89,5 @@ describe('RhytmicNoteRecognizer', () => {
 });
 
 function createNote(duration: NoteDuration): Notes {
-  return {duration: duration, notehead: 'a', pitch: '4'};
+  return { duration: duration, notehead: 'a', pitch: '4' };
 }
