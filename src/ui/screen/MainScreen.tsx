@@ -20,6 +20,7 @@ import { Clef } from 'app/domain/services/MusicScoreBuilder';
 import { Notation } from 'app/domain/services/Notation';
 import { useDisableBackButton } from '../hook/navigation/useDisableBackButton';
 import { ClefPicker } from '../component/ClefPicker';
+import { Notes } from 'app/domain/services/Notes';
 
 export interface Props {
   navigation: NavigationProp<RootStackParamList>;
@@ -35,6 +36,7 @@ export const MainScreen = ({ navigation }: Props) => {
   [viewModel.clef, viewModel.setClef] = useState<Clef>('treble');
   [viewModel.notation, viewModel.setNotation] = useState<Notation>('syllabic');
   [viewModel.accuracy, viewModel.setAccuracy] = useState<number>(500);
+  const [noteRange, setnoteRange] = useState<[Notes, Notes]>([getMinDefaultNote('treble'), getMaxDefaultNote('treble')]);
 
   const styles = StyleSheet.create({
     content: {
@@ -61,10 +63,32 @@ export const MainScreen = ({ navigation }: Props) => {
     },
   });
 
+
+  function getMinDefaultNote(clef: Clef): Notes {
+    return {
+      pitch: clef == 'treble' ? '4' : '2',
+      duration: 4,
+      notehead: clef == 'treble' ? 'c' : 'd'
+    }
+  }
+
+  function getMaxDefaultNote(clef: Clef): Notes {
+    return {
+      pitch: clef == 'treble' ? '5' : '4',
+      duration: 4,
+      notehead: clef == 'treble' ? 'b' : 'c'
+    }
+  }
+
   return (
     <SafeAreaView style={styles.content}>
       <ScrollView>
-        <ClefPicker defaultClef={viewModel.clef} onClefsSelected={viewModel.setClef} />
+        <ClefPicker
+          defaultClef={viewModel.clef}
+          onClefsSelected={viewModel.setClef}
+          onNoteRangeChange={setnoteRange}
+          getMinDefaultNote={getMinDefaultNote}
+          getMaxDefaultNote={getMaxDefaultNote} />
         <View style={styles.row}>
           <Text style={styles.label}>Notation</Text>
           <View style={styles.inputWithLabel}>
@@ -142,6 +166,7 @@ export const MainScreen = ({ navigation }: Props) => {
             notation: viewModel.notation,
             accuracy: viewModel.accuracy,
             rhytmics: viewModel.validRhytmicsOrDefault,
+            noteRange: noteRange
           });
         }}>
         Start

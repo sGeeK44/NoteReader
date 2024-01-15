@@ -89,9 +89,10 @@ export class MeasureBuilder {
 
     return (
       toRhtymicFigures(rhytmicNote)?.map(rhytmicFigure => {
+        const [pitch, notehead] = this.randomNoteGenerator.next();
         return {
-          pitch: '4',
-          notehead: this.randomNoteGenerator.next(),
+          pitch: pitch,
+          notehead: notehead,
           duration: toDuration(rhytmicFigure) ?? 1,
         } as Notes;
       }) ?? []

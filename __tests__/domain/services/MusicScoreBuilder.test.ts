@@ -2,9 +2,9 @@ import {
   MeasureBuilder,
   MusicScoreBuilder,
 } from '../../../src/domain/services/MusicScoreBuilder';
-import {FakeRandomNoteGenerator} from '../../fakes/FakeRandomNoteGenerator';
-import {FixRandomRhytmicNoteGenerator} from '../../fakes/FixRandomRhytmicNoteGenerator';
-import {RoundRobinRhytmicNoteGenerator} from '../../fakes/RoundRobinRhytmicNoteGenerator';
+import { FakeRandomNoteGenerator } from '../../fakes/FakeRandomNoteGenerator';
+import { FixRandomRhytmicNoteGenerator } from '../../fakes/FixRandomRhytmicNoteGenerator';
+import { RoundRobinRhytmicNoteGenerator } from '../../fakes/RoundRobinRhytmicNoteGenerator';
 
 describe('MusicScoreBuilder', () => {
   it('default value', () => {
@@ -31,22 +31,22 @@ describe('MusicScoreBuilder', () => {
           notes: [
             {
               pitch: '4',
-              notehead: 'a',
-              duration: 4,
-            },
-            {
-              pitch: '4',
-              notehead: 'b',
-              duration: 4,
-            },
-            {
-              pitch: '4',
               notehead: 'c',
               duration: 4,
             },
             {
               pitch: '4',
               notehead: 'd',
+              duration: 4,
+            },
+            {
+              pitch: '4',
+              notehead: 'e',
+              duration: 4,
+            },
+            {
+              pitch: '4',
+              notehead: 'f',
               duration: 4,
             },
           ],
@@ -68,17 +68,17 @@ describe('MusicScoreBuilder', () => {
       notes: [
         {
           pitch: '4',
-          notehead: 'a',
+          notehead: 'c',
           duration: 4,
         },
         {
           pitch: '4',
-          notehead: 'b',
+          notehead: 'd',
           duration: 2,
         },
         {
           pitch: '4',
-          notehead: 'c',
+          notehead: 'e',
           duration: 4,
         },
       ],
@@ -98,22 +98,22 @@ describe('MusicScoreBuilder', () => {
       notes: [
         {
           pitch: '4',
-          notehead: 'a',
+          notehead: 'c',
           duration: 4,
         },
         {
           pitch: '4',
-          notehead: 'b',
-          duration: 8,
-        },
-        {
-          pitch: '4',
-          notehead: 'c',
-          duration: 8,
-        },
-        {
-          pitch: '4',
           notehead: 'd',
+          duration: 8,
+        },
+        {
+          pitch: '4',
+          notehead: 'e',
+          duration: 8,
+        },
+        {
+          pitch: '4',
+          notehead: 'f',
           duration: 4,
         },
       ],
@@ -134,12 +134,12 @@ describe('MusicScoreBuilder', () => {
       notes: [
         {
           pitch: '4',
-          notehead: 'a',
+          notehead: 'c',
           duration: 4,
         },
         {
           pitch: '4',
-          notehead: 'b',
+          notehead: 'd',
           duration: 4,
         },
       ],

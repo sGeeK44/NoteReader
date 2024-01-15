@@ -18,6 +18,7 @@ import { Clef } from './domain/services/MusicScoreBuilder';
 import { Notation } from './domain/services/Notation';
 import { RhytmicNote } from './domain/services/RhytmicNote';
 import { PrivacyButton } from './ui/component/PrivacyButton';
+import { Notes } from './domain/services/Notes';
 
 export type RootStackParamList = {
   SplashScreen: undefined;
@@ -29,6 +30,7 @@ export type RootStackParamList = {
     notation: Notation;
     accuracy: number;
     rhytmics: RhytmicNote[];
+    noteRange: [Notes, Notes];
   };
   PrivacyScreen: undefined;
 };

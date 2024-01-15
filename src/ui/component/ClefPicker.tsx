@@ -1,7 +1,7 @@
 import { IconButton, RadioButton } from 'react-native-paper';
 import { LayoutChangeEvent, StyleSheet, Text, View } from 'react-native';
 import { useCallback, useEffect, useMemo, useState } from 'react';
-import { Clef, Pitch } from 'app/domain/services/MusicScoreBuilder';
+import { Clef } from 'app/domain/services/MusicScoreBuilder';
 import { Notes, getAbsoluteIndex, getIndexFromAbsoluteIndex, getNoteFromAbsoluteIndex, getRange } from 'app/domain/services/Notes';
 import { RnSvgContext } from 'app/vexflow/RnSvgContext';
 import { VexflowConverter } from 'app/vexflow/VexfloxConverter';
@@ -12,6 +12,9 @@ import { SyllabicNotations } from 'app/domain/services/Notation';
 interface ClefPickerProps {
   defaultClef: Clef,
   onClefsSelected: (selectedClef: Clef) => void;
+  onNoteRangeChange: (noteRange: [Notes, Notes]) => void;
+  getMinDefaultNote: (clef: Clef) => Notes;
+  getMaxDefaultNote: (clef: Clef) => Notes;
 }
 
 function drawScore(score: RnSvgContext, width: number, clef: Clef, min: Notes, max: Notes) {
@@ -98,28 +101,12 @@ function LabelSlider({
   );
 }
 
-function getMinDefaultNote(clef: Clef): Notes {
-  return {
-    pitch: clef == 'treble' ? '4' : '2',
-    duration: 4,
-    notehead: clef == 'treble' ? 'c' : 'd'
-  }
-}
-
-function getMaxDefaultNote(clef: Clef): Notes {
-  return {
-    pitch: clef == 'treble' ? '5' : '4',
-    duration: 4,
-    notehead: clef == 'treble' ? 'b' : 'c'
-  }
-}
-
 export const ClefPicker = (props: ClefPickerProps) => {
   const [width, setWidth] = useState<number>(0);
   const [clef, setClef] = useState<Clef>(props.defaultClef);
   const [score,] = useState<RnSvgContext>(new RnSvgContext(width, 100));
-  const [minNote, setMinNote] = useState<Notes>(getMinDefaultNote('treble'));
-  const [maxNote, setMaxNote] = useState<Notes>(getMaxDefaultNote('treble'));
+  const [minNote, setMinNote] = useState<Notes>(props.getMinDefaultNote('treble'));
+  const [maxNote, setMaxNote] = useState<Notes>(props.getMaxDefaultNote('treble'));
 
   useEffect(() => {
     drawScore(score, width, clef, minNote, maxNote)
@@ -140,18 +127,22 @@ export const ClefPicker = (props: ClefPickerProps) => {
 
   const OnClefChange = (selectedClef: Clef) => {
     setClef(selectedClef);
-    const min = getMinDefaultNote(selectedClef);
+    const min = props.getMinDefaultNote(selectedClef);
     setMinNote(min)
 
-    const max = getMaxDefaultNote(selectedClef);
+    const max = props.getMaxDefaultNote(selectedClef);
     setMaxNote(max)
     drawScore(score, width, selectedClef, min, max);
     props.onClefsSelected(selectedClef);
+    props.onNoteRangeChange([min, max]);
   };
 
   function onNoteChange(values: SliderValue[]) {
-    setMinNote(getNoteFromAbsoluteIndex(values[0] as number))
-    setMaxNote(getNoteFromAbsoluteIndex(values[1] as number))
+    const min = getNoteFromAbsoluteIndex(values[0] as number);
+    setMinNote(min);
+    const max = getNoteFromAbsoluteIndex(values[1] as number);
+    setMaxNote(max);
+    props.onNoteRangeChange([min, max]);
     return values;
   }
 
