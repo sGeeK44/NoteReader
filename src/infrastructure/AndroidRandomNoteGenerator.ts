@@ -1,9 +1,7 @@
-import { injectable } from 'inversify';
 import { NoteHead, Pitch } from 'app/domain/services/MusicScoreBuilder';
 import { RandomNoteGenerator } from 'app/domain/services/RandomNoteGenerator';
 import { Notes, getRange } from 'app/domain/services/Notes';
 
-@injectable()
 export class AndroidRandomNoteGenerator implements RandomNoteGenerator {
   constructor(private min: Notes, private max: Notes) {
   }

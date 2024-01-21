@@ -40,7 +40,7 @@ function ThumbSlider() {
     />
   );
 }
-ThumbSlider.size = 15;
+ThumbSlider.size = 24;
 
 function LabelSlider({
   position,

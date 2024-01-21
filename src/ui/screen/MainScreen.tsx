@@ -1,42 +1,35 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { SafeAreaView, ScrollView, StyleSheet, View } from 'react-native';
 import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from 'app/App';
 import {
   Button,
-  IconButton,
   RadioButton,
   Text,
   TextInput,
 } from 'react-native-paper';
 import Slider from '@react-native-community/slider';
 import {
-  RhytmicNote,
   RhytmicNoteFigureMap,
 } from 'app/domain/services/RhytmicNote';
 import { MainScreenViewModel } from './MainScreenViewModel';
 import { RhytmicChips } from 'app/ui/component/RhytmicChips';
-import { Clef } from 'app/domain/services/MusicScoreBuilder';
-import { Notation } from 'app/domain/services/Notation';
 import { useDisableBackButton } from '../hook/navigation/useDisableBackButton';
 import { ClefPicker } from '../component/ClefPicker';
-import { Notes } from 'app/domain/services/Notes';
+import { Notation } from 'app/domain/services/Notation';
 
 export interface Props {
   navigation: NavigationProp<RootStackParamList>;
 }
 
+const viewModel = new MainScreenViewModel();
+
 export const MainScreen = ({ navigation }: Props) => {
   useDisableBackButton();
-  const rhytmics = [...RhytmicNoteFigureMap.keys()];
-  const viewModel = new MainScreenViewModel();
-  [viewModel.rhytmics, viewModel.setRhytmics] = useState<RhytmicNote[]>(["quarter"]);
-  [viewModel.tempo, viewModel.setTempo] = useState<string>('60');
-  [viewModel.nbMeasure, viewModel.setNbMeasure] = useState<string>('6');
-  [viewModel.clef, viewModel.setClef] = useState<Clef>('treble');
-  [viewModel.notation, viewModel.setNotation] = useState<Notation>('syllabic');
-  [viewModel.accuracy, viewModel.setAccuracy] = useState<number>(500);
-  const [noteRange, setnoteRange] = useState<[Notes, Notes]>([getMinDefaultNote('treble'), getMaxDefaultNote('treble')]);
+  const [tempo, setTempo] = useState<string>(viewModel.tempo);
+  const [nbMeasure, setNbMeasure] = useState<string>(viewModel.nbMeasure);
+  const [accuracy, setAccuracy] = useState<number>(viewModel.accuracy);
+  const [notation, setNotation] = useState<Notation>(viewModel.notation);
 
   const styles = StyleSheet.create({
     content: {
@@ -63,48 +56,39 @@ export const MainScreen = ({ navigation }: Props) => {
     },
   });
 
-
-  function getMinDefaultNote(clef: Clef): Notes {
-    return {
-      pitch: clef == 'treble' ? '4' : '2',
-      duration: 4,
-      notehead: clef == 'treble' ? 'c' : 'd'
-    }
-  }
-
-  function getMaxDefaultNote(clef: Clef): Notes {
-    return {
-      pitch: clef == 'treble' ? '5' : '4',
-      duration: 4,
-      notehead: clef == 'treble' ? 'b' : 'c'
-    }
-  }
-
   return (
     <SafeAreaView style={styles.content}>
       <ScrollView>
         <ClefPicker
           defaultClef={viewModel.clef}
-          onClefsSelected={viewModel.setClef}
-          onNoteRangeChange={setnoteRange}
-          getMinDefaultNote={getMinDefaultNote}
-          getMaxDefaultNote={getMaxDefaultNote} />
+          onClefsSelected={value => {
+            viewModel.onClefChanged(value);
+          }}
+          onNoteRangeChange={viewModel.onNoteRangeChange}
+          getMinDefaultNote={viewModel.getMinDefaultNote}
+          getMaxDefaultNote={viewModel.getMaxDefaultNote} />
         <View style={styles.row}>
           <Text style={styles.label}>Notation</Text>
           <View style={styles.inputWithLabel}>
             <Text style={styles.secondaryLabel}>Syllabique</Text>
             <RadioButton
               value={viewModel.notations.syllabic}
-              status={viewModel.isSyllabicChecked}
-              onPress={() => viewModel.onSyllabicSelected()}
+              status={notation == 'syllabic' ? 'checked' : 'unchecked'}
+              onPress={() => {
+                viewModel.onSyllabicSelected();
+                setNotation('syllabic')
+              }}
             />
           </View>
           <View style={styles.inputWithLabel}>
             <Text style={styles.secondaryLabel}>Alphabetique</Text>
             <RadioButton
               value={viewModel.notations.alphabet}
-              status={viewModel.isAlphabetChecked}
-              onPress={() => viewModel.onAlphabetSelected()}
+              status={notation == 'alphabet' ? 'checked' : 'unchecked'}
+              onPress={() => {
+                viewModel.onAlphabetSelected();
+                setNotation('alphabet')
+              }}
             />
           </View>
         </View>
@@ -112,21 +96,27 @@ export const MainScreen = ({ navigation }: Props) => {
           <Text style={styles.label}>Tempo</Text>
           <TextInput
             right={<TextInput.Icon icon="metronome" />}
-            onChangeText={value => viewModel.onTempoChanged(value)}
-            value={viewModel.tempo}
+            onChangeText={value => {
+              viewModel.onTempoChanged(value);
+              setTempo(value);
+            }}
+            value={tempo}
           />
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Nombre de mesure</Text>
           <TextInput
-            onChangeText={value => viewModel.OnNbMeasureChanged(value)}
-            value={viewModel.nbMeasure}
+            onChangeText={value => {
+              viewModel.OnNbMeasureChanged(value)
+              setNbMeasure(value);
+            }}
+            value={nbMeasure}
           />
         </View>
         <View style={styles.row}>
           <Text style={styles.label}>Rythme</Text>
           <View style={styles.chips}>
-            {rhytmics.map(rhytmicNoteFigure => (
+            {[...RhytmicNoteFigureMap.keys()].map(rhytmicNoteFigure => (
               <RhytmicChips
                 key={rhytmicNoteFigure}
                 value={rhytmicNoteFigure}
@@ -143,11 +133,14 @@ export const MainScreen = ({ navigation }: Props) => {
         <View style={styles.row}>
           <Text style={styles.label}>Précision</Text>
           <View style={styles.sliderContainer}>
-            <Text style={styles.secondaryLabel}>{viewModel.accuracy} ms</Text>
+            <Text style={styles.secondaryLabel}>{accuracy} ms</Text>
             <Slider
               style={styles.slider}
-              onValueChange={viewModel.setAccuracy}
-              value={viewModel.accuracy}
+              onValueChange={value => {
+                viewModel.onAccuracyChanged(value);
+                setAccuracy(value);
+              }}
+              value={accuracy}
               step={50}
               minimumValue={0}
               maximumValue={2000}
@@ -159,15 +152,7 @@ export const MainScreen = ({ navigation }: Props) => {
         icon="music"
         mode="contained"
         onPress={() => {
-          navigation.navigate('TrainScreen', {
-            tempo: viewModel.validTempoOrDefault,
-            nbMeasure: viewModel.validNbMeasureOrDefault,
-            clef: viewModel.clef,
-            notation: viewModel.notation,
-            accuracy: viewModel.accuracy,
-            rhytmics: viewModel.validRhytmicsOrDefault,
-            noteRange: noteRange
-          });
+          viewModel.onValidate(navigation);
         }}>
         Start
       </Button>

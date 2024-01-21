@@ -1,29 +1,46 @@
-import { Dispatch, SetStateAction } from 'react';
 import { Clef } from 'app/domain/services/MusicScoreBuilder';
 import { Notation } from 'app/domain/services/Notation';
 import { RhytmicNote } from 'app/domain/services/RhytmicNote';
+import { Notes } from 'app/domain/services/Notes';
+import { NavigationProp } from '@react-navigation/core';
+import { RootStackParamList } from 'app/App';
 
 export class MainScreenViewModel {
-  rhytmics!: RhytmicNote[];
-  setRhytmics!: Dispatch<SetStateAction<RhytmicNote[]>>;
+  clef: Clef = 'treble';
+  tempo: string = '60';
+  nbMeasure: string = '6';
+  notation: Notation = 'syllabic';
+  accuracy: number = 500;
+  rhytmics: RhytmicNote[] = [];
+  noteRange: [Notes, Notes] = [this.getMinDefaultNote('treble'), this.getMaxDefaultNote('treble')];
 
-  tempo!: string;
-  setTempo!: Dispatch<SetStateAction<string>>;
+  onNoteRangeChange(noteRange: [Notes, Notes]): void {
+    this.noteRange = noteRange;
+  }
 
-  nbMeasure!: string;
-  setNbMeasure!: Dispatch<SetStateAction<string>>;
+  onValidate(navigation: NavigationProp<RootStackParamList>) {
 
-  clef!: Clef;
-  setClef!: Dispatch<SetStateAction<Clef>>;
+    navigation.navigate('TrainScreen', {
+      tempo: this.validTempoOrDefault,
+      nbMeasure: this.validNbMeasureOrDefault,
+      clef: this.clef,
+      notation: this.notation,
+      accuracy: this.accuracy,
+      rhytmics: this.validRhytmicsOrDefault,
+      noteRange: this.noteRange
+    });
+  }
 
-  notation!: Notation;
-  setNotation!: Dispatch<SetStateAction<Notation>>;
+  onAccuracyChanged(value: number) {
+    this.accuracy = value;
+  }
 
-  accuracy!: number;
-  setAccuracy!: Dispatch<SetStateAction<number>>;
+  onClefChanged(value: Clef) {
+    this.clef = value;
+  }
 
   onTempoChanged(value: string): void {
-    this.setTempo(value.replace(/[^0-9]/g, ''));
+    this.tempo = value.replace(/[^0-9]/g, '');
   }
 
   get notations(): { alphabet: Notation; syllabic: Notation } {
@@ -36,16 +53,16 @@ export class MainScreenViewModel {
   OnNbMeasureChanged(value: string): void {
     const parsed = parseInt(value, 10);
     if (value === '') {
-      this.setNbMeasure('');
+      this.nbMeasure = '';
     }
     if (isNaN(parsed)) {
       return;
     }
-    this.setNbMeasure(parsed.toString());
+    this.nbMeasure = parsed.toString();
   }
 
   onSyllabicSelected(): void {
-    this.setNotation(this.notations.syllabic);
+    this.notation = 'syllabic';
   }
 
   get isSyllabicChecked(): 'checked' | 'unchecked' {
@@ -53,7 +70,7 @@ export class MainScreenViewModel {
   }
 
   onAlphabetSelected(): void {
-    this.setNotation(this.notations.alphabet);
+    this.notation = 'alphabet';
   }
 
   get isAlphabetChecked(): 'checked' | 'unchecked' {
@@ -64,6 +81,7 @@ export class MainScreenViewModel {
     const index = this.rhytmics.indexOf(rhytmicNoteFigure);
     this.rhytmics.splice(index, 1);
   }
+
   OnRhytmicSelected(rhytmicNoteFigure: RhytmicNote) {
     this.rhytmics.push(rhytmicNoteFigure);
   }
@@ -90,5 +108,21 @@ export class MainScreenViewModel {
     }
 
     return this.rhytmics;
+  }
+
+  getMinDefaultNote(clef: Clef): Notes {
+    return {
+      pitch: clef == 'treble' ? '4' : '2',
+      duration: 4,
+      notehead: clef == 'treble' ? 'c' : 'd'
+    }
+  }
+
+  getMaxDefaultNote(clef: Clef): Notes {
+    return {
+      pitch: clef == 'treble' ? '5' : '4',
+      duration: 4,
+      notehead: clef == 'treble' ? 'b' : 'c'
+    }
   }
 }
