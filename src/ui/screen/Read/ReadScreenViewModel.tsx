@@ -5,7 +5,7 @@ import { Notes } from 'app/domain/services/Notes';
 import { NavigationProp } from '@react-navigation/core';
 import { RootStackParamList } from 'app/App';
 
-export class MainScreenViewModel {
+export class ReadScreenViewModel {
   clef: Clef = 'treble';
   tempo: string = '60';
   nbMeasure: string = '6';
@@ -19,7 +19,6 @@ export class MainScreenViewModel {
   }
 
   onValidate(navigation: NavigationProp<RootStackParamList>) {
-
     navigation.navigate('TrainScreen', {
       tempo: this.validTempoOrDefault,
       nbMeasure: this.validNbMeasureOrDefault,

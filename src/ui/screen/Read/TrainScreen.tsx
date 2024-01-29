@@ -1,7 +1,7 @@
 import React from 'react';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
-import { MusicScoreView } from '../component/MusicScoreView';
-import { SpeechRecognizer } from '../../domain/services/SpeechRecognizer';
+import { MusicScoreView } from '../../component/MusicScoreView';
+import { SpeechRecognizer } from '../../../domain/services/SpeechRecognizer';
 import { MusicScoreBuilder } from 'app/domain/services/MusicScoreBuilder';
 import { Checker } from 'app/domain/services/Checker';
 import { Symbols } from 'app/config/symbols';

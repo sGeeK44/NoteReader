@@ -12,19 +12,19 @@ import Slider from '@react-native-community/slider';
 import {
   RhytmicNoteFigureMap,
 } from 'app/domain/services/RhytmicNote';
-import { MainScreenViewModel } from './MainScreenViewModel';
+import { ReadScreenViewModel } from './ReadScreenViewModel';
 import { RhytmicChips } from 'app/ui/component/RhytmicChips';
-import { useDisableBackButton } from '../hook/navigation/useDisableBackButton';
-import { ClefPicker } from '../component/ClefPicker';
+import { useDisableBackButton } from '../../hook/navigation/useDisableBackButton';
+import { ClefPicker } from '../../component/ClefPicker';
 import { Notation } from 'app/domain/services/Notation';
 
 export interface Props {
   navigation: NavigationProp<RootStackParamList>;
 }
 
-const viewModel = new MainScreenViewModel();
+const viewModel = new ReadScreenViewModel();
 
-export const MainScreen = ({ navigation }: Props) => {
+export const ReadScreen = ({ navigation }: Props) => {
   useDisableBackButton();
   const [tempo, setTempo] = useState<string>(viewModel.tempo);
   const [nbMeasure, setNbMeasure] = useState<string>(viewModel.nbMeasure);
@@ -74,6 +74,7 @@ export const MainScreen = ({ navigation }: Props) => {
             <RadioButton
               value={viewModel.notations.syllabic}
               status={notation == 'syllabic' ? 'checked' : 'unchecked'}
+
               onPress={() => {
                 viewModel.onSyllabicSelected();
                 setNotation('syllabic')

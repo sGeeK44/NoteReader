@@ -1,6 +1,6 @@
 import Logo from 'app/assets/logo.svg';
 import { SafeAreaView, StyleSheet, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigation } from 'app/ui/hook/navigation/useExtendedNavigation';
 import { RootStackParamList } from 'app/App';
 import codePush, { DownloadProgress } from 'react-native-code-push';
@@ -29,7 +29,7 @@ export function SplashScreen() {
 
   if (__DEV__) {
     useEffect(() => {
-      navigation.replace('MainScreen');
+      navigation.replace('MenuScreen');
     })
   }
   else {
@@ -58,7 +58,7 @@ export function SplashScreen() {
           case CodePush.SyncStatus.UNKNOWN_ERROR:
           case CodePush.SyncStatus.UP_TO_DATE:
             setInfo('loading-app');
-            navigation.replace('MainScreen');
+            navigation.replace('MenuScreen');
             break;
         }
       },
