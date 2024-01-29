@@ -139,8 +139,11 @@ export const ClefPicker = (props: ClefPickerProps) => {
 
   function onNoteChange(values: SliderValue[]) {
     const min = getNoteFromAbsoluteIndex(values[0] as number);
-    setMinNote(min);
     const max = getNoteFromAbsoluteIndex(values[1] as number);
+    if (min == minNote && max == maxNote) {
+      return values;
+    }
+    setMinNote(min);
     setMaxNote(max);
     props.onNoteRangeChange([min, max]);
     return values;
