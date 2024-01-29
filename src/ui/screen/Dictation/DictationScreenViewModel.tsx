@@ -11,10 +11,6 @@ export class DictationScreenViewModel {
     tempo: string = '60';
     nbMeasure: string = '6';
 
-    onValidate(navigation: NavigationProp<RootStackParamList>) {
-
-    }
-
     onClefChanged(value: Clef) {
         this.clef = value;
     }
@@ -60,5 +56,31 @@ export class DictationScreenViewModel {
             return;
         }
         this.nbMeasure = parsed.toString();
+    }
+
+    get validTempoOrDefault(): number {
+        const parsed = parseInt(this.tempo, 10);
+        if (isNaN(parsed)) {
+            return 60;
+        }
+        return parsed;
+    }
+
+    get validNbMeasureOrDefault(): number {
+        const parsed = parseInt(this.nbMeasure, 10);
+        if (isNaN(parsed)) {
+            return 6;
+        }
+        return parsed;
+    }
+
+    onValidate(navigation: NavigationProp<RootStackParamList>) {
+        navigation.navigate('TrainDictationScreen', {
+            tempo: this.validTempoOrDefault,
+            nbMeasure: this.validNbMeasureOrDefault,
+            clef: this.clef,
+            notation: this.notation,
+            noteRange: this.noteRange
+        });
     }
 }

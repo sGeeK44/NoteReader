@@ -19,7 +19,7 @@ export class ReadScreenViewModel {
   }
 
   onValidate(navigation: NavigationProp<RootStackParamList>) {
-    navigation.navigate('TrainScreen', {
+    navigation.navigate('TrainReadScreen', {
       tempo: this.validTempoOrDefault,
       nbMeasure: this.validNbMeasureOrDefault,
       clef: this.clef,

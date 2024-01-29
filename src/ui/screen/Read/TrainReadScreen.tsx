@@ -17,10 +17,10 @@ import { AndroidRandomRhytmicNoteGenerator } from 'app/infrastructure/AndroidRan
 import { AndroidRandomNoteGenerator } from 'app/infrastructure/AndroidRandomNoteGenerator';
 
 interface Props {
-  route: RouteProp<RootStackParamList, 'TrainScreen'>;
+  route: RouteProp<RootStackParamList, 'TrainReadScreen'>;
 }
 
-export const TrainScreen = ({ route }: Props) => {
+export const TrainReadScreen = ({ route }: Props) => {
   const { tempo, nbMeasure, clef, notation, accuracy, rhytmics, noteRange } = route.params;
   const speechRecognition = useInjection<SpeechRecognizer>(
     Symbols.SpeechRecognizer,
