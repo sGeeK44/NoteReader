@@ -4,7 +4,6 @@ import { NavigationProp } from '@react-navigation/native';
 import { RootStackParamList } from 'app/App';
 import {
   Button,
-  RadioButton,
   Text,
   TextInput,
 } from 'react-native-paper';
@@ -16,7 +15,9 @@ import { ReadScreenViewModel } from './ReadScreenViewModel';
 import { RhytmicChips } from 'app/ui/component/RhytmicChips';
 import { useDisableBackButton } from '../../hook/navigation/useDisableBackButton';
 import { ClefPicker } from '../../component/ClefPicker';
-import { Notation } from 'app/domain/services/Notation';
+import { NotationPicker } from 'app/ui/component/NotationPicker';
+import { TempoPicker } from 'app/ui/component/TempoPicker';
+import { MeasurePicker } from 'app/ui/component/MeasurePicker';
 
 export interface Props {
   navigation: NavigationProp<RootStackParamList>;
@@ -26,10 +27,8 @@ const viewModel = new ReadScreenViewModel();
 
 export const ReadScreen = ({ navigation }: Props) => {
   useDisableBackButton();
-  const [tempo, setTempo] = useState<string>(viewModel.tempo);
   const [nbMeasure, setNbMeasure] = useState<string>(viewModel.nbMeasure);
   const [accuracy, setAccuracy] = useState<number>(viewModel.accuracy);
-  const [notation, setNotation] = useState<Notation>(viewModel.notation);
 
   const styles = StyleSheet.create({
     content: {
@@ -67,53 +66,12 @@ export const ReadScreen = ({ navigation }: Props) => {
           onNoteRangeChange={viewModel.onNoteRangeChange}
           getMinDefaultNote={viewModel.getMinDefaultNote}
           getMaxDefaultNote={viewModel.getMaxDefaultNote} />
-        <View style={styles.row}>
-          <Text style={styles.label}>Notation</Text>
-          <View style={styles.inputWithLabel}>
-            <Text style={styles.secondaryLabel}>Syllabique</Text>
-            <RadioButton
-              value={viewModel.notations.syllabic}
-              status={notation == 'syllabic' ? 'checked' : 'unchecked'}
-
-              onPress={() => {
-                viewModel.onSyllabicSelected();
-                setNotation('syllabic')
-              }}
-            />
-          </View>
-          <View style={styles.inputWithLabel}>
-            <Text style={styles.secondaryLabel}>Alphabetique</Text>
-            <RadioButton
-              value={viewModel.notations.alphabet}
-              status={notation == 'alphabet' ? 'checked' : 'unchecked'}
-              onPress={() => {
-                viewModel.onAlphabetSelected();
-                setNotation('alphabet')
-              }}
-            />
-          </View>
-        </View>
-        <View style={styles.row}>
-          <Text style={styles.label}>Tempo</Text>
-          <TextInput
-            right={<TextInput.Icon icon="metronome" />}
-            onChangeText={value => {
-              viewModel.onTempoChanged(value);
-              setTempo(value);
-            }}
-            value={tempo}
-          />
-        </View>
-        <View style={styles.row}>
-          <Text style={styles.label}>Nombre de mesure</Text>
-          <TextInput
-            onChangeText={value => {
-              viewModel.OnNbMeasureChanged(value)
-              setNbMeasure(value);
-            }}
-            value={nbMeasure}
-          />
-        </View>
+        <NotationPicker
+          default={viewModel.notations.syllabic}
+          onSyllabicSelected={viewModel.onSyllabicSelected}
+          onAlphabetSelected={viewModel.onAlphabetSelected} />
+        <TempoPicker default={viewModel.tempo} onTempoChanged={viewModel.onTempoChanged} />
+        <MeasurePicker default={viewModel.nbMeasure} OnNbMeasureChanged={viewModel.OnNbMeasureChanged} />
         <View style={styles.row}>
           <Text style={styles.label}>Rythme</Text>
           <View style={styles.chips}>

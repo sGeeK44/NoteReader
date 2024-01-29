@@ -64,16 +64,8 @@ export class ReadScreenViewModel {
     this.notation = 'syllabic';
   }
 
-  get isSyllabicChecked(): 'checked' | 'unchecked' {
-    return this.notation === this.notations.syllabic ? 'checked' : 'unchecked';
-  }
-
   onAlphabetSelected(): void {
     this.notation = 'alphabet';
-  }
-
-  get isAlphabetChecked(): 'checked' | 'unchecked' {
-    return this.notation === this.notations.alphabet ? 'checked' : 'unchecked';
   }
 
   OnRhytmicUnselected(rhytmicNoteFigure: RhytmicNote) {
